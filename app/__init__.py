@@ -11,10 +11,13 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db)   
 
     from app.models import course
     from app.routes.course_routes import course_bp
     app.register_blueprint(course_bp)
+
+    from app.routes.student_routes import student_bp
+    app.register_blueprint(student_bp)
 
     return app
