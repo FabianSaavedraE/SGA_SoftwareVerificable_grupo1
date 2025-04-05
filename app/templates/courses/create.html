@@ -1,0 +1,10 @@
+<h1>Crear Curso</h1>
+
+<form action="{{url_for('courses.createCourseView')}}" method="POST">
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+
+    <button type="submit">Crear Curso</button>
+
+</form>

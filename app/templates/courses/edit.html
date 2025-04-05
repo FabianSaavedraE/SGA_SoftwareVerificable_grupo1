@@ -1,0 +1,9 @@
+<h1>Editar Curso {{course.name}}</h1>
+
+<form action="{{url_for('courses.updateCourseView', course_id=course.id)}}" method="POST">
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" name="name" value="{{course.name}}" required>
+    <br>
+
+    <button type="submit">Actualizar Curso</button>
+</form>

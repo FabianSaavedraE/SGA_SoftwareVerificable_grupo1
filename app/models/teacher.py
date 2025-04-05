@@ -8,5 +8,7 @@ class Teacher(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
 
+    sections = db.relationship('CourseSection', backref='teacher', lazy=True)
+
     def __repr__(self):
         return f"Teacher {self.first_name} {self.last_name}"
