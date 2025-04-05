@@ -1,0 +1,26 @@
+<h1>Profesores</h1>
+
+<a href="{{url_for('teachers.createTeacherView')}}">Agregar Profesor</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for teacher in teachers %}
+            <tr>
+                <td>{{teacher.first_name}} {{teacher.last_name}}</td>
+                <td>{{teacher.email}}</td>
+                <td>
+                    <a href="{{url_for('teachers.updateTeacherView', teacher_id=teacher.id)}}">Editar</a>
+                    <form action="{{url_for('teachers.deleteTeacherView', teacher_id=teacher.id)}}" method="POST" style="display:inline;">
+                        <button type="submit">Eliminar</button>
+                    </form>                    
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

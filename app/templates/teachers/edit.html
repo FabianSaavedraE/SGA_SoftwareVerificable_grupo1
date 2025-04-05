@@ -1,0 +1,17 @@
+<h1>Editar Profesor {{teacher.first_name}} {{teacher.last_name}}</h1>
+
+<form action="{{url_for('teachers.updateTeacherView', teacher_id=teacher.id)}}" method="POST">
+    <label for="first_name">Nombre:</label>
+    <input type="text" id="first_name" name="first_name" value="{{teacher.first_name}}" required>
+    <br>
+
+    <label for="last_name">Apellido:</label>
+    <input type="text" id="last_name" name="last_name" value="{{teacher.last_name}}" required>
+    <br>
+
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" value="{{teacher.email}}" required>
+    <br>
+
+    <button type="submit">Actualizar Profesor</button>
+</form>
