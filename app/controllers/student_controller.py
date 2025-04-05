@@ -5,6 +5,10 @@ def getAllStudents():
     students = Student.query.all()
     return [serializeStudent(s) for s in students]
 
+def getStudent(student_id):
+    student = Student.query.get(student_id)
+    return student
+
 def createStudent(data):
     new_student = Student(
         first_name = data.get('first_name'),
@@ -16,8 +20,7 @@ def createStudent(data):
 
     return serializeStudent(new_student)
 
-def updateStudent(student_id, data):
-    student = Student.query.get(student_id)
+def updateStudent(student, data):
     if not student:
         return None
 
@@ -28,8 +31,7 @@ def updateStudent(student_id, data):
     db.session.commit()
     return serializeStudent(student)
 
-def deleteStudent(student_id):
-    student = Student.query.get(student_id)
+def deleteStudent(student):
     if not student:
         return False
 

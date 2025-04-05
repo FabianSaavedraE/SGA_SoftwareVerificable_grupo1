@@ -1,32 +1,41 @@
-from flask import Blueprint, request, jsonify
-from app.controllers.student_controller import getAllStudents, createStudent, updateStudent, deleteStudent
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for
+from app.controllers.student_controller import getAllStudents, getStudent, createStudent, updateStudent, deleteStudent
 
 student_bp = Blueprint('students', __name__, url_prefix='/students')
 
 @student_bp.route('/', methods=['GET'])
-def getStudents():
-    return jsonify(getAllStudents())
+def getStudentsView():
+    students = getAllStudents()
+    return render_template('students/index.html', students=students)
 
-@student_bp.route('/', methods=['POST'])
-def addStudent():
-    data = request.get_json()
-    student = createStudent(data)
-    return jsonify(student), 201
+@student_bp.route('/create', methods=['GET', 'POST'])
+def createStudentView():
+    if request.method == 'POST':
+        data = request.form
+        createStudent(data)
+        return redirect(url_for('students.getStudentsView'))
 
-@student_bp.route('/<int:student_id>', methods=['PUT'])
-def updateStudentRoute(student_id):
-    data = request.get_json()
-    student = updateStudent(student_id, data)
-    if student is None:
-        return jsonify({"message": "Student not found"}), 404
-    
-    return jsonify(student)
+    return render_template('students/create.html')
+
+@student_bp.route('/<int:student_id>', methods=['GET', 'POST'])
+def updateStudentView(student_id):
+    student = getStudent(student_id)
+    if not student:
+        return redirect(url_for('students.getStudentsView'))
+
+    if request.method == 'POST':
+        data = request.form
+        updateStudent(student, data)
+
+        return redirect(url_for('students.getStudentsView'))
+
+    return render_template('students/edit.html', student=student)
 
 @student_bp.route('/<int:student_id>', methods=['DELETE'])
-def deleteStudentRoute(student_id):
-    success = deleteStudent(student_id)
-    if not success:
-        return jsonify({"message": "Student not found"}), 404
+def deleteStudentView(student_id):
+    student = getStudent(student_id)
+    if student:
+        deleteStudent(student)
+        return redirect(url_for('students.getAllStudents'))
 
-    return jsonify({"message": "Student deleted successfully"}), 200
-    
+    return redirect(url_for('students.getAllStudents'))
