@@ -3,7 +3,7 @@ from app import db
 
 def getAllTeachers():
     teachers = Teacher.query.all()
-    return [serializeTeacher(t) for t in teachers]
+    return teachers
 
 def getTeacher(teacher_id):
     teacher = Teacher.query.get(teacher_id)
@@ -18,7 +18,7 @@ def createTeacher(data):
     db.session.add(new_teacher)
     db.session.commit()
 
-    return serializeTeacher(new_teacher)
+    return new_teacher
 
 def updateTeacher(teacher, data):
     if not teacher:
@@ -29,7 +29,7 @@ def updateTeacher(teacher, data):
     teacher.email = data.get('email', teacher.email)
 
     db.session.commit()
-    return serializeTeacher(teacher)
+    return teacher
 
 def deleteTeacher(teacher):
     if not teacher:
@@ -38,11 +38,4 @@ def deleteTeacher(teacher):
     db.session.delete(teacher)
     db.session.commit()
     return True
-
-def serializeTeacher(teacher):
-    return {
-        "id": teacher.id,
-        "first_name": teacher.first_name,
-        "last_name": teacher.last_name,
-        "email": teacher.email
-    }
+    

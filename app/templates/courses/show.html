@@ -19,6 +19,7 @@
                     <td>{{section.semester}}</td>
                     <td>{{section.teacher}}</td>
                     <td>
+                        <a href="{{url_for('course_sections.showSectionView', course_section_id=section.id)}}">Ver</a>
                         <a href="{{url_for('course_sections.updateSectionView', course_section_id=section.id)}}">Editar</a>
                     </td>
                 </tr>

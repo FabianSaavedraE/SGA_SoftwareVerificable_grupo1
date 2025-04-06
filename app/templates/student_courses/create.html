@@ -1,0 +1,31 @@
+<h1>Agregar estudiante a una seccion</h1>
+<h1>Curso: {{section.course.name}}</h1>
+<h1>Sección: {{section.nrc}}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{student.first_name}} {{student.last_name}}</td>
+                <td>
+                    {% if student in section.students %}
+                        <span>Inscrito</span>
+                    {% else %}
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="student_id" value="{{student.id}}">
+                            <input type="hidden" name="state" value="enrolled">
+                            <button type="submit">Inscribir</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{url_for('course_sections.showSectionView', course_section_id=section.id)}}">Volver a la lista</a>

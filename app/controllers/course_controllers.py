@@ -3,7 +3,7 @@ from app import db
 
 def getAllCourses():
     courses = Course.query.all()
-    return [serializeCourse(s) for s in courses]
+    return courses
 
 def getCourse(course_id):
     course = Course.query.get(course_id)
@@ -16,7 +16,7 @@ def createCourse(data):
     db.session.add(new_course)
     db.session.commit()
 
-    return serializeCourse(new_course)
+    return new_course
 
 def updateCourse(course, data):
     if not course:
@@ -25,7 +25,7 @@ def updateCourse(course, data):
     course.name = data.get('name', course.name)
 
     db.session.commit()
-    return serializeCourse(course)
+    return course
 
 def deleteCourse(course):
     if not course:
@@ -34,9 +34,3 @@ def deleteCourse(course):
     db.session.delete(course)
     db.session.commit()
     return True
-
-def serializeCourse(course):
-    return {
-        "id": course.id,
-        "name": course.name,
-    }

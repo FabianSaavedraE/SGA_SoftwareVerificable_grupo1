@@ -12,6 +12,14 @@ def getSectionsView():
     sections = getAllSections()
     return render_template('course_sections/index.html', sections=sections)
 
+@course_section_bp.route('/<int:course_section_id>/show', methods=['GET'])
+def showSectionView(course_section_id):
+    course_section = getSection(course_section_id)
+    if not course_section:
+        return redirect(url_for('courses.getCoursesView'))
+
+    return render_template('course_sections/show.html', course_section=course_section)
+
 @course_section_bp.route('/create/<int:course_id>', methods=['GET', 'POST'])
 def createSectionView(course_id):
     course = getCourse(course_id)

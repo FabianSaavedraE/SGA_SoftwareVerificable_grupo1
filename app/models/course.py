@@ -9,4 +9,4 @@ class Course(db.Model):
     sections = db.relationship('CourseSection', backref='course', lazy=True)
 
     def __repr__(self):
-        return f"<Course {self.name}>"
+        return f"{self.name}"

@@ -10,5 +10,11 @@ class CourseSection(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
 
+    student_courses = db.relationship('StudentCourses', back_populates='course_section')
+    
+    @property
+    def students(self):
+        return [sc.student for sc in self.student_courses]
+
     def __repr__(self):
         return f"<Course Section {self.nrc}>"
