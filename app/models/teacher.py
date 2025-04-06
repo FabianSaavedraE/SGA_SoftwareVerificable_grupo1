@@ -11,4 +11,4 @@ class Teacher(db.Model):
     sections = db.relationship('CourseSection', backref='teacher', lazy=True)
 
     def __repr__(self):
-        return f"Teacher {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"

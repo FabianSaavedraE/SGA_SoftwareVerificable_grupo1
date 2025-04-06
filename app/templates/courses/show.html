@@ -1,0 +1,34 @@
+<h1>Detalles del curso</h1>
+
+<p><Strong>Nombre:</Strong>{{course.name}}</p>
+
+<h1>Secciones:</h1>
+{% if course.sections %}
+    <table>
+        <thead>
+            <tr>
+                <th>NRC</th>
+                <th>Semestre</th>
+                <th>Profesor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in course.sections %}
+                <tr>
+                    <td>{{section.nrc}}</td>
+                    <td>{{section.semester}}</td>
+                    <td>{{section.teacher}}</td>
+                    <td>
+                        <a href="{{url_for('course_sections.updateSectionView', course_section_id=section.id)}}">Editar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Este curso no tiene secciones.</p>
+{% endif %}
+
+<a href="{{url_for('course_sections.createSectionView', course_id=course.id)}}">Agregar Sección</a>
+
+<a href="{{url_for('courses.getCoursesView')}}">Volver a la lista</a>

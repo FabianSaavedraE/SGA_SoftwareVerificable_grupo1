@@ -10,6 +10,14 @@ def getCoursesView():
     courses = getAllCourses()
     return render_template('courses/index.html', courses=courses)
 
+@course_bp.route('/<int:course_id>/show', methods=['GET'])
+def showCourseView(course_id):
+    course = getCourse(course_id)
+    if not course:
+        return redirect(url_for('courses.getCoursesView'))
+
+    return render_template('courses/show.html', course=course)
+
 @course_bp.route('/create', methods=['GET', 'POST'])
 def createCourseView():
     if request.method == 'POST':
