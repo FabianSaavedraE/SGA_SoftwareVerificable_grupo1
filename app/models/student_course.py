@@ -9,7 +9,3 @@ class StudentCourses(db.Model):
 
     student = db.relationship('Student', back_populates='student_courses')
     course_section = db.relationship('CourseSection', back_populates='student_courses')
-
-
-    # student = db.relationship('Student', back_populates='courses')
-    # course = db.relationship('Course', back_populates='student_courses')

@@ -7,17 +7,24 @@
 
 
 <h1>Estudiantes:</h1>
-{% if course_section.students %}
+{% if course_section.student_courses %}
     <table>
         <thead>
             <tr>
                 <td>Nombre</td>
+                <td>Estado</td>
             </tr>
         </thead>
         <tbody>
-            {% for student in course_section.students %}
+            {% for sc in course_section.student_courses %}
                 <tr>
-                    <td>{{student.first_name}} {{student.last_name}}</td>
+                    <td>{{sc.student.first_name}} {{sc.student.last_name}}</td>
+                    <td>
+                        {{sc.state}}
+                        <a href="{{url_for('student_courses.updateStudentCourseView', student_id=sc.student.id, course_section_id=course_section.id)}}">
+                            Editar
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

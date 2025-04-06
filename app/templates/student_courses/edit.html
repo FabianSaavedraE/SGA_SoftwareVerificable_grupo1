@@ -1,0 +1,13 @@
+<h1>Editar el estado del estudiante</h1>
+
+<p>Estudiante: {{student_course.student.first_name}} {{student_course.student.last_name}}</p>
+<p>Curso: {{student_course.course_section.course}}</p>
+<p>Seccion: {{student_course.course_section.nrc}}</p>
+
+<form method="POST">
+    <label for="state">Estado:</label>
+    <input type="text" name="state" id="state" value="{{student_course.state}}">
+    <button type="submit">Guardar</button>
+</form>
+
+<a href="{{url_for('course_sections.showSectionView', course_section_id=student_course.course_section.id)}}">Volver</a>

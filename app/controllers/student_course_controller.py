@@ -1,6 +1,10 @@
 from app.models.student_course import StudentCourses
 from app import db
 
+def getStudentCourse(student_id, course_section_id):
+    student_course = StudentCourses.query.get((student_id, course_section_id))
+    return student_course
+
 def createStudentCourse(data):
     new_student_course = StudentCourses(
         student_id = data.get('student_id'),
@@ -11,3 +15,12 @@ def createStudentCourse(data):
     db.session.commit()
 
     return new_student_course
+
+def updateStudentCourse(student_course, data):
+    if not student_course:
+        return None
+
+    student_course.state = data.get('state', student_course.state)
+
+    db.session.commit()
+    return student_course

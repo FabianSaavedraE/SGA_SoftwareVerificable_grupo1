@@ -8,10 +8,7 @@ class Student(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
 
-    student_courses = db.relationship(
-        'StudentCourses', 
-        back_populates='student'
-    )
+    student_courses = db.relationship('StudentCourses', back_populates='student')
     
     @property
     def course_sections(self):
