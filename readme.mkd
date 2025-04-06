@@ -1,0 +1,102 @@
+# Diseño de Software Verificable - Sistema de Gestión Académica (SGA)
+
+Este proyecto es una implementación de un Sistema de Gestión Académica (SGA), desarrollado como parte del curso "Diseño de Software Verificable". El sistema tiene como objetivo principal gestionar cursos, profesores, alumnos, evaluaciones y sus relaciones. Utiliza Python 3.9+, Flask como framework web y MySQL como base de datos.
+
+La arquitectura está diseñada para ser mantenible y escalable, utilizando patrones como aplicación modular, SQLAlchemy para ORM y migraciones controladas con Flask-Migrate.
+
+---
+
+## Contenidos
+
+- [Diseño de Software Verificable - Sistema de Gestión Académica (SGA)](#diseño-de-software-verificable---sistema-de-gestión-académica-sga)
+  - [Contenidos](#contenidos)
+  - [📌 Instrucciones de uso](#-instrucciones-de-uso)
+  - [🧩 Explicación de la base de datos usada](#-explicación-de-la-base-de-datos-usada)
+  - [📚 Explicaciones de los puntos del enunciado](#-explicaciones-de-los-puntos-del-enunciado)
+    - [📁 CRUD de Cursos](#-crud-de-cursos)
+    - [👨‍🎓 CRUD de Estudiantes](#-crud-de-estudiantes)
+    - [👩‍🏫 CRUD de Profesores](#-crud-de-profesores)
+    - [📄 CRUD de Evaluaciones](#-crud-de-evaluaciones)
+    - [🔗 Relaciones entre Entidades](#-relaciones-entre-entidades)
+  - [✨ Quality of Life tools](#-quality-of-life-tools)
+    - [Archivo `query.py`](#archivo-querypy)
+
+---
+
+## 📌 Instrucciones de uso
+
+1. Clonar el repositorio:
+
+        git clone #PONER EL LINK ACÁ
+
+2. Definir un archivo .env con la variable de base de datos:
+
+        DATABASE_URI=sqlite:///dev.db #Usamos SQLITe por lo que este es el que está predefinido
+
+3. Inicializar la base de datos en consola
+
+        flask db init
+
+4. <a name="migrate_database"></a> Actualizar la base de datos en consola
+
+        flask db migrate
+        flask db upgrade
+
+5. Correr la aplicación en consola
+
+        python3 run.py
+
+---
+
+## 🧩 Explicación de la base de datos usada
+
+Aquí se debe explicar qué tipo de base de datos se utiliza (SQLite/MySQL), por qué se eligió, cómo está estructurada la base (modelo entidad-relación si aplica) y cómo se realiza la conexión usando SQLAlchemy.
+
+Ejemplo:
+- La base se conecta usando una URI definida en `.env`
+- Cada entidad (curso, estudiante, etc.) es un modelo de SQLAlchemy
+- Se usan claves foráneas para representar relaciones (ej. un estudiante puede estar inscrito en varios cursos)
+
+---
+
+## 📚 Explicaciones de los puntos del enunciado
+
+### 📁 CRUD de Cursos
+
+Explicación de cómo se implementa el modelo `Course`, las rutas disponibles (`GET`, `POST`, `PUT`, `DELETE`), validaciones, etc.
+
+### 👨‍🎓 CRUD de Estudiantes
+
+Explicación sobre el modelo `Student`, sus campos, validaciones, endpoints y cómo se manipulan desde la app (formulario, JSON, etc.).
+
+### 👩‍🏫 CRUD de Profesores
+
+Aquí se documenta el modelo de `Teacher` (si existe), junto con sus endpoints y lógica del CRUD.
+
+### 📄 CRUD de Evaluaciones
+
+Explicación de cómo se maneja el modelo `Evaluation` o similar, su relación con cursos/estudiantes, y cómo se gestiona la información.
+
+### 🔗 Relaciones entre Entidades
+
+Acá se explica cómo se conectan las distintas entidades (ej. muchos-a-muchos entre cursos y estudiantes), usando `backref`, `secondary`, etc.
+
+---
+
+## ✨ Quality of Life tools
+
+### Archivo `query.py`
+
+El archivo `query.py` funge como un simulador de consola virtual de SQL. Se añade al considerar que Flask no posee un método predefinido para acceder a la base de datos mediante línea de comandos. Contiene snippets de código para inspeccionar el contenido de las tablas mientras se desarrolla.
+
+
+        # Print all existing instances of a table
+
+        print("Instances of table:")
+        instances = Table.query.all()
+        for instance in instances:
+            print(f"- {instance.id}: {instance.data}") 
+
+para ejecutarlo solo se tienen que [ejecutar las migraciones correspondientes](#migrate_database) con anterioridad y luego usar el comando para ejecutar el archivo .py
+
+        python3 query.py
