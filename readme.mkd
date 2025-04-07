@@ -124,3 +124,5 @@ Primero, si bien prefiero hacer un readme que incluya toda la lógica a usar, ta
         def landing_page():
                 return render_template('main.html') #Location is templates/main.html
 
+
+La idea del **landing page** sería manejar la lógica de usuario, pero para los propósitos de esta entrega aún no es necesario implementar aquello. Por eso, prefiero mantenerla sin nada. Me imagino que ante la necesidad de añadir sesiones, se pueden pasar como parámetros las credenciales para la identificación.

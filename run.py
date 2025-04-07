@@ -1,5 +1,9 @@
 from app import create_app
 from flask import render_template #Allows the use of templates
+from app.models.course import Course
+from app.models.student import Student
+
+
 
 app = create_app()
 
@@ -8,7 +12,11 @@ app = create_app()
 
 @app.route('/')
 def landing_page():
-    return render_template('main.html') #Location is templates/main.html
+
+    courses = Course.query.all() #Access all course instances as course variable
+    students = Student.query.all() #Access all students instances as students variable
+
+    return render_template('main.html', courses =courses, students=students) #Location is templates/main.html, adds variables to template
 
 
 
