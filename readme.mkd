@@ -20,6 +20,7 @@ La arquitectura está diseñada para ser mantenible y escalable, utilizando patr
     - [🔗 Relaciones entre Entidades](#-relaciones-entre-entidades)
   - [✨ Quality of Life tools](#-quality-of-life-tools)
     - [Archivo `query.py`](#archivo-querypy)
+  - [Cambios por Vicente Acevedo](#cambios-por-vicente-acevedo)
 
 ---
 
@@ -100,3 +101,26 @@ El archivo `query.py` funge como un simulador de consola virtual de SQL. Se aña
 para ejecutarlo solo se tienen que [ejecutar las migraciones correspondientes](#migrate_database) con anterioridad y luego usar el comando para ejecutar el archivo .py
 
         python3 query.py
+
+## Cambios por Vicente Acevedo
+
+Primero, si bien prefiero hacer un readme que incluya toda la lógica a usar, también considero sano añadir en el código los comentarios respectivos. Podemos conversar después la eliminación de redundancias en un posterior proceso de refactoring.
+
+<h4> Run.py </h4>
+
+1. Añadí el método "host" a la función que inicializa el servidor (app.run) con el parámetro 0.0.0.0. Según el video guía que ví, esto permite acceder desde local_host y desde ip's compartidad -algo así-. El código es el siguiente.
+
+        if __name__ == '__main__': 
+        
+                app.run(host = '0.0.0.0', debug=True)
+
+2. Añadí una landing page que llama desde template un html que llamé main. Esto es más que nada porque cuando abría la aplicación no había nada disponible, lo que me dificultaba a la hora de imaginar el workflow porque no tenía un punto de entrada fijo. Los cambios y el enrutamiento que hacen posible esto son los siguientes, lo hice de la siguiente forma -siguiendo el video explicativo que comenté anteriormente-.
+
+
+        
+        from flask import render_template #Allows the use of templates
+
+        @app.route('/')
+        def landing_page():
+                return render_template('main.html') #Location is templates/main.html
+
