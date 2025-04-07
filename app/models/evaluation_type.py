@@ -9,6 +9,7 @@ class EvaluationType(db.Model):
     ponderation = db.Column(db.String(50), nullable=True)
 
     course_section_id = db.Column(db.Integer, db.ForeignKey('course_sections.id'), nullable=False)
+    evaluations = db.relationship('Evaluation', backref='evaluation_type', lazy=True)
 
     def __rpr__(self):
         return f"{self.topic}"
