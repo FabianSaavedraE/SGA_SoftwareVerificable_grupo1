@@ -1,0 +1,25 @@
+<h1> Hello world. This it's the landing page for CAMBAS </h1>
+
+<p>Here there should be a method that checks if user it's logged in or not. In case it's logged in, it should redirect to the correspondant view depending on the user privilege level.</p>
+
+<p>In case it's not logged in, this should be the log_in page</p>
+
+<h2>For the purposes of this assignment, there is no need to add logic for user privileges. This it's for crud on students, teachers, courses and tests </h2>
+
+<h2>Cursos disponibles:</h2>
+<ul>
+    {% for course in courses %}
+        <li>{{ course.name }}</li>
+    {% else %}
+        <li>No hay cursos registrados.</li>
+    {% endfor %}
+</ul>
+
+<h2>Estudiantes registrados:</h2>
+<ul>
+    {% for student in students %}
+        <li>{{ student.first_name }} {{ student.last_name }} ({{ student.email }})</li>
+    {% else %}
+        <li>No hay estudiantes registrados.</li>
+    {% endfor %}
+</ul>

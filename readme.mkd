@@ -1,0 +1,147 @@
+# Diseño de Software Verificable - Sistema de Gestión Académica (SGA)
+
+Este proyecto es una implementación de un Sistema de Gestión Académica (SGA), desarrollado como parte del curso "Diseño de Software Verificable". El sistema tiene como objetivo principal gestionar cursos, profesores, alumnos, evaluaciones y sus relaciones. Utiliza Python 3.9+, Flask como framework web y MySQL como base de datos.
+
+La arquitectura está diseñada para ser mantenible y escalable, utilizando patrones como aplicación modular, SQLAlchemy para ORM y migraciones controladas con Flask-Migrate.
+
+---
+
+## Contenidos
+
+- [Diseño de Software Verificable - Sistema de Gestión Académica (SGA)](#diseño-de-software-verificable---sistema-de-gestión-académica-sga)
+  - [Contenidos](#contenidos)
+  - [📌 Instrucciones de uso](#-instrucciones-de-uso)
+  - [🧩 Explicación de la base de datos usada](#-explicación-de-la-base-de-datos-usada)
+  - [📚 Explicaciones de los puntos del enunciado](#-explicaciones-de-los-puntos-del-enunciado)
+    - [📁 CRUD de Cursos](#-crud-de-cursos)
+    - [👨‍🎓 CRUD de Estudiantes](#-crud-de-estudiantes)
+    - [👩‍🏫 CRUD de Profesores](#-crud-de-profesores)
+    - [📄 CRUD de Evaluaciones](#-crud-de-evaluaciones)
+    - [🔗 Relaciones entre Entidades](#-relaciones-entre-entidades)
+  - [✨ Quality of Life tools](#-quality-of-life-tools)
+    - [Archivo `query.py`](#archivo-querypy)
+  - [Cambios por Vicente Acevedo](#cambios-por-vicente-acevedo)
+
+---
+
+## 📌 Instrucciones de uso
+
+1. Clonar el repositorio:
+
+        git clone #PONER EL LINK ACÁ
+
+2. Definir un archivo .env con la variable de base de datos:
+
+        DATABASE_URI=sqlite:///dev.db #Usamos SQLITe por lo que este es el que está predefinido
+
+3. Inicializar la base de datos en consola
+
+        flask db init
+
+4. <a name="migrate_database"></a> Actualizar la base de datos en consola
+
+        flask db migrate
+        flask db upgrade
+
+5. Correr la aplicación en consola
+
+        python3 run.py
+
+---
+
+## 🧩 Explicación de la base de datos usada
+
+Aquí se debe explicar qué tipo de base de datos se utiliza (SQLite/MySQL), por qué se eligió, cómo está estructurada la base (modelo entidad-relación si aplica) y cómo se realiza la conexión usando SQLAlchemy.
+
+Ejemplo:
+- La base se conecta usando una URI definida en `.env`
+- Cada entidad (curso, estudiante, etc.) es un modelo de SQLAlchemy
+- Se usan claves foráneas para representar relaciones (ej. un estudiante puede estar inscrito en varios cursos)
+
+---
+
+## 📚 Explicaciones de los puntos del enunciado
+
+### 📁 CRUD de Cursos
+
+Explicación de cómo se implementa el modelo `Course`, las rutas disponibles (`GET`, `POST`, `PUT`, `DELETE`), validaciones, etc.
+
+### 👨‍🎓 CRUD de Estudiantes
+
+Explicación sobre el modelo `Student`, sus campos, validaciones, endpoints y cómo se manipulan desde la app (formulario, JSON, etc.).
+
+### 👩‍🏫 CRUD de Profesores
+
+Aquí se documenta el modelo de `Teacher` (si existe), junto con sus endpoints y lógica del CRUD.
+
+### 📄 CRUD de Evaluaciones
+
+Explicación de cómo se maneja el modelo `Evaluation` o similar, su relación con cursos/estudiantes, y cómo se gestiona la información.
+
+### 🔗 Relaciones entre Entidades
+
+Acá se explica cómo se conectan las distintas entidades (ej. muchos-a-muchos entre cursos y estudiantes), usando `backref`, `secondary`, etc.
+
+---
+
+## ✨ Quality of Life tools
+
+### Archivo `query.py`
+
+El archivo `query.py` funge como un simulador de consola virtual de SQL. Se añade al considerar que Flask no posee un método predefinido para acceder a la base de datos mediante línea de comandos. Contiene snippets de código para inspeccionar el contenido de las tablas mientras se desarrolla.
+
+
+        # Print all existing instances of a table
+
+        print("Instances of table:")
+        instances = Table.query.all()
+        for instance in instances:
+            print(f"- {instance.id}: {instance.data}") 
+
+para ejecutarlo solo se tienen que [ejecutar las migraciones correspondientes](#migrate_database) con anterioridad y luego usar el comando para ejecutar el archivo .py
+
+        python3 query.py
+
+## Cambios por Vicente Acevedo
+
+Primero, si bien prefiero hacer un readme que incluya toda la lógica a usar, también considero sano añadir en el código los comentarios respectivos. Podemos conversar después la eliminación de redundancias en un posterior proceso de refactoring.
+
+<h4> Run.py </h4>
+
+1. Añadí el método "host" a la función que inicializa el servidor (app.run) con el parámetro 0.0.0.0. Según el video guía que ví, esto permite acceder desde local_host y desde ip's compartidad -algo así-. El código es el siguiente.
+
+        if __name__ == '__main__': 
+        
+                app.run(host = '0.0.0.0', debug=True)
+
+2. Añadí una landing page que llama desde template un html que llamé main. Esto es más que nada porque cuando abría la aplicación no había nada disponible, lo que me dificultaba a la hora de imaginar el workflow porque no tenía un punto de entrada fijo. Los cambios y el enrutamiento que hacen posible esto son los siguientes, lo hice de la siguiente forma -siguiendo el video explicativo que comenté anteriormente-.
+
+
+        
+        from flask import render_template #Allows the use of templates
+
+        @app.route('/')
+        def landing_page():
+                return render_template('main.html') #Location is templates/main.html
+
+
+La idea del **landing page** sería manejar la lógica de usuario, pero para los propósitos de esta entrega aún no es necesario implementar aquello. Por eso, prefiero mantenerla sin nada. Me imagino que ante la necesidad de añadir sesiones, se pueden pasar como parámetros las credenciales para la identificación.
+
+Así, lo actualicé para que solo reciba las variables necesarias de la base de datos para visualizar toda la información.
+
+        from app.models.course import Course #Imports from DB
+        from app.models.student import Student #Imports from DB
+
+        @app.route('/')
+        def landing_page():
+
+        courses = Course.query.all() #Access all course instances as course variable
+        students = Student.query.all() #Access all students instances as students variable
+
+        return render_template('main.html', courses =courses, students=students) #Location is templates/main.html, adds variables to template
+
+Lo que quedaría por hacer ahora es generar una vista que organice las tablas accesibles y permita mirar los datos. Luego, añadir métodos CRUD con respectivas vistas. Esto se puede hacer con template y blocks. Es lo que pretendo hacer por la tarde. <-- *anotación hecha el 7/04 a las 11:11, pide un deseo!*
+
+Pero recomiendo tener una landing page general con tablas que representen cada una de las instancias de forma ordenada y así poder acceder a los métodos. Luego, una vista específica.
+
+**De momento el frontend no parece ser relevante, me parece más importante conectar los métodos y hacer que el backend funcione, de ahí a que no he estilizado nada**.
