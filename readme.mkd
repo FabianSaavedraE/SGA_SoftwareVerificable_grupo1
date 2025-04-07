@@ -257,6 +257,16 @@ def getCoursesView():
 
 Como se puede ver, en vez de realizar la consulta en esta misma función, se llama a la función getAllCourses() que se encuentra definida en el controlador. Si bien puede que para esta vista no afecte realizar la consulta ahi mismo, creo que en el futuro cuando tengamos que realizar más lógica y validaciones se puede empezar a desordenar el código, es por esto que encuentro mejor dejar toda la lógica para los controladores, y las rutas solo se encargan de llamar a estas funciones. 
 
+### app/__init__.py
+En este archivo, se tiene que agregar las rutas (blueprint) de los modelos nuevos que se creen. Por ejemplo, para Evaluation: 
+
+```
+# En archivo app/__init__.py
+
+from app.routes.evaluation_routes import evaluation_bp
+app.register_blueprint(evaluation_bp)
+```
+
 ## Flujo pensado para la aplicación
 Por ahora, si bien no hay un flujo bien definido, fuí desarrollando las entidades para que se vea de la siguiente manera:
 1. "Página principal" son los cursos (localhost/courses)
