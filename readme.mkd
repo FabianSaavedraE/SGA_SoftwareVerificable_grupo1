@@ -126,3 +126,22 @@ Primero, si bien prefiero hacer un readme que incluya toda la lógica a usar, ta
 
 
 La idea del **landing page** sería manejar la lógica de usuario, pero para los propósitos de esta entrega aún no es necesario implementar aquello. Por eso, prefiero mantenerla sin nada. Me imagino que ante la necesidad de añadir sesiones, se pueden pasar como parámetros las credenciales para la identificación.
+
+Así, lo actualicé para que solo reciba las variables necesarias de la base de datos para visualizar toda la información.
+
+        from app.models.course import Course #Imports from DB
+        from app.models.student import Student #Imports from DB
+
+        @app.route('/')
+        def landing_page():
+
+        courses = Course.query.all() #Access all course instances as course variable
+        students = Student.query.all() #Access all students instances as students variable
+
+        return render_template('main.html', courses =courses, students=students) #Location is templates/main.html, adds variables to template
+
+Lo que quedaría por hacer ahora es generar una vista que organice las tablas accesibles y permita mirar los datos. Luego, añadir métodos CRUD con respectivas vistas. Esto se puede hacer con template y blocks. Es lo que pretendo hacer por la tarde. <-- *anotación hecha el 7/04 a las 11:11, pide un deseo!*
+
+Pero recomiendo tener una landing page general con tablas que representen cada una de las instancias de forma ordenada y así poder acceder a los métodos. Luego, una vista específica.
+
+**De momento el frontend no parece ser relevante, me parece más importante conectar los métodos y hacer que el backend funcione, de ahí a que no he estilizado nada**.
