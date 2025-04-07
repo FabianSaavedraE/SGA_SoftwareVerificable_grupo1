@@ -1,0 +1,26 @@
+<h1>Secciones</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>NRC</th>
+            <th>Semestre</th>
+            <th>Curso</th>
+            <th>Profesor</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for section in sections %}
+            <tr>
+                <td>{{ section.nrc }}</td>
+                <td>{{ section.semester }}</td>
+                <td>{{ section.course.name }}</td>
+                <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
+                <td>
+                  
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

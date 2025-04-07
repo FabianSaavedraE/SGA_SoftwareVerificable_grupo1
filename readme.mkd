@@ -21,6 +21,13 @@ La arquitectura está diseñada para ser mantenible y escalable, utilizando patr
   - [✨ Quality of Life tools](#-quality-of-life-tools)
     - [Archivo `query.py`](#archivo-querypy)
   - [Cambios por Vicente Acevedo](#cambios-por-vicente-acevedo)
+  - [Cambios por Chiara Romanini](#cambios-por-chiara-romanini)
+    - [Models](#models)
+      - [Relaciones](#relaciones)
+    - [Controllers](#controllers)
+    - [Routes](#routes)
+    - [app/__init__.py](#appinitpy)
+  - [Flujo pensado para la aplicación](#flujo-pensado-para-la-aplicación)
 
 ---
 
@@ -146,6 +153,27 @@ Pero recomiendo tener una landing page general con tablas que representen cada u
 
 **De momento el frontend no parece ser relevante, me parece más importante conectar los métodos y hacer que el backend funcione, de ahí a que no he estilizado nada**.
 
+Para facilitar los accesos, vinculé el frontend de todo mediante el landing page. Allí añadí los métodos (basados en los snipets de código anteriores) para acceder a los otros elementos importantes de la base de datos (teachers y student_sections) para ligar todas las vistas desde el origen del modelo.
+
+La vista de main.html entonces cuenta con 4 cajas en una grid con botones respectivos que permiten acceder a las secciones de la siguiente forma:
+
+            <!-- Estudiantes -->
+            <div class="box"> 
+                {% if students %}
+                <a href="{{ url_for('students.getStudentsView') }}">
+                    <button>Ver estudiantes</button>
+                </a>
+                {% endif %}
+                <ul>
+                    {% for student in students %}
+                        <li>{{ student.first_name }} {{ student.last_name }}</li>
+                    {% else %}
+                        <li>No hay estudiantes</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+Box posee el atributo que permite deslizar dentro de la estructura en caso de que haya sobrepasado el tamaño apropiado para el contenido. El botón lleva a la vista respectiva de estudiantes, y se muestran los estudiantes. Se añaden los ifs para no generar un botón inutil en caso de que no hayan estudiantes.
 
 ## Cambios por Chiara Romanini
 

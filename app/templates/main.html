@@ -1,25 +1,197 @@
-<h1> Hello world. This it's the landing page for CAMBAS </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CAMBAS Landing Page</title>
+     <!-- Styles are defined to look like UANDES Canvas -->
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
 
-<p>Here there should be a method that checks if user it's logged in or not. In case it's logged in, it should redirect to the correspondant view depending on the user privilege level.</p>
+        .sidebar img.logo {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 20px;
+        }
 
-<p>In case it's not logged in, this should be the log_in page</p>
+        .sidebar img.user-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: default;
+        }
 
-<h2>For the purposes of this assignment, there is no need to add logic for user privileges. This it's for crud on students, teachers, courses and tests </h2>
+        /* Main content */
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+        }
 
-<h2>Cursos disponibles:</h2>
-<ul>
-    {% for course in courses %}
-        <li>{{ course.name }}</li>
-    {% else %}
-        <li>No hay cursos registrados.</li>
-    {% endfor %}
-</ul>
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
 
-<h2>Estudiantes registrados:</h2>
-<ul>
-    {% for student in students %}
-        <li>{{ student.first_name }} {{ student.last_name }} ({{ student.email }})</li>
-    {% else %}
-        <li>No hay estudiantes registrados.</li>
-    {% endfor %}
-</ul>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            justify-items: center;
+        }
+
+        .box {
+            border: 2px solid red;
+            width: 300px;
+            height: 200px;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        
+
+        .box h3 {
+            text-align: center;
+            color: red;
+        }
+
+        .box ul {
+            list-style: none;
+            padding-left: 10px;
+            font-size: 14px;
+            height: 110px;
+            overflow-y: auto;
+        }
+
+        .box button {
+            display: block;
+            margin: 10px auto 0;
+            padding: 5px 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .box button:hover {
+            background-color: darkred;
+        }
+        
+    
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+    </div>
+
+    <div class="main">
+              
+        <!-- Page information (read below) -->
+
+        <div class="title">
+            <h3> Hello world. This it's the landing page for CAMBAS </h3>
+
+            <p>Here there should be a method that checks if user it's logged in or not. In case it's logged in, it should redirect to the correspondant view depending on the user privilege level.</p>
+
+            <p>In case it's not logged in, this should be the log_in page</p>
+
+            <h5>For the purposes of this assignment, there is no need to add logic for user privileges. This it's for crud on students, teachers, courses and tests </h5>
+
+
+
+        </div>
+
+
+        <div class="grid">
+
+                  
+            <!-- Estudiantes -->
+            <div class="box">
+                {% if students %}
+                <a href="{{ url_for('students.getStudentsView') }}">
+                    <button>Ver estudiantes</button>
+                </a>
+                {% endif %}
+                <ul>
+                    {% for student in students %}
+                        <li>{{ student.first_name }} {{ student.last_name }}</li>
+                    {% else %}
+                        <li>No hay estudiantes</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+            <!-- Cursos -->
+            <div class="box">
+                {% if courses %}
+                <a href="{{ url_for('courses.getCoursesView') }}">
+                    <button>Ver cursos</button>
+                </a>
+                {% endif %}
+                <ul>
+                    {% for course in courses %}
+                        <li>{{ course.name }}</li>
+                    {% else %}
+                        <li>No hay cursos</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+
+
+            <!-- Secciones -->
+            <div class="box">
+                {% if course_sections%}
+                <a href="{{ url_for('course_sections.getSectionsView') }}">
+                    <button>Ver secciones</button>
+                </a>
+                {% endif %}
+                <ul>
+                    {% for section in course_sections %}
+                        <li>{{ section.nrc }} ({{ section.semester }})</li>
+                    {% else %}
+                        <li>No hay secciones</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+
+            <!-- Profesores -->
+            <div class="box">
+                {% if teachers %}
+                <a href="{{ url_for('teachers.getTeachersView') }}">
+                    <button>Ver profesores</button>
+                </a>
+                {% endif %}
+                <ul>
+                    {% for teacher in teachers %}
+                        <li>{{ teacher.first_name }} {{ teacher.last_name }}</li>
+                    {% else %}
+                        <li>No hay profesores</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
