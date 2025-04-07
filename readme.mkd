@@ -145,3 +145,124 @@ Lo que quedaría por hacer ahora es generar una vista que organice las tablas ac
 Pero recomiendo tener una landing page general con tablas que representen cada una de las instancias de forma ordenada y así poder acceder a los métodos. Luego, una vista específica.
 
 **De momento el frontend no parece ser relevante, me parece más importante conectar los métodos y hacer que el backend funcione, de ahí a que no he estilizado nada**.
+
+
+## Cambios por Chiara Romanini
+
+### Models
+Los modelos es donde se definen los atributos de las tablas. El nombre de la tabla se define en plural de la siguiente manera:
+```
+__tablename__='evaluations'
+```
+
+Una llave foránea se define de la siguiente manera:
+```
+course_section_id = db.Column(db.Integer, db.ForeignKey('course_sections.id'), nullable=False)
+```
+En este ejemplo, se está definiendo que course_section_id es una llave foránea que apunta a la entidad 'CourseSection', donde su valor es el id de esta tabla.
+
+#### Relaciones 
+Las tablas desarrolladas tienen dos tipos de relaciones: las tablas que se unen a través de una llave foránea, y las tablas que actúan como una tabla intermedia para una relación de muchos a muchos.
+
+En el primer caso, donde la relación entre las entidades es de uno a muchos, la relación se tiene que definir en el modelo donde la relación es "uno". Por ejemplo:
+- Course y CourseSection tienen una relación uno a muchos, donde Course puede tener muchos CourseSections, pero CourseSection solo pertenece a un Course. En este caso, la relación se tiene que definir en el modelo de Course (la entidad que representa la relación de "uno"). La relación entre ambas entidades se define de la siguiente manera:
+
+```
+# En archivo models/course.py
+
+sections = db.relationship('CourseSection', backref='course', lazy=True)
+```
+
+Gracias al atributo "backref", no es necesario definir la relación en la otra entidad CourseSection. Con esto, la relación queda establecida y se pueden realizar consultas de la siguiente naturaleza:
+
+```
+course = Course.get(1)
+
+for section in course.sections:
+        print(section.nrc)
+
+# course.sections en este caso es una lista con todos las secciones que pertenecen al curso definido
+```
+
+Gracias al atributo "backref", tambien se pueden hacer este tipo de consultas:
+```
+course_section = CourseSection.get(1)
+
+course_section.course.name # Esto muestra el nombre del curso 
+```
+
+El segundo caso es el de las tablas intermedias que representan las relaciones muchos a muchos, como lo es el caso de StudentCourses. Esta tabla se encarga de relacionar las entidades Student y CourseSection. Para esto, en el modelo de StudentCourses se tiene que establecer la relación con estas dos entidades, de la siguiente manera:
+
+```
+# En models/student_course.py
+
+student = db.relationship('Student', back_populates='student_courses')
+course_section = db.relationship('CourseSection', back_populates='student_courses')
+```
+
+Luego en el archivo de estas entidades (student.py y course_section.py) se tiene que establecer la misma relación pero hacia la tabla StudentCourses.
+```
+# En models/student.py
+
+student_courses = db.relationship('StudentCourses', back_populates='student')
+```
+
+Lo mismo para CourseSection
+```
+# En models/course_section.py
+
+student_courses = db.relationship('StudentCourses', back_populates='course_section')
+```
+
+Con esto, las consultas para obtener a los estudiantes de una sección sería de la siguiente manera:
+```
+section = CourseSection.get(1)
+students = section.student_courses.students
+```
+
+Para simplificar esta consulta, se escribió una propiedad en cada una de las entidades con esta estructura:
+```
+# En models/course_section.py
+
+@property
+    def students(self):
+        return [sc.student for sc in self.student_courses]
+```
+
+Con esto, las consultas se pueden realizar de la siguiente manera:
+```
+section = CourseSection.get(1)
+students = section.students
+```
+
+Esto mismo se realizó para los estudiantes, y se puede ver en el archivo models/students.py
+
+
+### Controllers
+En los archivos de los controladores se encuentra el CRUD (CRU técnicamente porque falta Delete) de las entidades Course, CourseSection, Evaluation, EvaluationType, Student, Teacher y StudentCourse. 
+
+Estos controladores son los encargados de las funciones principales.
+
+### Routes
+En las rutas es donde se definen las rutas xd. Para estos archivos, intenté que de la lógica se encargaran las funciones definidas en los controladores. Por ejemplo, el GET tiene esta estructura:
+
+```
+# En el archivo routes/course_routes.py
+
+@course_bp.route('/', methods=['GET'])
+def getCoursesView():
+    courses = getAllCourses()
+    return render_template('courses/index.html', courses=courses)
+```
+
+Como se puede ver, en vez de realizar la consulta en esta misma función, se llama a la función getAllCourses() que se encuentra definida en el controlador. Si bien puede que para esta vista no afecte realizar la consulta ahi mismo, creo que en el futuro cuando tengamos que realizar más lógica y validaciones se puede empezar a desordenar el código, es por esto que encuentro mejor dejar toda la lógica para los controladores, y las rutas solo se encargan de llamar a estas funciones. 
+
+## Flujo pensado para la aplicación
+Por ahora, si bien no hay un flujo bien definido, fuí desarrollando las entidades para que se vea de la siguiente manera:
+1. "Página principal" son los cursos (localhost/courses)
+2. Desde esta vista se puede ingresar a un curso en específico.
+3. En la vista de Curso, se pueden ver sus secciones (CourseSection)
+4. Al ingresar a una sección, se puede ver los estudiantes que pertenecen a esa sección, los tipos de evaluación de esa sección (EvaluationType) y las evaluaciones de la sección (Evaluation).
+
+
+Para el CRUD de los estudiantes y profesores, por ahora se tiene que manualmente ingresar la rutas respectivas de estas entidades (/students y /teachers).
