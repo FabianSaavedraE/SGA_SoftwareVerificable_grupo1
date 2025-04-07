@@ -29,6 +29,9 @@
                             Editar
                         </a>
                     </td>
+                    <td>
+                        <a href="{{url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation.id)}}">Agregar Evaluación</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -36,6 +39,45 @@
 {% else %}
     <p>Todavía no hay tipos de evaluaciones para esta sección</p>
 {% endif %}
+
+<h1>Evaluaciones:</h1>
+
+{% for evaluation_type in course_section.evaluation_types %}
+    <h3>{{evaluation_type.topic}}</h3>
+    <p>Ponderación: {{evaluation_type.ponderation}}</p>
+
+
+    {% if evaluation_type.evaluations %}
+        <table>
+            <thead>
+                <tr>
+                    <td><strong>Nombre</strong></td>
+                    <td><strong>Tipo de ponderación</strong></td>
+                    <td><strong>Ponderación</strong></td>
+                    <td><strong>Obligatoria</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evaluation in evaluation_type.evaluations %}
+                    <tr>
+                        <td>{{evaluation.name}}</td>
+                        <td>{{evaluation.ponderation_type}}</td>
+                        <td>{{evaluation.ponderation}}</td>
+                        <td>{{evaluation.optional}}</td>
+                        <td>
+                            <a href="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}">
+                                Editar
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay evaluaciones para este tipo.</p>
+    {% endif %}
+{% endfor %}
+
 
 <h1>Estudiantes:</h1>
 <a href="{{url_for('student_courses.createStudentCourseView', course_section_id=course_section.id)}}">Agregar Estudiante</a>

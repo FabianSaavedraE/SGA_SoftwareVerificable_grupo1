@@ -16,6 +16,7 @@ def create_app():
     from app.models import course_section
     from app.models import student_course
     from app.models import evaluation_type
+    from app.models import evaluation
     from app.models import course
     from app.models import student
     from app.models import teacher
@@ -37,5 +38,8 @@ def create_app():
 
     from app.routes.evaluation_type_routes import evaluation_type_bp
     app.register_blueprint(evaluation_type_bp)
+
+    from app.routes.evaluation_routes import evaluation_bp
+    app.register_blueprint(evaluation_bp)
 
     return app
