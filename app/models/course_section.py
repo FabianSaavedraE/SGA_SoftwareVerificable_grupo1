@@ -11,6 +11,7 @@ class CourseSection(db.Model):
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
 
     student_courses = db.relationship('StudentCourses', back_populates='course_section')
+    evaluation_types = db.relationship('EvaluationType', backref='course_section', lazy=True)
     
     @property
     def students(self):

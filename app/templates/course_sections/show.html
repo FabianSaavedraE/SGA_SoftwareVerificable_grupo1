@@ -5,14 +5,47 @@
 <p>Semestre: {{course_section.semester}}</p>
 <p>Profesor: {{course_section.teacher}}</p>
 
+<h1>Tipos de Evaluación:</h1>
+
+<a href="{{url_for('evaluation_types.createEvaluationTypeView', course_section_id=course_section.id)}}">Agregar Tipo de Evaluación</a>
+
+{% if course_section.evaluation_types %}
+    <table>
+        <thead>
+            <tr>
+                <td><strong>Topico</strong></td>
+                <td><strong>Tipo de ponderación</strong></td>
+                <td><strong>Ponderación</strong></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evaluation in course_section.evaluation_types %}
+                <tr>
+                    <td>{{evaluation.topic}}</td>
+                    <td>{{evaluation.ponderation_type}}</td>
+                    <td>{{evaluation.ponderation}}</td>
+                    <td>
+                        <a href="{{url_for('evaluation_types.updateEvaluationTypeView', evaluation_type_id=evaluation.id)}}">
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Todavía no hay tipos de evaluaciones para esta sección</p>
+{% endif %}
 
 <h1>Estudiantes:</h1>
+<a href="{{url_for('student_courses.createStudentCourseView', course_section_id=course_section.id)}}">Agregar Estudiante</a>
+
 {% if course_section.student_courses %}
     <table>
         <thead>
             <tr>
-                <td>Nombre</td>
-                <td>Estado</td>
+                <td><strong>Nombre</strong></td>
+                <td><strong>Estado</strong></td>
             </tr>
         </thead>
         <tbody>
@@ -32,7 +65,5 @@
 {% else %}
     <p>No hay alumnos inscritos en esta sección.</p>
 {% endif %}
-
-<a href="{{url_for('student_courses.createStudentCourseView', course_section_id=course_section.id)}}">Agregar Estudiante</a>
 
 <a href="{{url_for('courses.showCourseView', course_id=course_section.course_id)}}">Volver a la lista</a>
