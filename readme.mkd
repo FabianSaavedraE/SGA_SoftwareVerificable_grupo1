@@ -233,7 +233,15 @@ Se modifica course al final pare incluir lo mismo:
     prerequired_by = db.relationship('CoursePrerequisite', back_populates='prerequisite', foreign_keys='CoursePrerequisite.prerequisite_id')
 
 
-Nuevamente, la hiperesfecificidad del asunto es necesaria para que el sistema entienda bien lo que se está haciendo. Se procede con las rutas en un próximo commit.
+Nuevamente, la hiperesfecificidad del asunto es necesaria para que el sistema entienda bien lo que se está haciendo.
+
+El procedimiento estandar que procede es crear las rutas, el controlador y añadir todo en la inicialización de la app de la siguiente forma.
+
+    from app.routes.course_prerequisite_routes import course_prerequisite_bp  
+    app.register_blueprint(course_prerequisite_bp)  
+
+Las rutas y el controlador son triviales -incluyen los métodos estandar de GET, POST, PUT Y DELETE. Es importante recordar de todas formas que están establecidas. Se declaran las vistas para index -todos los pares-, create, delete, edit y show -supongo que es importante para ver un par específico y hacer update, pero quizá pueda optimizarse para mostrar todos los prerequisitos de un ramo. Para esto, habría que filtrar en la base de datos.
+
 
 
 ## Cambios por Chiara Romanini
