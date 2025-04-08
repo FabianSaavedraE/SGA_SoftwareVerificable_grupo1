@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>CAMBAS Landing Page</title>
-     <!-- Styles are defined to look like UANDES Canvas -->
     <style>
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
+            height: 100%;
             font-family: sans-serif;
+        }
+
+        body {
             display: flex;
         }
+
         .sidebar {
             width: 60px;
             background-color: #2f3943;
@@ -33,36 +38,38 @@
             cursor: default;
         }
 
-        /* Main content */
         .main {
             flex-grow: 1;
+            height: 100vh;
+            box-sizing: border-box;
             padding: 20px;
             background-color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .title {
             text-align: center;
             font-weight: bold;
             font-size: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
 
         .grid {
+            flex-grow: 1;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            justify-items: center;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
         }
 
         .box {
             border: 2px solid red;
-            width: 300px;
-            height: 200px;
             padding: 10px;
             box-sizing: border-box;
             overflow-y: auto;
         }
-        
 
         .box h3 {
             text-align: center;
@@ -73,7 +80,7 @@
             list-style: none;
             padding-left: 10px;
             font-size: 14px;
-            height: 110px;
+            max-height: 70px;
             overflow-y: auto;
         }
 
@@ -91,8 +98,11 @@
         .box button:hover {
             background-color: darkred;
         }
-        
-    
+
+        .box.prerequisites {
+            grid-column: span 2;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
@@ -101,26 +111,13 @@
     </div>
 
     <div class="main">
-              
-        <!-- Page information (read below) -->
-
         <div class="title">
-            <h3> Hello world. This it's the landing page for CAMBAS </h3>
-
-            <p>Here there should be a method that checks if user it's logged in or not. In case it's logged in, it should redirect to the correspondant view depending on the user privilege level.</p>
-
-            <p>In case it's not logged in, this should be the log_in page</p>
-
-            <h5>For the purposes of this assignment, there is no need to add logic for user privileges. This it's for crud on students, teachers, courses and tests </h5>
-
-
-
+            <h3>Hello world. This it's the landing page for CAMBAS</h3>
+            <p>Here there should be a method that checks if user it's logged in or not. In case it's logged in, it should redirect to the correspondant view depending on the user privilege level. In case it's not logged in, this should be the log_in page</p>
+            For the purposes of this assignment, there is no need to add logic for user privileges. This it's for crud on students, teachers, courses and tests</p>
         </div>
 
-
         <div class="grid">
-
-                  
             <!-- Estudiantes -->
             <div class="box">
                 {% if students %}
@@ -137,7 +134,6 @@
                 </ul>
             </div>
 
-
             <!-- Cursos -->
             <div class="box">
                 {% if courses %}
@@ -153,12 +149,10 @@
                     {% endfor %}
                 </ul>
             </div>
-            
-
 
             <!-- Secciones -->
             <div class="box">
-                {% if course_sections%}
+                {% if course_sections %}
                 <a href="{{ url_for('course_sections.getSectionsView') }}">
                     <button>Ver secciones</button>
                 </a>
@@ -171,7 +165,6 @@
                     {% endfor %}
                 </ul>
             </div>
-
 
             <!-- Profesores -->
             <div class="box">
@@ -188,10 +181,24 @@
                     {% endfor %}
                 </ul>
             </div>
+
+            <!-- Prerequisitos (ocupa dos columnas) -->
+            <div class="box prerequisites">
+                {% if course_prerequisites %}
+                <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">
+                    <button>Ver prerequisitos</button>
+                </a>
+                {% endif %}
+                <ul>
+                    {% for pairing in course_prerequisites %}
+                        <li>Se requiere aprobar {{ pairing.prerequisite }} para avanzar al curso {{ pairing.course }}</li>
+                    {% else %}
+                        <li>No hay prerequisitos establecidos de antemano</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 
 </body>
 </html>
-
-

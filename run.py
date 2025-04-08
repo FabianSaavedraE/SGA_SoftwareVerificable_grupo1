@@ -4,7 +4,7 @@ from app.models.course import Course #Imports from DB
 from app.models.student import Student #Imports from DB
 from app.models.course_section import CourseSection
 from app.models.teacher import Teacher
-
+from app.models.course_prerequisite import CoursePrerequisite
 
 
 app = create_app()
@@ -15,17 +15,20 @@ app = create_app()
 @app.route('/')
 def landing_page():
 
-    courses = Course.query.all() #Access all course instances as course variable
-    students = Student.query.all() #Access all students instances as students variable
+    #Define variables that will be rendered
+    courses = Course.query.all() 
+    students = Student.query.all() 
     course_sections = CourseSection.query.all()
     teachers= Teacher.query.all()
+    course_prerequisites = CoursePrerequisite.query.all()
 
     return render_template(
         'main.html',
         courses=courses,
         students=students,
         course_sections=course_sections,
-        teachers=teachers
+        teachers=teachers,
+        course_prerequisites=course_prerequisites
     ) #Location is templates/main.html, adds variables to template
 
 
