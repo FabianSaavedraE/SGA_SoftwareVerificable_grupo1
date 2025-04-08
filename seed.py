@@ -1,5 +1,3 @@
-# seed.py
-
 from app import create_app, db
 from app.models.student import Student
 from app.models.course import Course
@@ -9,53 +7,53 @@ from app.models.teacher import Teacher
 app = create_app()
 
 with app.app_context():
-    # Reiniciar base de datos: eliminar y recrear todas las tablas
+    # Re-instantiate the database.
     db.drop_all()
     db.create_all()
-    print("Base de datos reiniciada (tablas eliminadas y recreadas).")
+    print("Database reset (tables dropped and recreated).")
 
-    # Crear 5 estudiantes independientes
-    nuevos_estudiantes = [
+    # Creating 5 students.
+    new_students = [
         Student(first_name="Sofía", last_name="Gómez", email="sofia.gomez@example.com"),
         Student(first_name="Ignacio", last_name="Pérez", email="ignacio.perez@example.com"),
         Student(first_name="Camila", last_name="Rojas", email="camila.rojas@example.com"),
         Student(first_name="Benjamín", last_name="Torres", email="benjamin.torres@example.com"),
         Student(first_name="Fernanda", last_name="Molina", email="fernanda.molina@example.com")
     ]
-    db.session.add_all(nuevos_estudiantes)
+    db.session.add_all(new_students)
     db.session.commit()
-    print("5 estudiantes creados con éxito.")
+    print("5 students created successfully.")
 
-    # Crear 5 cursos
-    nuevos_cursos = [
-        Course(name="Matemáticas I"),
-        Course(name="Programación Avanzada"),
-        Course(name="Física General"),
-        Course(name="Bases de Datos"),
-        Course(name="Inteligencia Artificial")
+    # Creating 5 courses.
+    new_courses = [
+        Course(name="Mathematics I"),
+        Course(name="Advanced Programming"),
+        Course(name="General Physics"),
+        Course(name="Databases"),
+        Course(name="Artificial Intelligence")
     ]
-    db.session.add_all(nuevos_cursos)
+    db.session.add_all(new_courses)
     db.session.commit()
-    print("5 cursos creados con éxito.")
+    print("5 courses created successfully.")
 
-    # Crear un profesor
-    profesor = Teacher(first_name="Claudia", last_name="Valdés", email="claudia.valdes@example.com")
-    db.session.add(profesor)
+    # Create a teacher
+    teacher = Teacher(first_name="Claudia", last_name="Valdés", email="claudia.valdes@example.com")
+    db.session.add(teacher)
     db.session.commit()
-    print("Profesor de ejemplo creado.")
+    print("Example teacher created.")
 
-    # Crear 5 secciones, una por cada curso
-    cursos = Course.query.all()
-    nuevas_secciones = []
-    for i, curso in enumerate(cursos):
-        seccion = CourseSection(
+    # Create 5 sections, one for each course
+    courses = Course.query.all()
+    new_sections = []
+    for i, course in enumerate(courses):
+        section = CourseSection(
             nrc=f"NRC00{i+1}",
             semester="2025-1",
-            course_id=curso.id,
-            teacher_id=profesor.id
+            course_id=course.id,
+            teacher_id=teacher.id
         )
-        nuevas_secciones.append(seccion)
+        new_sections.append(section)
 
-    db.session.add_all(nuevas_secciones)
+    db.session.add_all(new_sections)
     db.session.commit()
-    print("5 secciones creadas con éxito.")
+    print("5 sections created successfully.")
