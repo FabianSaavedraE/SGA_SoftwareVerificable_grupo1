@@ -65,6 +65,11 @@
                         <td>{{evaluation.ponderation}}</td>
                         <td>{{evaluation.optional}}</td>
                         <td>
+                            <a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">
+                                Ver / Asignar notas
+                            </a>
+                        </td>
+                        <td>
                             <a href="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}">
                                 Editar
                             </a>
