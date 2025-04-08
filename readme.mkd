@@ -210,6 +210,30 @@ La vista de main.html entonces cuenta con 4 cajas en una grid con botones respec
 
 Box posee el atributo que permite deslizar dentro de la estructura en caso de que haya sobrepasado el tamaño apropiado para el contenido. El botón lleva a la vista respectiva de estudiantes, y se muestran los estudiantes. Se añaden los ifs para no generar un botón inutil en caso de que no hayan estudiantes.
 
+<h4> Lo que respecta a course_prequesites </h4>
+
+En lo que respecta a course_prerequisites, se crea de la siguiente forma. Esto es siguiendo la estructura que definió Chiara más abajo con algunas modificaciones.
+
+from app import db
+
+        class CoursePrerequisite(db.Model):
+        __tablename__ = 'course_prerequisites'
+
+        course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), primary_key=True)
+        prerequisite_id = db.Column(db.Integer, db.ForeignKey('courses.id'), primary_key=True)
+
+        course = db.relationship('Course', foreign_keys=[course_id], back_populates='prerequisites')
+        prerequisite = db.relationship('Course', foreign_keys=[prerequisite_id], back_populates='prerequired_by')
+
+En primer lugar, al referenciar la misma tabla, cambian algunas cosas. La referencia a foreign_key al definir las relaciones con db.relationship es necesaria (ya que apuntan a la misma tabla), si no SQL Alchemy crashea. 
+
+Se modifica course al final pare incluir lo mismo:
+
+    prerequisites = db.relationship('CoursePrerequisite', back_populates='course', foreign_keys='CoursePrerequisite.course_id')
+    prerequired_by = db.relationship('CoursePrerequisite', back_populates='prerequisite', foreign_keys='CoursePrerequisite.prerequisite_id')
+
+
+
 ## Cambios por Chiara Romanini
 
 ### Models

@@ -3,6 +3,7 @@
 from app import create_app, db
 from app.models.course import Course
 from app.models.student import Student
+from app.models.course_prerequisite import CoursePrerequisite
 
 #The app needs to be created for consultations
 app = create_app()
@@ -14,7 +15,7 @@ with app.app_context():
     print("Cursos existentes:")
     cursos = Course.query.all()
     for curso in cursos:
-        print(f"- {curso.id}: {curso.nombre}") 
+        print(f"- {curso.id}: {curso.name}") 
 
     #Query for all existing students:
         
@@ -24,3 +25,10 @@ with app.app_context():
         print(f"- {est.id}: {est.first_name}, {est.last_name}")  
 
 
+    #Query for all prerequisite pairings: (Im debugging this rn, love, vicente acevedo.)
+        
+    print("\nPares de prerequisitos:")
+    prerequisites = CoursePrerequisite.query.all()
+    for prerequisite in prerequisites:
+        print(f"{prerequisite.id}")  
+    
