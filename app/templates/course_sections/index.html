@@ -1,28 +1,127 @@
-<h1>Secciones</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secciones</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
 
-<table>
-    <thead>
-        <tr>
-            <th>NRC</th>
-            <th>Semestre</th>
-            <th>Curso</th>
-            <th>Profesor</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for section in sections %}
-            <tr>
-                <td>{{ section.nrc }}</td>
-                <td>{{ section.semester }}</td>
-                <td>{{ section.course.name }}</td>
-                <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
-                <td>
-                  
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        body {
+            display: flex;
+        }
 
-<a href="/" class="btn btn-primary">Go Back</a>
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .main {
+            flex-grow: 1;
+            height: 100vh;
+            padding: 20px;
+            background-color: white;
+            overflow: auto;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid red;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            color: red;
+        }
+
+        a.button {
+            display: inline-block;
+            background-color: red;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        a.button:hover {
+            background-color: darkred;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <!-- Sidebar vacía por ahora -->
+    </div>
+
+    <div class="main">
+        <div class="title">Secciones</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>NRC</th>
+                    <th>Semestre</th>
+                    <th>Curso</th>
+                    <th>Profesor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for section in sections %}
+                    <tr>
+                        <td>{{ section.nrc }}</td>
+                        <td>{{ section.semester }}</td>
+                        <td>{{ section.course.name }}</td>
+                        <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
+                        <td>
+                            <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="button">Ver</a>
+                            <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="button">Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/" class="btn-back">Volver</a>
+    </div>
+
+</body>
+</html>
