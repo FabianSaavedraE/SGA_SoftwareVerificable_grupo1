@@ -30,5 +30,5 @@ with app.app_context():
     print("\nPares de prerequisitos:")
     prerequisites = CoursePrerequisite.query.all()
     for prerequisite in prerequisites:
-        print(f"{prerequisite.id}")  
+        print(f"{prerequisite.course.name} requires {prerequisite.prerequisite.name}")  
     

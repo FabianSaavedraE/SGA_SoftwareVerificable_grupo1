@@ -249,6 +249,34 @@ El procedimiento estandar que procede es crear las rutas, el controlador y añad
 
 Las rutas y el controlador son triviales -incluyen los métodos estandar de GET, POST, PUT Y DELETE. Es importante recordar de todas formas que están establecidas. Se declaran las vistas para index -todos los pares-, create, delete, edit y show -supongo que es importante para ver un par específico y hacer update, pero quizá pueda optimizarse para mostrar todos los prerequisitos de un ramo. Para esto, habría que filtrar en la base de datos.
 
+El método DELETE fue dificil de hilar porque requiere pasar muchas veces la dupla de prerequisito y curso. El método para indexar todo fue más fácil -sorprendentemente-, para el frontend solo se pasa un diccionario de la siguiente forma:
+
+   course_prerequisites = CoursePrerequisite.query.all()
+
+    grouped_prerequisites = {}
+
+    for pair in course_prerequisites:
+        course = pair.course
+        prereq = pair.prerequisite
+
+        if course.id not in grouped_prerequisites:
+            grouped_prerequisites[course.id] = {
+                "name": course.name,
+                "prerequisites": []
+                }
+
+        grouped_prerequisites[course.id]["prerequisites"].append({
+            "id": prereq.id,
+            "name": prereq.name
+        })
+
+Esto es un JSON con estructura
+
+        Curso{
+                prerequisito1,prerequisito2...prerequisiton
+        }
+
+Es decir, solo una entrada por curso, y en cada entrada una lista con los prerequisitos. Facilita así el filtrado y permite instanciar solo un curso con TODOS sus prerequisitos respectivos. Tomó sopresivamente poco hacerlo.
 
 
 ## Cambios por Chiara Romanini

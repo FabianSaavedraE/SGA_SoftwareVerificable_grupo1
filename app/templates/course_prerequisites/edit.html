@@ -1,2 +1,35 @@
-Página en construcción
-<a href="/" class="btn btn-primary">Go Back</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Prerrequisitos de Curso</title>
+</head>
+<body>
+
+    <h1>Editar Prerrequisitos de: {{ course.name }}</h1>
+    <p><a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">Volver a la lista de cursos</a></p>
+
+    <h2>Prerrequisitos actuales</h2>
+    <form action="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course.id) }}" method="POST">
+        <ul>
+            {% for prereq in prerequisites %}
+                <li>
+                    <strong>{{ prereq.prerequisite.name }}</strong>
+                    <!-- Formulario para eliminar un prerequisito -->
+                    <button type="submit" name="prerequisite_ids" value="{{ prereq.prerequisite.id }}">Eliminar</button>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Añadir un nuevo prerrequisito</h3>
+        <label for="new_prerequisite">Selecciona un curso como prerrequisito:</label>
+        <select name="new_prerequisite" id="new_prerequisite">
+            {% for prereq in available_prereqs %}
+                <option value="{{ prereq.id }}">{{ prereq.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Añadir Prerrequisito</button>
+    </form>
+
+</body>
+</html>

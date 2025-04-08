@@ -1,2 +1,60 @@
-Página en construcción
-<a href="/" class="btn btn-primary">Go Back</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Prerrequisitos</title>
+    <script>
+        function addPrerequisiteField() {
+            const container = document.getElementById('prerequisite-container');
+            const select = document.createElement('select');
+            select.name = 'prerequisite_ids';
+            select.required = true;
+
+            // Copiar opciones desde el primer select existente
+            const baseSelect = document.querySelector('select.prerequisite-select');
+            select.classList.add('prerequisite-select');
+
+            for (let option of baseSelect.options) {
+                const clone = option.cloneNode(true);
+                select.appendChild(clone);
+            }
+
+            container.appendChild(document.createElement('br'));
+            container.appendChild(select);
+        }
+    </script>
+</head>
+<body>
+
+    <h1>Crear Prerrequisitos para un Curso</h1>
+
+    <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">← Volver a la lista</a>
+
+    <form method="POST">
+        <label for="course_id"><strong>Curso:</strong></label><br>
+        <select name="course_id" id="course_id" required>
+            {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.name }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <div id="prerequisite-container">
+            <label><strong>Prerrequisito(s):</strong></label><br>
+            <select name="prerequisite_ids" class="prerequisite-select" required>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <br>
+        <button type="button" onclick="addPrerequisiteField()">Añadir otro prerrequisito</button>
+        <br><br>
+
+        <button type="submit">Guardar prerrequisitos</button>
+    </form>
+
+</body>
+</html>
