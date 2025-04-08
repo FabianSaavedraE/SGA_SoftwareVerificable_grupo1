@@ -1,6 +1,8 @@
 <h2>Evaluación: {{ evaluation.name }}</h2>
-<p>Tipo: {{ evaluation.evaluation_type.name }}</p>
-<p>Sección: {{ evaluation.evaluation_type.course_section.name }}</p>
+<p>Tipo: {{ evaluation_type.topic }}</p>
+<p>Sección: {{ course_section.nrc }}</p>
+
+<p>Debug: {{ evaluation.id }}</p>
 
 <table>
     <tr>
@@ -8,25 +10,27 @@
         <th>Nota</th>
         <th>Acción</th>
     </tr>
-    {% for student in students %}
-    <tr>
-        <td>{{ student.name }}</td>
-        <td>
-            {% if grades.get(student.id) is not none %}
-                {{ grades[student.id] }}
-            {% else %}
-                <em>No registrada</em>
-            {% endif %}
-        </td>
-        <td>
-            <a href="{{ url_for('student_evaluations.updateStudentEvaluationView', student_id=student.id, evaluation_id=evaluation.id) }}">
-                {% if grades.get(student.id) is not none %}
-                    Editar nota
+    {% for student_course in students %}
+        <tr>
+            <td>{{ student_course.student.first_name }} {{ student_course.student.last_name }}</td>
+            <td>
+                {% if grades.get(student_course.student.id) is not none %}
+                    {{ grades[student_course.student.id] }}
                 {% else %}
-                    Ingresar nota
+                    <em>No registrada</em>
                 {% endif %}
-            </a>
-        </td>
-    </tr>
+            </td>
+            <td>
+                {% if grades.get(student_course.student.id) is not none %}
+                    <a href="{{ url_for('student_evaluations.updateStudentEvaluationView', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
+                        Editar nota
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('student_evaluations.createStudentEvaluationView', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
+                        Ingresar nota
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
     {% endfor %}
 </table>

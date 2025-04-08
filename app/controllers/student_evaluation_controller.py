@@ -20,7 +20,7 @@ def updateStudentEvaluation(student_evaluation, data):
     if not student_evaluation:
         return None
     
-    student_evaluation.state = data.get('state', student_evaluation.state)
+    student_evaluation.grade = data.get('grade', student_evaluation.grade)
     
     db.session.commit()
     return student_evaluation

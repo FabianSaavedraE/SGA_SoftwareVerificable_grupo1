@@ -1,0 +1,39 @@
+<h1>Editar nota del estudiante</h1>
+<h2>Evaluación: {{ evaluation.name }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Estudiante</th>
+            <th>Nota actual</th>
+            <th>Nueva nota</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        <form method="POST">
+            <tr>
+                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                <td>{{ student_evaluation.grade }}</td>
+                <td>
+                    <input 
+                        type="number" 
+                        name="grade" 
+                        step="0.01" 
+                        min="0" 
+                        max="100" 
+                        value="{{ student_evaluation.grade }}" 
+                        required
+                    >
+                </td>
+                <td>
+                    <button type="submit">Actualizar nota</button>
+                </td>
+            </tr>
+        </form>
+    </tbody>
+</table>
+
+<br>
+
+<a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">← Volver a la evaluación</a>

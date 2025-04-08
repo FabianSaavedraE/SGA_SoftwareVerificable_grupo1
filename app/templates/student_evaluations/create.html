@@ -1,0 +1,41 @@
+<h1>Asignar nota a estudiante</h1>
+<h2>Evaluación: {{ evaluation.name }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Estudiante</th>
+            <th>Nota</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ student.first_name }} {{ student.last_name }}</td>
+            {% if student_evaluation %}
+                <td>{{ student_evaluation.grade }}</td>
+                <td><span>Nota registrada</span></td>
+            {% else %}
+                <form method="POST">
+                    <td>
+                        <input 
+                            type="number" 
+                            name="grade" 
+                            step="0.01" 
+                            min="0" 
+                            max="100" 
+                            required
+                        >
+                    </td>
+                    <td>
+                        <button type="submit">Guardar nota</button>
+                    </td>
+                </form>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>
+
+<br>
+
+<a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">← Volver a la evaluación</a>
