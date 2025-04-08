@@ -10,6 +10,7 @@ class Evaluation(db.Model):
     optional = db.Column(db.String(50), nullable=True)
 
     evaluation_type_id = db.Column(db.Integer, db.ForeignKey('evaluation_types.id'), nullable=False)
+    student_evaluations = db.relationship('StudentEvaluations', back_populates='evaluation')
 
     def __repr__(self):
         return f"<{self.name}>"

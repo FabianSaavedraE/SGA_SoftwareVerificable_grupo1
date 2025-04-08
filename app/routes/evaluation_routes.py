@@ -33,3 +33,19 @@ def updateEvaluationView(evaluation_id):
         return redirect(url_for('course_sections.showSectionView', course_section_id=evaluation.evaluation_type.course_section_id))
     
     return render_template('evaluations/edit.html', evaluation=evaluation)
+
+@evaluation_bp.route('/<int:evaluation_id>/show', methods=['GET'])
+def showEvaluationView(evaluation_id):
+    evaluation = getEvaluation(evaluation_id)
+    if not evaluation:
+        return redirect(url_for('course_sections.showSectionView', course_section_id=evaluation.evaluation_type.course_section_id))
+
+    course_section = evaluation.evaluation_type.course_section
+    students = course_section.students
+
+    grades = {
+        (se.student_id): se.grade
+        for se in evaluation.student_evaluations
+    }
+
+    return render_template('evaluations/show.html', evaluation=evaluation, students=students, grades=grades)

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for
 from app.models.course import Course
-from app.controllers.course_controllers import getAllCourses, getCourse, createCourse, updateCourse, deleteCourse
+from app.controllers.course_controller import getAllCourses, getCourse, createCourse, updateCourse, deleteCourse
 from app import db
 
 course_bp = Blueprint('courses', __name__, url_prefix='/courses')

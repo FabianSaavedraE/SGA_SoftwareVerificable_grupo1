@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for
 from app.models.course_section import CourseSection
 from app.controllers.course_section_controller import getAllSections, getSection, createSection, updateSection
-from app.controllers.course_controllers import getCourse
+from app.controllers.course_controller import getCourse
 from app.controllers.teacher_controller import getAllTeachers
 from app import db
 

@@ -32,7 +32,7 @@ La arquitectura está diseñada para ser mantenible y escalable, utilizando patr
 
 2. Definir un archivo .env con la variable de base de datos:
 
-        DATABASE_URI=sqlite:///dev.db #Usamos SQLITe por lo que este es el que está predefinido
+        DATABASE_URI=mysql://USUARIO:CONTRASEÑA@localhost:3306/NOMBRE_DB #Remplazar la información de USUARIO, CONTRASEÑA y NOMBRE_DB con la información de la bdd de MySQL contruida en la maquina local
 
 3. Inicializar la base de datos en consola
 
