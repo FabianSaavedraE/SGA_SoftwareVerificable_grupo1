@@ -1,0 +1,36 @@
+<h2>Evaluación: {{ evaluation.name }}</h2>
+<p>Tipo: {{ evaluation_type.topic }}</p>
+<p>Sección: {{ course_section.nrc }}</p>
+
+<p>Debug: {{ evaluation.id }}</p>
+
+<table>
+    <tr>
+        <th>Estudiante</th>
+        <th>Nota</th>
+        <th>Acción</th>
+    </tr>
+    {% for student_course in students %}
+        <tr>
+            <td>{{ student_course.student.first_name }} {{ student_course.student.last_name }}</td>
+            <td>
+                {% if grades.get(student_course.student.id) is not none %}
+                    {{ grades[student_course.student.id] }}
+                {% else %}
+                    <em>No registrada</em>
+                {% endif %}
+            </td>
+            <td>
+                {% if grades.get(student_course.student.id) is not none %}
+                    <a href="{{ url_for('student_evaluations.updateStudentEvaluationView', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
+                        Editar nota
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('student_evaluations.createStudentEvaluationView', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
+                        Ingresar nota
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
