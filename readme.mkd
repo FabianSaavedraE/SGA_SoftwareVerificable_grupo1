@@ -233,6 +233,8 @@ Se modifica course al final pare incluir lo mismo:
     prerequired_by = db.relationship('CoursePrerequisite', back_populates='prerequisite', foreign_keys='CoursePrerequisite.prerequisite_id')
 
 
+Nuevamente, la hiperesfecificidad del asunto es necesaria para que el sistema entienda bien lo que se está haciendo. Se procede con las rutas en un próximo commit.
+
 
 ## Cambios por Chiara Romanini
 
