@@ -306,6 +306,18 @@ Es decir, solo una entrada por curso, y en cada entrada una lista con los prereq
 
 Se modifica la función de update del CRUD de Course_prerequisites. Para esto, ahora recibe los parámetros de añadir elementos en forma de una lista -en vez de una sola entrada- lo que permite editar un curso y añadirle más de un curso como prerequisito sin generar conflictos en la base de datos.
 
+                
+        @student_bp.route('/delete/<int:student_id>', methods=['POST']) #CAMBIOS AQUÍ
+        def deleteStudentView(student_id):
+        student = getStudent(student_id)
+        if student:
+                deleteStudent(student)
+                return redirect(url_for('students.getStudentsView'))
+
+        return redirect(url_for('students.getStudentsView'))
+
+Modifiqué también el entrutamiento de DELETE para que cambiara su nombre, porque si no, se confunde al tener el mismo que UPDATE y se llama a este por jerarquía en el órden de código. Haciendo esto se admite el método delete específico para borrar.
+
 ## Cambios por Chiara Romanini
 
 ### Models
