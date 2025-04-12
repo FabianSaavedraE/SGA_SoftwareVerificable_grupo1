@@ -3,58 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <title>Crear Prerrequisitos</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
+
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .main {
+            flex-grow: 1;
+            height: 100vh;
+            box-sizing: border-box;
+            padding: 20px;
+            background-color: white;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            border: 2px solid red;
+            padding: 20px;
+            box-sizing: border-box;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn, .go-back {
+            padding: 8px 12px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn:hover, .go-back:hover {
+            background-color: darkred;
+        }
+
+        .go-back {
+            margin-top: 15px;
+            background-color: #2f3943;
+        }
+
+        .go-back:hover {
+            background-color: #1c2229;
+        }
+
+        form button[type="button"] {
+            background-color: #555;
+        }
+
+        form button[type="button"]:hover {
+            background-color: #333;
+        }
+    </style>
+
     <script>
         function addPrerequisiteField() {
             const container = document.getElementById('prerequisite-container');
             const select = document.createElement('select');
             select.name = 'prerequisite_ids';
             select.required = true;
-
-            // Copiar opciones desde el primer select existente
-            const baseSelect = document.querySelector('select.prerequisite-select');
             select.classList.add('prerequisite-select');
 
+            const baseSelect = document.querySelector('select.prerequisite-select');
             for (let option of baseSelect.options) {
                 const clone = option.cloneNode(true);
                 select.appendChild(clone);
             }
 
-            container.appendChild(document.createElement('br'));
             container.appendChild(select);
         }
     </script>
 </head>
 <body>
 
-    <h1>Crear Prerrequisitos para un Curso</h1>
+    <div class="sidebar">
+    </div>
 
-    <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">← Volver a la lista</a>
+    <div class="main">
+        <div class="title">Crear Prerrequisitos</div>
 
-    <form method="POST">
-        <label for="course_id"><strong>Curso:</strong></label><br>
-        <select name="course_id" id="course_id" required>
-            {% for course in courses %}
-                <option value="{{ course.id }}">{{ course.name }}</option>
-            {% endfor %}
-        </select>
+        <div class="box">
+            <form method="POST">
+                <label for="course_id">Curso:</label>
+                <select name="course_id" id="course_id" required>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}">{{ course.name }}</option>
+                    {% endfor %}
+                </select>
 
-        <br><br>
+                <div id="prerequisite-container">
+                    <label>Prerrequisito(s):</label>
+                    <select name="prerequisite_ids" class="prerequisite-select" required>
+                        {% for course in courses %}
+                            <option value="{{ course.id }}">{{ course.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-        <div id="prerequisite-container">
-            <label><strong>Prerrequisito(s):</strong></label><br>
-            <select name="prerequisite_ids" class="prerequisite-select" required>
-                {% for course in courses %}
-                    <option value="{{ course.id }}">{{ course.name }}</option>
-                {% endfor %}
-            </select>
+                <button type="button" onclick="addPrerequisiteField()">Añadir otro prerrequisito</button>
+                <br><br>
+                <button type="submit" class="btn">Guardar prerrequisitos</button>
+            </form>
+
+            <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}" class="go-back">← Volver a la lista</a>
         </div>
-
-        <br>
-        <button type="button" onclick="addPrerequisiteField()">Añadir otro prerrequisito</button>
-        <br><br>
-
-        <button type="submit">Guardar prerrequisitos</button>
-    </form>
+    </div>
 
 </body>
 </html>
+
