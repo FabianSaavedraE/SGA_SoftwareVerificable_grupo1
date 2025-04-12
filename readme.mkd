@@ -306,7 +306,6 @@ Es decir, solo una entrada por curso, y en cada entrada una lista con los prereq
 
 Se modifica la función de update del CRUD de Course_prerequisites. Para esto, ahora recibe los parámetros de añadir elementos en forma de una lista -en vez de una sola entrada- lo que permite editar un curso y añadirle más de un curso como prerequisito sin generar conflictos en la base de datos.
 
-
 ## Cambios por Chiara Romanini
 
 ### Models

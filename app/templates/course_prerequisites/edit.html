@@ -145,7 +145,7 @@
                     {% for prereq in prerequisites %}
                         <li>
                             {{ prereq.prerequisite.name }}
-                            <button type="submit" name="prerequisite_ids" value="{{ prereq.prerequisite.id }}" class="btn" style="background-color:#555; margin-left:10px;">Eliminar</button>
+                            <button type="submit" name="delete_prerequisite_id" value="{{ prereq.prerequisite.id }}">Eliminar</button>
                         </li>
                     {% endfor %}
                 </ul>

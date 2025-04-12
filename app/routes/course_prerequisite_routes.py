@@ -52,6 +52,14 @@ def updateCoursePrerequisiteView(course_id):
         return jsonify({'message': 'Course not found'}), 404
 
     if request.method == 'POST':
+        if 'delete_prerequisite_id' in request.form:
+            to_delete = request.form['delete_prerequisite_id']
+            pair = CoursePrerequisite.query.get((course_id, int(to_delete)))
+            if pair:
+                db.session.delete(pair)
+            db.session.commit()
+            return redirect(url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course_id))
+    
         ids_to_delete = request.form.getlist('prerequisite_ids')
         for prereq_id in ids_to_delete:
             pair = CoursePrerequisite.query.get((course_id, int(prereq_id)))

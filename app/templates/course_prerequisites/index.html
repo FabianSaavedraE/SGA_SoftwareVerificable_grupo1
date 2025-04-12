@@ -120,6 +120,7 @@
                         <tr>
                             <th>Curso</th>
                             <th>Prerrequisitos</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,14 +132,15 @@
                                         {% for prereq in data['prerequisites'] %}
                                             <li>
                                                 {{ prereq['name'] }}
-                                                <a href="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course_id, prerequisite_id=prereq['id']) }}" class="add-btn">Editar</a>
-
                                                 <form action="{{ url_for('course_prerequisites.deleteCoursePrerequisiteView', course_id=course_id, prerequisite_id=prereq['id']) }}" method="POST" style="display:inline;">
                                                     <button type="submit">Eliminar</button>
                                                 </form>
                                             </li>
                                         {% endfor %}
                                     </ul>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course_id) }}" class="add-btn">Editar</a>
                                 </td>
                             </tr>
                         {% endfor %}
