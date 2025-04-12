@@ -1,12 +1,15 @@
-<h1>Crear Seccion para el curso {{course.name}}</h1>
+<h1>Crear Seccion para el curso {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
 
-<form action="{{url_for('course_sections.createSectionView', course_id=course.id)}}" method="POST">
+<form action="{{url_for('course_sections.createSectionView', course_instance_id=course_instance.id)}}" method="POST">
     <label for="nrc">NRC:</label>
     <input type="text" id="nrc" name="nrc" required>
     <br>
 
-    <label for="semester">Semestre:</label>
-    <input type="text" id="semester" name="semester" required>
+    <label for="overall_ponderation_type">Tipo de Ponderación para la nota final:</label>
+    <select name="overall_ponderation_type" id="overall_ponderation_type" required>
+        <option value="Porcentaje">Porcentaje</option>
+        <option value="Peso">Peso</option>
+    </select>
     <br>
 
     <label for="teacher_id">Profesor:</label>

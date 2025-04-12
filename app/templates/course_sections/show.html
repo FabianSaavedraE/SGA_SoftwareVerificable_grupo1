@@ -1,8 +1,7 @@
 <h1>Detalles de la sección</h1>
 
-<p>Curso: {{course_section.course}}</p>
+<p>Curso: {{course_section.course_instance.course.name}} {{course_section.course_instance.year}}-{{course_section.course_instance.semester}}</p>
 <p>NRC: {{course_section.nrc}}</p>
-<p>Semestre: {{course_section.semester}}</p>
 <p>Profesor: {{course_section.teacher}}</p>
 
 <h1>Tipos de Evaluación:</h1>
@@ -41,48 +40,48 @@
 {% endif %}
 
 <h1>Evaluaciones:</h1>
-
-{% for evaluation_type in course_section.evaluation_types %}
-    <h3>{{evaluation_type.topic}}</h3>
-    <p>Ponderación: {{evaluation_type.ponderation}}</p>
-
-
-    {% if evaluation_type.evaluations %}
-        <table>
-            <thead>
-                <tr>
-                    <td><strong>Nombre</strong></td>
-                    <td><strong>Tipo de ponderación</strong></td>
-                    <td><strong>Ponderación</strong></td>
-                    <td><strong>Obligatoria</strong></td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for evaluation in evaluation_type.evaluations %}
+{% if course_section.evaluation_types %}
+    {% for evaluation_type in course_section.evaluation_types %}
+        <h3>{{evaluation_type.topic}}</h3>
+        <p>Ponderación: {{evaluation_type.ponderation}}</p>
+        {% if evaluation_type.evaluations %}
+            <table>
+                <thead>
                     <tr>
-                        <td>{{evaluation.name}}</td>
-                        <td>{{evaluation.ponderation_type}}</td>
-                        <td>{{evaluation.ponderation}}</td>
-                        <td>{{evaluation.optional}}</td>
-                        <td>
-                            <a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">
-                                Ver / Asignar notas
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}">
-                                Editar
-                            </a>
-                        </td>
+                        <td><strong>Nombre</strong></td>
+                        <td><strong>Tipo de ponderación</strong></td>
+                        <td><strong>Ponderación</strong></td>
+                        <td><strong>Obligatoria</strong></td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No hay evaluaciones para este tipo.</p>
-    {% endif %}
-{% endfor %}
-
+                </thead>
+                <tbody>
+                    {% for evaluation in evaluation_type.evaluations %}
+                        <tr>
+                            <td>{{evaluation.name}}</td>
+                            <td>{{evaluation.ponderation_type}}</td>
+                            <td>{{evaluation.ponderation}}</td>
+                            <td>{{evaluation.optional}}</td>
+                            <td>
+                                <a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">
+                                    Ver / Asignar notas
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}">
+                                    Editar
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay evaluaciones para este tipo.</p>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p>No hay evaluaciones. Agregar primero un tipo de Evaluación</p>
+{% endif %}
 
 <h1>Estudiantes:</h1>
 <a href="{{url_for('student_courses.createStudentCourseView', course_section_id=course_section.id)}}">Agregar Estudiante</a>
@@ -113,4 +112,4 @@
     <p>No hay alumnos inscritos en esta sección.</p>
 {% endif %}
 
-<a href="{{url_for('courses.showCourseView', course_id=course_section.course_id)}}">Volver a la lista</a>
+<a href="{{url_for('course_instances.showCourseInstanceView', course_instance_id=course_section.course_instance.id)}}">Volver a la lista</a>

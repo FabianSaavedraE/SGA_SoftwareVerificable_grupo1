@@ -4,7 +4,6 @@
     <thead>
         <tr>
             <th>NRC</th>
-            <th>Semestre</th>
             <th>Curso</th>
             <th>Profesor</th>
             <th>Acciones</th>
@@ -14,8 +13,7 @@
         {% for section in sections %}
             <tr>
                 <td>{{ section.nrc }}</td>
-                <td>{{ section.semester }}</td>
-                <td>{{ section.course.name }}</td>
+                <td>{{ section.course_instance.course.name }} {{section.course_instance.year}}-{{section.course_instance.semester}}</td>
                 <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
                 <td>
                   
