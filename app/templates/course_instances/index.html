@@ -1,0 +1,25 @@
+<h1>Instancias de cursos</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>year</th>
+            <th>semester</th>
+            <th>Curso</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in course_instances %}
+            <tr>
+                <td>{{ instance.year }}</td>
+                <td>{{ instance.semester }}</td>
+                <td>{{ instanse.course.name }}</td>
+                <td>
+                  
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="/" class="btn btn-primary">Go Back</a>

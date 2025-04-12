@@ -1,0 +1,23 @@
+<h1>Detalles de la instancia {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
+
+<h1>Secciones:</h1>
+{% if course_instance.sections %}
+    <table>
+        <thead>
+            <tr>
+                <th>NRC</th>
+                <th>Profesor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in course_instance.sections %}
+                <tr>
+                    <td>{{section.nrc}}</td>
+                    <td>{{section.teacher}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Esta instancia no tiene secciones.</p>
+{% endif %}

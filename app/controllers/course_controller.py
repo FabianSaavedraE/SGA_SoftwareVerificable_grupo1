@@ -11,7 +11,9 @@ def getCourse(course_id):
 
 def createCourse(data):
     new_course = Course(
-        name = data.get('name')
+        name = data.get('name'),
+        description = data.get('description'),
+        code = data.get('code')
     )
     db.session.add(new_course)
     db.session.commit()

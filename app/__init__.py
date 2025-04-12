@@ -52,4 +52,7 @@ def create_app():
     from app.routes.course_prerequisite_routes import course_prerequisite_bp  
     app.register_blueprint(course_prerequisite_bp)  
 
+    from app.routes.course_instance_routes import course_instance_bp
+    app.register_blueprint(course_instance_bp)
+
     return app
