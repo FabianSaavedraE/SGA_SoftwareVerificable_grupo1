@@ -14,6 +14,7 @@ def create_app():
     migrate.init_app(app, db)   
 
     from app.models import course_section
+    from app.models import course_instance
     from app.models import student_course
     from app.models import evaluation_type
     from app.models import evaluation

@@ -7,7 +7,7 @@ class CourseSection(db.Model):
     nrc = db.Column(db.String(50), nullable=False)
     semester = db.Column(db.String(50), nullable=False)
 
-    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    course_instance_id = db.Column(db.Integer, db.ForeignKey('course_instances.id'), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
 
     student_courses = db.relationship('StudentCourses', back_populates='course_section')
