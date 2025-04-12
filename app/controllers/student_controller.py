@@ -7,6 +7,7 @@ def getAllStudents():
 
 def getStudent(student_id):
     student = Student.query.get(student_id)
+    print(student)
     return student
 
 def createStudent(data):
@@ -32,6 +33,7 @@ def updateStudent(student, data):
     return student
 
 def deleteStudent(student):
+    print(student)
     if not student:
         return False
 
