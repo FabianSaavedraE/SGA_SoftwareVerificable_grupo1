@@ -3,6 +3,8 @@ from app.models.student_course import StudentCourses
 from app.controllers.student_course_controller import createStudentCourse, getStudentCourse, updateStudentCourse
 from app.controllers.course_section_controller import getSection
 from app.controllers.student_controller import getAllStudents
+from sqlalchemy import or_
+from app.models.student import Student
 
 from app import db
 
@@ -11,7 +13,6 @@ student_course_bp = Blueprint('student_courses', __name__, url_prefix='/student_
 @student_course_bp.route('/create/<int:course_section_id>', methods=['GET', 'POST'])
 def createStudentCourseView(course_section_id):
     section = getSection(course_section_id)
-    students = getAllStudents()
     
     if not section:
         return redirect(url_for('course_sections.showSectionView', course_id=section.course_id))
@@ -22,6 +23,18 @@ def createStudentCourseView(course_section_id):
         data['state'] = 'enrolled'
         createStudentCourse(data)
         return redirect(url_for('student_courses.createStudentCourseView', course_section_id=course_section_id))
+
+    # Logica para el buscador
+    query = request.args.get('q')
+    if query:
+        students = Student.query.filter(
+            or_(
+                Student.first_name.ilike(f"%{query}%"),
+                Student.last_name.ilike(f"%{query}%")
+            )
+        ).all()
+    else:
+        students = []
 
     return render_template('student_courses/create.html', section=section, students=students)
 
