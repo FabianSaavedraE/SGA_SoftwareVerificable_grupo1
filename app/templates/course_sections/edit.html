@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -82,34 +83,30 @@
 
 <div class="main">
 
-    <h1>Editar Sección {{ course_section.nrc }}</h1>
+<h1>Editar Sección {{course_section.nrc}}</h1>
 
-    <form action="{{ url_for('course_sections.updateSectionView', course_section_id=course_section.id) }}" method="POST">
-        <label for="nrc">NRC:</label>
-        <input type="text" id="nrc" name="nrc" value="{{ course_section.nrc }}" required>
-        <br>
+<form action="{{url_for('course_sections.updateSectionView', course_section_id=course_section.id)}}" method="POST">
+    <label for="nrc">Nrc:</label>
+    <input type="text" id="nrc" name="nrc" value="{{course_section.nrc}}" required>
+    <br>
 
-        <label for="semester">Semestre:</label>
-        <input type="text" id="semester" name="semester" value="{{ course_section.semester }}" required>
-        <br>
+    <label for="overall_ponderation_type">Tipo de Ponderación de las Evaluaciones para la nota final:</label>
+    <select name="overall_ponderation_type" id="overall_ponderation_type" required>
+        <option value="Porcentaje" {% if course_section.overall_ponderation_type == 'Porcentaje' %}selected{% endif %}>Porcentaje</option>
+    <option value="Peso" {% if course_section.overall_ponderation_type == 'Peso' %}selected{% endif %}>Peso</option>
+    </select>
+    <br>
 
-        <label for="teacher_id">Profesor:</label>
-        <select name="teacher_id" id="teacher_id" required>
-            {% for teacher in teachers %}
-                <option value="{{ teacher.id }}" 
-                    {% if teacher.id == course_section.teacher_id %}selected{% endif %}>
-                    {{ teacher.first_name }} {{ teacher.last_name }}
-                </option>
-            {% endfor %}
-        </select>
-        <br>
+    <label for="teacher_id">Profesor:</label>
+    <select name="teacher_id" id="teacher_id" required>
+        {% for teacher in teachers %}
+            <option value="{{teacher.id}}"
+                {% if teacher.id == course_section.teacher_id %}selected{% endif %}>
+                {{teacher.first_name}} {{teacher.last_name}}
+            </option>
+        {% endfor %} 
+    </select>
+    <br>
 
-        <button type="submit">Actualizar Sección</button>
-    </form>
-
-    <a href="{{ url_for('courses.showCourseView', course_id=course_section.course_id) }}" class="btn-back">Volver al curso</a>
-
-</div>
-
-</body>
-</html>
+    <button type="submit">Actualizar Sección</button>
+</form>

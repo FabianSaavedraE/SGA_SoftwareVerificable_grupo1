@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -76,37 +77,35 @@
         }
     </style>
 </head>
+  
 <body>
 
 <div class="sidebar"></div>
 
 <div class="main">
 
-    <h1>Crear Sección para el curso {{ course.name }}</h1>
 
-    <form action="{{ url_for('course_sections.createSectionView', course_id=course.id) }}" method="POST">
-        <label for="nrc">NRC:</label>
-        <input type="text" id="nrc" name="nrc" required>
-        <br>
+<h1>Crear Seccion para el curso {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
 
-        <label for="semester">Semestre:</label>
-        <input type="text" id="semester" name="semester" required>
-        <br>
+<form action="{{url_for('course_sections.createSectionView', course_instance_id=course_instance.id)}}" method="POST">
+    <label for="nrc">NRC:</label>
+    <input type="text" id="nrc" name="nrc" required>
+    <br>
 
-        <label for="teacher_id">Profesor:</label>
-        <select name="teacher_id" id="teacher_id" required>
-            {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">{{ teacher.first_name }} {{ teacher.last_name }}</option>
-            {% endfor %}
-        </select>
-        <br>
+    <label for="overall_ponderation_type">Tipo de Ponderación para la nota final:</label>
+    <select name="overall_ponderation_type" id="overall_ponderation_type" required>
+        <option value="Porcentaje">Porcentaje</option>
+        <option value="Peso">Peso</option>
+    </select>
+    <br>
 
-        <button type="submit">Crear Sección</button>
-    </form>
+    <label for="teacher_id">Profesor:</label>
+    <select name="teacher_id" id="teacher_id" required>
+        {% for teacher in teachers %}
+            <option value="{{teacher.id}}">{{teacher.first_name}} {{teacher.last_name}}</option>
+        {% endfor %} 
+    </select>
+    <br>
 
-    <a href="{{ url_for('courses.showCourseView', course_id=course.id) }}" class="btn-back">Volver al curso</a>
-
-</div>
-
-</body>
-</html>
+    <button type="submit">Crear Sección</button>
+</form>

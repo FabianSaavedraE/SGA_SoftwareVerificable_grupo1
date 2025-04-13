@@ -6,12 +6,13 @@ class Course(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(100), nullable=False)
+    code = db.Column(db.String(50), nullable=False, unique=True)
 
-    sections = db.relationship('CourseSection', backref='course', lazy=True)
+    instances = db.relationship('CourseInstance', backref='course', lazy=True)
     
     prerequisites = db.relationship('CoursePrerequisite', back_populates='course', foreign_keys='CoursePrerequisite.course_id')
     prerequired_by = db.relationship('CoursePrerequisite', back_populates='prerequisite', foreign_keys='CoursePrerequisite.prerequisite_id')
 
     def __repr__(self):
         return f"{self.name}"
-

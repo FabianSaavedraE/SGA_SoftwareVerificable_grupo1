@@ -1,0 +1,31 @@
+<h1>Detalles de la instancia {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
+
+<h1>Secciones:</h1>
+{% if course_instance.sections %}
+    <table>
+        <thead>
+            <tr>
+                <th>NRC</th>
+                <th>Profesor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in course_instance.sections %}
+                <tr>
+                    <td>{{section.nrc}}</td>
+                    <td>{{section.teacher}}</td>
+                    <td>
+                        <a href="{{url_for('course_sections.showSectionView', course_section_id=section.id)}}">Ver</a>
+                    </td>
+                    <td>
+                        <a href="{{url_for('course_sections.updateSectionView', course_section_id=section.id)}}">Editar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Esta instancia no tiene secciones.</p>
+{% endif %}
+
+<a href="{{url_for('course_sections.createSectionView', course_instance_id=course_instance.id)}}">Crear Sección</a>

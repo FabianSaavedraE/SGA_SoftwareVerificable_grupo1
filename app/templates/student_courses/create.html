@@ -80,15 +80,14 @@
 
 <div class="main">
 
-    <h1>Agregar Estudiante a una Sección</h1>
-    <h2>Curso: {{ section.course.name }}</h2>
-    <h3>Sección: {{ section.nrc }}</h3>
+    <h1>Agregar estudiante a una seccion</h1>
+    <h1>Curso: {{section.course_instance.course.name}} {{section.course_instance.year}}-{{section.course_instance.semester}}</h1>
+    <h1>Sección: {{section.nrc}}</h1>
 
     <table>
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Acción</th>
+                <th>Name</th>
             </tr>
         </thead>
         <tbody>

@@ -14,6 +14,7 @@ def create_app():
     migrate.init_app(app, db)   
 
     from app.models import course_section
+    from app.models import course_instance
     from app.models import student_course
     from app.models import evaluation_type
     from app.models import evaluation
@@ -50,5 +51,8 @@ def create_app():
 
     from app.routes.course_prerequisite_routes import course_prerequisite_bp  
     app.register_blueprint(course_prerequisite_bp)  
+
+    from app.routes.course_instance_routes import course_instance_bp
+    app.register_blueprint(course_instance_bp)
 
     return app

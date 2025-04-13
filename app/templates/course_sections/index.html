@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,41 +88,35 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <!-- Sidebar vacía por ahora -->
-    </div>
-
+<div class="sidebar">
+  </div>
     <div class="main">
-        <div class="title">Secciones</div>
 
-        <table>
-            <thead>
+    <h1>Secciones</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>NRC</th>
+                <th>Curso</th>
+                <th>Profesor</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in sections %}
                 <tr>
-                    <th>NRC</th>
-                    <th>Semestre</th>
-                    <th>Curso</th>
-                    <th>Profesor</th>
-                    <th>Acciones</th>
+                    <td>{{ section.nrc }}</td>
+                    <td>{{ section.course_instance.course.name }} {{section.course_instance.year}}-{{section.course_instance.semester}}</td>
+                    <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
+                    <td>
+
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for section in sections %}
-                    <tr>
-                        <td>{{ section.nrc }}</td>
-                        <td>{{ section.semester }}</td>
-                        <td>{{ section.course.name }}</td>
-                        <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
-                        <td>
-                            <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="button">Ver</a>
-                            <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="button">Editar</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% endfor %}
+        </tbody>
+    </table>
 
-        <a href="/" class="btn-back">Volver</a>
-    </div>
-
-</body>
-</html>
+    <a href="/" class="btn btn-primary">Go Back</a>
+  </div>
+ 

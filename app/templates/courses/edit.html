@@ -109,6 +109,12 @@
                 <label for="name">Nombre:</label>
                 <input type="text" id="name" name="name" value="{{ course.name }}" required>
 
+                <label for="description">Descripción:</label>
+                <input type="text" id="description" name="description" value="{{ course.description }}" required>
+
+                <label for="code">Código</label>
+                <input type="text" id="code" name="code" value="{{ course.code }}" required>
+
                 <button type="submit">Actualizar Curso</button>
             </form>
             <a href="{{ url_for('courses.getCoursesView') }}" class="btn-back">Volver</a>
@@ -117,3 +123,4 @@
 
 </body>
 </html>
+

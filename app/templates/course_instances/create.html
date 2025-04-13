@@ -1,0 +1,13 @@
+<h1>Crear Instancia para el curso {{course.name}}</h1>
+
+<form action="{{url_for('course_instances.createCourseInstanceView', course_id=course.id)}}" method="POST">
+    <label for="year">Año:</label>
+    <input type="text" id="year" name="year" required>
+    <br>
+
+    <label for="semester">Semestre:</label>
+    <input type="text" id="semester" name="semester" required>
+    <br>
+
+    <button type="submit">Crear Instancia de Curso</button>
+</form>

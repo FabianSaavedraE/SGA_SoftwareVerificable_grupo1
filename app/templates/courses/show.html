@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,46 +120,39 @@
     </div>
 
     <div class="main">
-        <div class="title">Detalles del Curso</div>
+    
+<h1>Detalles del curso</h1>
 
-        <div class="box">
-            <div class="info">
-                <p><strong>Nombre:</strong> {{ course.name }}</p>
-            </div>
+<p><Strong>Nombre:</Strong>{{course.name}}</p>
+<p><Strong>Descripción:</Strong>{{course.description}}</p>
+<p><Strong>Código:</Strong>{{course.code}}</p>
 
-            <h3>Secciones</h3>
-            {% if course.sections %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>NRC</th>
-                            <th>Semestre</th>
-                            <th>Profesor</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for section in course.sections %}
-                            <tr>
-                                <td>{{ section.nrc }}</td>
-                                <td>{{ section.semester }}</td>
-                                <td>{{ section.teacher }}</td>
-                                <td class="actions">
-                                    <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}">Ver</a>
-                                    <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}">Editar</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>Este curso no tiene secciones.</p>
-            {% endif %}
+<h1>Instancias:</h1>
+{% if course.instances %}
+    <table>
+        <thead>
+            <tr>
+                <th>Año</th>
+                <th>Semestre</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in course.instances %}
+                <tr>
+                    <td>{{instance.year}}</td>
+                    <td>{{instance.semester}}</td>
+                    <td>
+                        <a href="{{url_for('course_instances.showCourseInstanceView', course_instance_id=instance.id)}}">Ver</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Este curso no tiene instancias.</p>
+{% endif %}
 
-            <a href="{{ url_for('course_sections.createSectionView', course_id=course.id) }}" class="btn">Agregar Sección</a>
-            <a href="{{ url_for('courses.getCoursesView') }}" class="btn back">Volver a la lista</a>
-        </div>
-    </div>
+<a href="{{url_for('course_instances.createCourseInstanceView', course_id=course.id)}}">Agregar Instancia</a>
 
-</body>
-</html>
+<a href="{{url_for('courses.getCoursesView')}}">Volver a la lista</a>
+</div
