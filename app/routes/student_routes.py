@@ -20,6 +20,10 @@ def createStudentView():
 @student_bp.route('/<int:student_id>', methods=['GET', 'POST'])
 def updateStudentView(student_id):
     student = getStudent(student_id)
+    if request.form.get('_method') == 'DELETE':
+        deleteStudent(student)
+        return redirect(url_for('students.getStudentsView'))
+
     if not student:
         return redirect(url_for('students.getStudentsView'))
 
@@ -31,11 +35,11 @@ def updateStudentView(student_id):
 
     return render_template('students/edit.html', student=student)
 
-@student_bp.route('/<int:student_id>', methods=['DELETE'])
+@student_bp.route('/delete/<int:student_id>', methods=['POST'])
 def deleteStudentView(student_id):
     student = getStudent(student_id)
     if student:
         deleteStudent(student)
-        return redirect(url_for('students.getAllStudents'))
+        return redirect(url_for('students.getStudentsView'))
 
-    return redirect(url_for('students.getAllStudents'))
+    return redirect(url_for('students.getStudentsView'))

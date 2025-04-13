@@ -1,31 +1,118 @@
-<h1>Agregar estudiante a una seccion</h1>
-<h1>Curso: {{section.course_instance.course.name}} {{section.course_instance.year}}-{{section.course_instance.semester}}</h1>
-<h1>Sección: {{section.nrc}}</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Estudiante a una Sección</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+        }
+
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2f3943;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkred;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar"></div>
+
+<div class="main">
+
+    <h1>Agregar estudiante a una seccion</h1>
+    <h1>Curso: {{section.course_instance.course.name}} {{section.course_instance.year}}-{{section.course_instance.semester}}</h1>
+    <h1>Sección: {{section.nrc}}</h1>
+
+    <table>
+        <thead>
             <tr>
-                <td>{{student.first_name}} {{student.last_name}}</td>
-                <td>
-                    {% if student in section.students %}
-                        <span>Inscrito</span>
-                    {% else %}
-                        <form method="POST" style="display:inline;">
-                            <input type="hidden" name="student_id" value="{{student.id}}">
-                            <input type="hidden" name="state" value="enrolled">
-                            <button type="submit">Inscribir</button>
-                        </form>
-                    {% endif %}
-                </td>
+                <th>Name</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.first_name }} {{ student.last_name }}</td>
+                    <td>
+                        {% if student in section.students %}
+                            <span>Inscrito</span>
+                        {% else %}
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="student_id" value="{{ student.id }}">
+                                <input type="hidden" name="state" value="enrolled">
+                                <button type="submit">Inscribir</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<a href="{{url_for('course_sections.showSectionView', course_section_id=section.id)}}">Volver a la lista</a>
+    <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="btn-back">Volver a la lista</a>
+
+</div>
+
+</body>
+</html>

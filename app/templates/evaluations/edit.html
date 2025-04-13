@@ -1,22 +1,125 @@
-<h1>Editar Evaluación {{evaluation.name}}</h1>
-<p>Sección: {{evaluation.evaluation_type.course_section.course}} {{evaluation.evaluation_type.course_section.nrc}}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Evaluación: {{evaluation.name}}</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
 
-<form action="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}" method="POST">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" value="{{evaluation.name}}" required>
-    <br>
+        body {
+            display: flex;
+        }
 
-    <label for="ponderation_type">Tipo de Ponderación:</label>
-    <input type="text" id="ponderation_type" name="ponderation_type" value="{{evaluation.ponderation_type}}" required>
-    <br>
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+        }
 
-    <label for="ponderation">Ponderación:</label>
-    <input type="text" id="ponderation" name="ponderation" value="{{evaluation.ponderation}}" required>
-    <br>
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
 
-    <label for="optional">Obligatoria:</label>
-    <input type="text" id="optional" name="optional" value="{{evaluation.optional}}" required>
-    <br>
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2f3943;
+            margin-bottom: 20px;
+        }
 
-    <button type="submit">Actualizar Evaluación</button>
-</form>
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        form {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #2f3943;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1c2229;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar"></div>
+
+<div class="main">
+
+    <h1>Editar Evaluación: {{evaluation.name}}</h1>
+    <p><strong>Sección:</strong> {{evaluation.evaluation_type.course_section.course}} {{evaluation.evaluation_type.course_section.nrc}}</p>
+
+    <form action="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}" method="POST">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" value="{{evaluation.name}}" required>
+        
+        <label for="ponderation_type">Tipo de Ponderación:</label>
+        <input type="text" id="ponderation_type" name="ponderation_type" value="{{evaluation.ponderation_type}}" required>
+
+        <label for="ponderation">Ponderación:</label>
+        <input type="text" id="ponderation" name="ponderation" value="{{evaluation.ponderation}}" required>
+
+        <label for="optional">Obligatoria:</label>
+        <input type="text" id="optional" name="optional" value="{{evaluation.optional}}" required>
+
+        <button type="submit">Actualizar Evaluación</button>
+    </form>
+
+    <a href="{{ url_for('evaluation_types.showEvaluationTypeView', evaluation_type_id=evaluation.evaluation_type.id) }}" class="btn-back">Volver</a>
+
+</div>
+
+</body>
+</html>

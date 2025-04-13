@@ -1,39 +1,147 @@
-<h1>Editar nota del estudiante</h1>
-<h2>Evaluación: {{ evaluation.name }}</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Nota del Estudiante</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
 
-<table>
-    <thead>
-        <tr>
-            <th>Estudiante</th>
-            <th>Nota actual</th>
-            <th>Nueva nota</th>
-            <th>Acción</th>
-        </tr>
-    </thead>
-    <tbody>
-        <form method="POST">
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+        }
+
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        h1, h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2f3943;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #2f3943;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            width: 120px;
+            margin: 0;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar"></div>
+
+<div class="main">
+
+    <h1>Editar nota del estudiante</h1>
+    <h2>Evaluación: {{ evaluation.name }}</h2>
+
+    <table>
+        <thead>
             <tr>
-                <td>{{ student.first_name }} {{ student.last_name }}</td>
-                <td>{{ student_evaluation.grade }}</td>
-                <td>
-                    <input 
-                        type="number" 
-                        name="grade" 
-                        step="0.01" 
-                        min="0" 
-                        max="100" 
-                        value="{{ student_evaluation.grade }}" 
-                        required
-                    >
-                </td>
-                <td>
-                    <button type="submit">Actualizar nota</button>
-                </td>
+                <th>Estudiante</th>
+                <th>Nota actual</th>
+                <th>Nueva nota</th>
+                <th>Acción</th>
             </tr>
-        </form>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <form method="POST">
+                <tr>
+                    <td>{{ student.first_name }} {{ student.last_name }}</td>
+                    <td>{{ student_evaluation.grade }}</td>
+                    <td>
+                        <input 
+                            type="number" 
+                            name="grade" 
+                            step="0.01" 
+                            min="0" 
+                            max="100" 
+                            value="{{ student_evaluation.grade }}" 
+                            required
+                        >
+                    </td>
+                    <td>
+                        <button type="submit">Actualizar nota</button>
+                    </td>
+                </tr>
+            </form>
+        </tbody>
+    </table>
 
-<br>
+    <br>
 
-<a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">← Volver a la evaluación</a>
+    <a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}" class="btn-back">← Volver a la evaluación</a>
+
+</div>
+
+</body>
+</html>

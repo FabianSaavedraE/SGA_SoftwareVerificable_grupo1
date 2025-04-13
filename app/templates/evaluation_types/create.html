@@ -1,19 +1,110 @@
-<h1>Crear Tipo de Evaluación</h1>
-<p>Curso: {{course_section.course}}</p>
-<p>Sección: {{course_section.nrc}}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Tipo de Evaluación</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
 
-<form action="{{url_for('evaluation_types.createEvaluationTypeView', course_section_id=course_section.id)}}" method="POST">
-    <label for="topic">Topico:</label>
-    <input type="text" id="topic" name="topic" required>
-    <br>
+        body {
+            display: flex;
+        }
 
-    <label for="ponderation_type">Tipo de Ponderación:</label>
-    <input type="text" id="ponderation_type" name="ponderation_type" required>
-    <br>
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+        }
 
-    <label for="ponderation">Ponderación:</label>
-    <input type="text" id="ponderation" name="ponderation">
-    <br>
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
 
-    <button type="submit">Crear Tipo de Evaluación</button>
-</form>
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2f3943;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #2f3943;
+        }
+
+        input, select {
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkred;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar"></div>
+
+<div class="main">
+
+    <h1>Crear Tipo de Evaluación</h1>
+    <p><strong>Curso:</strong> {{ course_section.course.name }}</p>
+    <p><strong>Sección:</strong> {{ course_section.nrc }}</p>
+
+    <form action="{{ url_for('evaluation_types.createEvaluationTypeView', course_section_id=course_section.id) }}" method="POST">
+        <label for="topic">Tópico:</label>
+        <input type="text" id="topic" name="topic" required>
+        <br>
+
+        <label for="ponderation_type">Tipo de Ponderación:</label>
+        <input type="text" id="ponderation_type" name="ponderation_type" required>
+        <br>
+
+        <label for="ponderation">Ponderación:</label>
+        <input type="text" id="ponderation" name="ponderation">
+        <br>
+
+        <button type="submit">Crear Tipo de Evaluación</button>
+    </form>
+
+    <a href="{{ url_for('course_sections.showSectionView', course_section_id=course_section.id) }}" class="btn-back">Volver a la sección</a>
+
+</div>
+
+</body>
+</html>

@@ -278,6 +278,45 @@ Esto es un JSON con estructura
 
 Es decir, solo una entrada por curso, y en cada entrada una lista con los prerequisitos. Facilita así el filtrado y permite instanciar solo un curso con TODOS sus prerequisitos respectivos. Tomó sopresivamente poco hacerlo.
 
+<h5> Avances post-revisión en clases </h5>
+
+        def updateCoursePrerequisiteView(course_id):
+        from app.models.course import Course  
+        course = Course.query.get(course_id)
+
+        if not course:
+                return jsonify({'message': 'Course not found'}), 404
+
+        if request.method == 'POST':
+                ids_to_delete = request.form.getlist('prerequisite_ids')
+                for prereq_id in ids_to_delete:
+                pair = CoursePrerequisite.query.get((course_id, int(prereq_id)))
+                if pair:
+                        db.session.delete(pair)
+                new_prereq_ids = request.form.getlist('new_prerequisite[]')
+                for new_id in new_prereq_ids:
+                if new_id and new_id != str(course_id):
+                        existing = CoursePrerequisite.query.get((course_id, int(new_id)))
+                        if not existing:
+                        new_pair = CoursePrerequisite(course_id=course_id, prerequisite_id=int(new_id))
+                        db.session.add(new_pair)
+
+                db.session.commit()
+                return redirect(url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course_id))
+
+Se modifica la función de update del CRUD de Course_prerequisites. Para esto, ahora recibe los parámetros de añadir elementos en forma de una lista -en vez de una sola entrada- lo que permite editar un curso y añadirle más de un curso como prerequisito sin generar conflictos en la base de datos.
+
+                
+        @student_bp.route('/delete/<int:student_id>', methods=['POST']) #CAMBIOS AQUÍ
+        def deleteStudentView(student_id):
+        student = getStudent(student_id)
+        if student:
+                deleteStudent(student)
+                return redirect(url_for('students.getStudentsView'))
+
+        return redirect(url_for('students.getStudentsView'))
+
+Modifiqué también el entrutamiento de DELETE para que cambiara su nombre, porque si no, se confunde al tener el mismo que UPDATE y se llama a este por jerarquía en el órden de código. Haciendo esto se admite el método delete específico para borrar.
 
 ## Cambios por Chiara Romanini
 
