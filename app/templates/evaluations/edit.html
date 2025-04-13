@@ -6,16 +6,12 @@
     <input type="text" id="name" name="name" value="{{evaluation.name}}" required>
     <br>
 
-    <label for="ponderation_type">Tipo de Ponderación:</label>
-    <input type="text" id="ponderation_type" name="ponderation_type" value="{{evaluation.ponderation_type}}" required>
-    <br>
-
     <label for="ponderation">Ponderación:</label>
-    <input type="text" id="ponderation" name="ponderation" value="{{evaluation.ponderation}}" required>
+    <input type="number" id="ponderation" name="ponderation" value="{{evaluation.ponderation}}" required>
     <br>
 
     <label for="optional">Obligatoria:</label>
-    <input type="text" id="optional" name="optional" value="{{evaluation.optional}}" required>
+    <input type="checkbox" id="optional" name="optional" {% if evaluation.optional %}checked{% endif %}>
     <br>
 
     <button type="submit">Actualizar Evaluación</button>

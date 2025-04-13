@@ -43,13 +43,12 @@
 {% if course_section.evaluation_types %}
     {% for evaluation_type in course_section.evaluation_types %}
         <h3>{{evaluation_type.topic}}</h3>
-        <p>Ponderación: {{evaluation_type.ponderation}}</p>
+        <p>Ponderación en la nota final: {{evaluation_type.overall_ponderation}}</p>
         {% if evaluation_type.evaluations %}
             <table>
                 <thead>
                     <tr>
                         <td><strong>Nombre</strong></td>
-                        <td><strong>Tipo de ponderación</strong></td>
                         <td><strong>Ponderación</strong></td>
                         <td><strong>Obligatoria</strong></td>
                     </tr>

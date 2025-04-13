@@ -16,7 +16,6 @@ def getEvaluation(evaluation_id):
 def createEvaluation(data):
     new_evaluation = Evaluation(
         name = data.get('name'),
-        ponderation_type = data.get('ponderation_type'),
         ponderation = data.get('ponderation'),
         optional = data.get('optional'),
         evaluation_type_id = data.get('evaluation_type_id')
@@ -31,7 +30,6 @@ def updateEvaluation(evaluation, data):
         return None
     
     evaluation.name = data.get('name', evaluation.name)
-    evaluation.ponderation_type = data.get('ponderation_type', evaluation.ponderation_type)
     evaluation.ponderation = data.get('ponderation', evaluation.ponderation)
     evaluation.optional = data.get('optional', evaluation.optional)
 
