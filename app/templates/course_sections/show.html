@@ -108,7 +108,7 @@
             <thead>
                 <tr>
                     <td><strong>Topico</strong></td>
-                    <td><strong>Ponderación de este tópico en el total del curso</strong></td>
+                    <td><strong>Ponderación del promedio de este tópico en el total del curso</strong></td>
                     <td><strong>Cómo pondera cada una de sus instancias</strong></td>
                 </tr>
             </thead>
@@ -116,8 +116,8 @@
                 {% for evaluation in course_section.evaluation_types %}
                     <tr>
                         <td>{{evaluation.topic}}</td>
-                        <td>{{evaluation.ponderation_type}}</td>
                         <td>{{evaluation.overall_ponderation}}</td>
+                        <td>{{evaluation.ponderation_type}}</td>
                         <td>
                             <a href="{{url_for('evaluation_types.updateEvaluationTypeView', evaluation_type_id=evaluation.id)}}">
                                 Editar
@@ -164,12 +164,18 @@
                                         Editar
                                     </a>
                                 </td>
+                                <td>
+                                    <form action="{{url_for('evaluations.deleteEvaluationView', evaluation_id=evaluation.id, course_section_id=evaluation.evaluation_type.course_section_id)}}" method="POST" style="display:inline;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit">Eliminar</button>
+                                    </form>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p>No hay evaluaciones para este tipo.</p>
+                <p>No hay evaluaciones para este tópico.</p>
             {% endif %}
         {% endfor %}
     {% else %}

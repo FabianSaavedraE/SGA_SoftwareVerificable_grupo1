@@ -31,10 +31,8 @@ def createSectionView(course_instance_id):
         data = request.form.to_dict()
         data['course_instance_id'] = course_instance_id
         createSection(data)
-        return redirect(url_for('course_sections.getSectionsView'))
+        return redirect(url_for('course_instances.showCourseInstanceView', course_instance_id=course_instance_id))
 
-
-    
     return render_template('course_sections/create.html', course_instance=course_instance, teachers=teachers)
 
 @course_section_bp.route('/<int:course_section_id>', methods=['GET', 'POST'])
@@ -49,7 +47,6 @@ def updateSectionView(course_section_id):
         updateSection(course_section, data)
         
         return redirect(url_for('course_sections.getSectionsView'))
-
     
     return render_template('course_sections/edit.html', course_section=course_section, teachers=teachers)
 

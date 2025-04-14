@@ -35,3 +35,11 @@ def updateEvaluation(evaluation, data):
 
     db.session.commit()
     return evaluation
+
+def deleteEvaluation(evaluation):
+    if not evaluation:
+        return False
+
+    db.session.delete(evaluation)
+    db.session.commit()
+    return True

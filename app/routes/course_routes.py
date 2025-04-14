@@ -41,12 +41,12 @@ def updateCourseView(course_id):
 
     return render_template('courses/edit.html', course=course)
 
-@course_bp.route('/<int:course_id>', methods=['DELETE'])
+@course_bp.route('/delete/<int:course_id>', methods=['POST'])
 def deleteCourseView(course_id):
     course = getCourse(course_id)
     if course:
         deleteCourse(course)
-        return redirect(url_for('courses.getAllCourses'))
+        return redirect(url_for('courses.getCoursesView'))
 
-    return redirect(url_for('courses.getAllCourses'))
+    return redirect(url_for('courses.getCoursesView'))
     

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 from app.models.evaluation import Evaluation
-from app.controllers.evaluation_controller import getAllEvaluations, getEvaluation, createEvaluation, updateEvaluation
+from app.controllers.evaluation_controller import getAllEvaluations, getEvaluation, createEvaluation, updateEvaluation, deleteEvaluation
 from app.controllers.evaluation_type_controller import getEvaluationType
 from app.controllers.course_section_controller import getSection
 from app import db
@@ -60,3 +60,12 @@ def showEvaluationView(evaluation_id):
         students=students,
         grades=grades
     )
+
+@evaluation_bp.route('/delete/<int:evaluation_id>/<int:course_section_id>', methods=['POST'])
+def deleteEvaluationView(evaluation_id, course_section_id):
+    evaluation = getEvaluation(evaluation_id)
+    if evaluation:
+        deleteEvaluation(evaluation)
+        return redirect(url_for('course_sections.showSectionView', course_section_id=course_section_id))
+    
+    return redirect(url_for('course_sections.showSectionView', course_section_id=course_section_id))
