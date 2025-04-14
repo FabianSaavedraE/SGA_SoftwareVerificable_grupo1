@@ -7,8 +7,18 @@ class CourseInstance(db.Model):
     year = db.Column(db.Integer, nullable=False)
     semester = db.Column(db.Integer, nullable=False)
 
-    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
-    sections = db.relationship('CourseSection', backref='course_instance', lazy=True)
+    course_id = db.Column(
+        db.Integer, 
+        db.ForeignKey('courses.id', ondelete='CASCADE'), 
+        nullable=False
+    )
+    sections = db.relationship(
+        'CourseSection', 
+        backref='course_instance', 
+        lazy=True, 
+        cascade='all, delete-orphan', 
+        passive_deletes=True
+    )
 
     def __repr__(self):
         return f"<Course Intance {self.id}>"

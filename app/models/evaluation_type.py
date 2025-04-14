@@ -11,12 +11,13 @@ class EvaluationType(db.Model):
     )
     overall_ponderation = db.Column(db.Float, nullable=False)
 
-    course_section_id = db.Column(db.Integer, db.ForeignKey('course_sections.id'), nullable=False)
+    course_section_id = db.Column(db.Integer, db.ForeignKey('course_sections.id', ondelete='CASCADE'), nullable=False)
     evaluations = db.relationship(
-    'Evaluation',
-    backref='evaluation_type',
-    lazy=True,
-    cascade='all, delete-orphan'
+        'Evaluation',
+        backref='evaluation_type',
+        lazy=True,
+        cascade='all, delete-orphan',
+        passive_deletes=True
     )
 
 

@@ -8,8 +8,8 @@ class Student(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
 
-    student_courses = db.relationship('StudentCourses', back_populates='student')
-    student_evaluations = db.relationship('StudentEvaluations', back_populates='student')
+    student_courses = db.relationship('StudentCourses', back_populates='student', cascade="all, delete-orphan", passive_deletes=True)
+    student_evaluations = db.relationship('StudentEvaluations', back_populates='student', cascade="all, delete-orphan", passive_deletes=True)
     
     @property
     def course_sections(self):

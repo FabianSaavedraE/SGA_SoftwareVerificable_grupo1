@@ -9,10 +9,28 @@ class Course(db.Model):
     description = db.Column(db.String(100), nullable=False)
     code = db.Column(db.String(50), nullable=False, unique=True)
 
-    instances = db.relationship('CourseInstance', backref='course', lazy=True)
+    instances = db.relationship(
+        'CourseInstance', 
+        backref='course', 
+        lazy=True, 
+        cascade='all, delete-orphan', 
+        passive_deletes=True
+    )
     
-    prerequisites = db.relationship('CoursePrerequisite', back_populates='course', foreign_keys='CoursePrerequisite.course_id')
-    prerequired_by = db.relationship('CoursePrerequisite', back_populates='prerequisite', foreign_keys='CoursePrerequisite.prerequisite_id')
+    prerequisites = db.relationship(
+        'CoursePrerequisite', 
+        back_populates='course', 
+        foreign_keys='CoursePrerequisite.course_id', 
+        cascade='all, delete-orphan', 
+        passive_deletes=True
+    )
+    prerequired_by = db.relationship(
+        'CoursePrerequisite', 
+        back_populates='prerequisite', 
+        foreign_keys='CoursePrerequisite.prerequisite_id', 
+        cascade='all, delete-orphan', 
+        passive_deletes=True
+    )
 
     def __repr__(self):
         return f"{self.name}"

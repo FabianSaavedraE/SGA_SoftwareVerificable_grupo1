@@ -11,20 +11,22 @@ class CourseSection(db.Model):
         nullable=False
     )
 
-    course_instance_id = db.Column(db.Integer, db.ForeignKey('course_instances.id'), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
+    course_instance_id = db.Column(db.Integer, db.ForeignKey('course_instances.id', ondelete='CASCADE'), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id', ondelete='SET NULL'), nullable=True)
 
     student_courses = db.relationship(
     'StudentCourses',
     back_populates='course_section',
-    cascade='all, delete-orphan'
+    cascade='all, delete-orphan',
+    passive_deletes=True
     )
 
     evaluation_types = db.relationship(
         'EvaluationType',
         backref='course_section',
         lazy=True,
-        cascade='all, delete-orphan'
+        cascade='all, delete-orphan',
+        passive_deletes=True
     )
     
     @property
