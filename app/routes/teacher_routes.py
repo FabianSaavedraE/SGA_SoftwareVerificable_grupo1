@@ -31,11 +31,11 @@ def updateTeacherView(teacher_id):
 
     return render_template('teachers/edit.html', teacher=teacher)
 
-@teacher_bp.route('/<int:teacher_id>', methods=['DELETE'])
+@teacher_bp.route('/delete/<int:teacher_id>', methods=['POST'])
 def deleteTeacherView(teacher_id):
     teacher = getTeacher(teacher_id)
     if teacher:
         deleteTeacher(teacher)
-        return redirect(url_for('teachers.getAllTeachers'))
+        return redirect(url_for('teachers.getTeachersView'))
 
-    return redirect(url_for('teachers.getAllTeachers'))
+    return redirect(url_for('teachers.getTeachersView'))

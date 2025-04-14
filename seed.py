@@ -2,6 +2,7 @@ import random
 from app import create_app, db
 from app.models.student import Student
 from app.models.course import Course
+from app.models.course_instance import CourseInstance
 from app.models.course_section import CourseSection
 from app.models.teacher import Teacher
 from app.models.course_prerequisite import CoursePrerequisite
@@ -13,7 +14,7 @@ with app.app_context():
     db.create_all()
     print("Database reset (tables dropped and recreated).")
 
-    # ---------- Generar estudiantes ----------
+    # ---------- Estudiantes ----------
     nombres = ["Sofía", "Ignacio", "Camila", "Benjamín", "Fernanda", "Joaquín", "Martina", "Matías", "Antonia", "Diego", "Chiara", "Fabián", "Vicente"]
     apellidos = ["Gómez", "Pérez", "Rojas", "Torres", "Molina", "Navarro", "Ramírez", "Silva", "Morales", "Castillo", "Romanini", "Acevedo", "Saavedra"]
 
@@ -61,32 +62,40 @@ with app.app_context():
         "Criptografía", "Robótica"
     ]
 
-    cursos = [Course(name=nombre) for nombre in cursos_nombres]
+    cursos = [Course(name=nombre, description="Curso de " + nombre, code=f"C-{i+100}") for i, nombre in enumerate(cursos_nombres)]
     db.session.add_all(cursos)
     db.session.commit()
     print("20 cursos creados.")
 
-    # ---------- Secciones ----------
+    # ---------- Course Instances y Secciones ----------
     profesores = Teacher.query.all()
-    cursos = Course.query.all()
     secciones = []
 
-    for i, curso in enumerate(cursos):
+    for curso in cursos:
+        # Crea una instancia del curso
+        instancia = CourseInstance(
+            year=2025,
+            semester=1,
+            course_id=curso.id
+        )
+        db.session.add(instancia)
+        db.session.commit()
+
+        # Crea una sección asociada a la instancia
         profesor = random.choice(profesores)
         seccion = CourseSection(
-            nrc=f"NRC{i+100}",
-            semester="2025-1",
-            course_id=curso.id,
+            nrc=f"NRC{instancia.id + 1000}",
+            overall_ponderation_type=random.choice(["Porcentaje", "Peso"]),
+            course_instance_id=instancia.id,
             teacher_id=profesor.id
         )
         secciones.append(seccion)
 
     db.session.add_all(secciones)
     db.session.commit()
-    print("Secciones creadas para cada curso.")
+    print("Instancias y secciones creadas para cada curso.")
 
     # ---------- Prerequisitos ----------
-    # Basado en relaciones reales de una malla curricular
     relaciones = [
         ("Matemáticas II", "Matemáticas I"),
         ("Estructuras de Datos", "Programación"),

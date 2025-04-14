@@ -12,7 +12,7 @@ class CourseSection(db.Model):
     )
 
     course_instance_id = db.Column(db.Integer, db.ForeignKey('course_instances.id'), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teachers.id'), nullable=True)
 
     student_courses = db.relationship('StudentCourses', back_populates='course_section')
     evaluation_types = db.relationship('EvaluationType', backref='course_section', lazy=True)
