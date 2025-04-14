@@ -32,3 +32,11 @@ def updateEvaluationType(evaluation_type, data):
 
     db.session.commit()
     return evaluation_type
+
+def deleteEvaluationType(evaluation_type):
+    if not evaluation_type:
+        return False
+    
+    db.session.delete(evaluation_type)
+    db.session.commit()
+    return True

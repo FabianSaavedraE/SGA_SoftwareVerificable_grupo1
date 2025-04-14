@@ -126,6 +126,12 @@
                         <td>
                             <a href="{{url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation.id)}}">Agregar Instancia</a>
                         </td>
+                        <td>
+                            <form action="{{url_for('evaluation_types.deleteEvaluationTypeView', evaluation_type_id=evaluation.id, course_section_id=evaluation.course_section_id)}}" method="POST" style="display:inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
