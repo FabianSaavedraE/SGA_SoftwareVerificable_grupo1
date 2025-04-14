@@ -5,8 +5,11 @@ class EvaluationType(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.String(50), nullable=False)
-    ponderation_type = db.Column(db.String(50), nullable=False)
-    ponderation = db.Column(db.String(50), nullable=True)
+    ponderation_type = db.Column(
+        db.Enum('Porcentaje', 'Peso', name='ponderation_type_enum'),
+        nullable=False
+    )
+    overall_ponderation = db.Column(db.Float, nullable=False)
 
     course_section_id = db.Column(db.Integer, db.ForeignKey('course_sections.id'), nullable=False)
     evaluations = db.relationship(

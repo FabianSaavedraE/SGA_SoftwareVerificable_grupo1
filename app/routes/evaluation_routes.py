@@ -16,6 +16,7 @@ def createEvaluationView(evaluation_type_id):
     if request.method == 'POST':
         data = request.form.to_dict()
         data['evaluation_type_id'] = evaluation_type_id
+        data['optional'] = request.form.get('optional') == 'on'
         createEvaluation(data)
         return redirect(url_for('course_sections.showSectionView', course_section_id=evaluation_type.course_section_id))
     
@@ -28,7 +29,8 @@ def updateEvaluationView(evaluation_id):
         return redirect(url_for('course_sections.showSectionView', course_section_id=evaluation.evaluation_type.course_section_id))
     
     if request.method == 'POST':
-        data = request.form
+        data = request.form.to_dict()
+        data['optional'] = request.form.get('optional') == 'on'
         updateEvaluation(evaluation, data)
 
         return redirect(url_for('course_sections.showSectionView', course_section_id=evaluation.evaluation_type.course_section_id))

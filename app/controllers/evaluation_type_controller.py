@@ -13,7 +13,7 @@ def createEvaluationType(data):
     new_evaluation_type = EvaluationType(
         topic = data.get('topic'),
         ponderation_type = data.get('ponderation_type'),
-        ponderation = data.get('ponderation'),
+        overall_ponderation = data.get('overall_ponderation'),
         course_section_id = data.get('course_section_id')
     )
 
@@ -28,7 +28,7 @@ def updateEvaluationType(evaluation_type, data):
 
     evaluation_type.topic = data.get('topic', evaluation_type.topic)
     evaluation_type.ponderation_type = data.get('ponderation_type', evaluation_type.ponderation_type)
-    evaluation_type.ponderation = data.get('ponderation', evaluation_type.ponderation)
+    evaluation_type.overall_ponderation = data.get('overall_ponderation', evaluation_type.overall_ponderation)
 
     db.session.commit()
     return evaluation_type

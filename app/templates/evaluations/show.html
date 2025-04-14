@@ -93,9 +93,12 @@
 
     <h2>Evaluación: {{ evaluation.name }}</h2>
     <p><strong>Tipo:</strong> {{ evaluation_type.topic }}</p>
-    <p><strong>Sección:</strong> {{ course_section.nrc }}</p>
-
-    <p><em>Debug: {{ evaluation.id }}</em></p>
+    <p><strong>Sección:</strong> 
+        {{ course_section.course_instance.course.name }} 
+        {{ course_section.course_instance.year}}-
+        {{ course_section.course_instance.semester}} 
+        {{ course_section.nrc}}
+    </p>
 
     <table>
         <thead>
