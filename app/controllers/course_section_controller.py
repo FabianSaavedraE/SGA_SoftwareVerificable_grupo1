@@ -1,5 +1,7 @@
 from app.models.course_section import CourseSection
+from app.models.student_course import StudentCourses
 from app import db
+from app.controllers.student_course_controller import deleteStudentCourse
 
 def getAllSections():
     sections = CourseSection.query.all()
@@ -35,5 +37,14 @@ def updateSection(course_section, data):
 
     db.session.commit()
     return course_section
+
+def deleteSection(course_section_id):
+    course_section = getSection(course_section_id)
+    
+    if course_section:
+        db.session.delete(course_section)
+        db.session.commit()
+        return True
+    return False
 
     

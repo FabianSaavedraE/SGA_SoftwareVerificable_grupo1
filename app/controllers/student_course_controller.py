@@ -24,3 +24,11 @@ def updateStudentCourse(student_course, data):
 
     db.session.commit()
     return student_course
+
+def deleteStudentCourse(student_id, course_section_id):
+    student_course = getStudentCourse(student_id, course_section_id)
+    if student_course:
+        db.session.delete(student_course)
+        db.session.commit()
+        return True
+    return False

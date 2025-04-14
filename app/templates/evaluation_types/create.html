@@ -83,7 +83,7 @@
 <div class="main">
 
     <h1>Crear Tipo de Evaluación</h1>
-    <p><strong>Curso:</strong> {{ course_section.course.name }}</p>
+    <p><strong>Curso:</strong> {{ course_section.course_instance.course.name }}</p>
     <p><strong>Sección:</strong> {{ course_section.nrc }}</p>
 
     <form action="{{ url_for('evaluation_types.createEvaluationTypeView', course_section_id=course_section.id) }}" method="POST">

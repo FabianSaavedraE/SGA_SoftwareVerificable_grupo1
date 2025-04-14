@@ -108,23 +108,23 @@
             <thead>
                 <tr>
                     <td><strong>Topico</strong></td>
-                    <td><strong>Tipo de ponderación</strong></td>
-                    <td><strong>Ponderación</strong></td>
+                    <td><strong>Ponderación de este tópico en el total del curso</strong></td>
+                    <td><strong>Cómo pondera cada una de sus instancias</strong></td>
                 </tr>
             </thead>
             <tbody>
                 {% for evaluation in course_section.evaluation_types %}
                     <tr>
                         <td>{{evaluation.topic}}</td>
-                        <td>{{evaluation.ponderation_type}}</td>
                         <td>{{evaluation.ponderation}}</td>
+                        <td>{{evaluation.ponderation_type}}</td>
                         <td>
                             <a href="{{url_for('evaluation_types.updateEvaluationTypeView', evaluation_type_id=evaluation.id)}}">
                                 Editar
                             </a>
                         </td>
                         <td>
-                            <a href="{{url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation.id)}}">Agregar Evaluación</a>
+                            <a href="{{url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation.id)}}">Agregar Instancia</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -207,11 +207,10 @@
         <p>No hay alumnos inscritos en esta sección.</p>
     {% endif %}
 
-    <a href="{{url_for('course_instances.showCourseInstanceView', course_instance_id=course_section.course_instance.id)}}" class="btn-back">
+    <a href="{{ url_for('course_sections.getSectionsView') }}", class="btn-back">
         Volver a la lista
     </a>
 </div>
 
 </body>
 </html>
-
