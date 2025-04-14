@@ -120,11 +120,9 @@
         <div class="grid">
             <!-- Estudiantes -->
             <div class="box">
-                {% if students %}
                 <a href="{{ url_for('students.getStudentsView') }}">
                     <button>Ver estudiantes</button>
                 </a>
-                {% endif %}
                 <ul>
                     {% for student in students %}
                         <li>{{ student.first_name }} {{ student.last_name }}</li>
@@ -136,11 +134,9 @@
 
             <!-- Cursos -->
             <div class="box">
-                {% if courses %}
                 <a href="{{ url_for('courses.getCoursesView') }}">
                     <button>Ver cursos</button>
                 </a>
-                {% endif %}
                 <ul>
                     {% for course in courses %}
                         <li>{{ course.name }}</li>
@@ -152,11 +148,9 @@
 
             <!-- Secciones -->
             <div class="box">
-                {% if course_sections %}
                 <a href="{{ url_for('course_sections.getSectionsView') }}">
                     <button>Ver secciones</button>
                 </a>
-                {% endif %}
                 <ul>
                     {% for section in course_sections %}
                         <li>{{ section.nrc }} ({{ section.semester }})</li>
@@ -168,11 +162,9 @@
 
             <!-- Profesores -->
             <div class="box">
-                {% if teachers %}
                 <a href="{{ url_for('teachers.getTeachersView') }}">
                     <button>Ver profesores</button>
                 </a>
-                {% endif %}
                 <ul>
                     {% for teacher in teachers %}
                         <li>{{ teacher.first_name }} {{ teacher.last_name }}</li>
@@ -184,11 +176,9 @@
 
             <!-- Prerequisitos (ocupa dos columnas) -->
             <div class="box prerequisites">
-                {% if course_prerequisites %}
                 <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">
                     <button>Ver prerequisitos</button>
                 </a>
-                {% endif %}
                 <ul>
                     {% for pairing in course_prerequisites %}
                         <li>Se requiere aprobar {{ pairing.prerequisite }} para avanzar al curso {{ pairing.course }}</li>

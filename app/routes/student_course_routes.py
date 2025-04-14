@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for
 from app.models.student_course import StudentCourses
-from app.controllers.student_course_controller import createStudentCourse, getStudentCourse, updateStudentCourse
+from app.controllers.student_course_controller import createStudentCourse, getStudentCourse, updateStudentCourse, deleteStudentCourse
 from app.controllers.course_section_controller import getSection
 from app.controllers.student_controller import getAllStudents
 
@@ -19,7 +19,7 @@ def createStudentCourseView(course_section_id):
     if request.method == 'POST':
         data = request.form.to_dict()
         data['course_section_id'] = course_section_id
-        data['state'] = 'enrolled'
+        data['state'] = 'Inscrito'
         createStudentCourse(data)
         return redirect(url_for('student_courses.createStudentCourseView', course_section_id=course_section_id))
 
@@ -29,7 +29,7 @@ def createStudentCourseView(course_section_id):
 def updateStudentCourseView(student_id, course_section_id):
     student_course = getStudentCourse(student_id, course_section_id)
     if not student_course:
-        return redirect(url_for('course_section.showSectionView', course_id=course_section_id))
+        return redirect(url_for('course_sections.showSectionView', course_id=course_section_id))
 
     if request.method == 'POST':
         data = request.form
@@ -39,3 +39,11 @@ def updateStudentCourseView(student_id, course_section_id):
 
     return render_template('student_courses/edit.html', student_course=student_course)
     
+@student_course_bp.route('/delete/<int:student_id>/<int:course_section_id>', methods=['POST'])
+def deleteStudentCourseView(student_id, course_section_id):
+    student_course = getStudentCourse(student_id, course_section_id)
+    if student_course:
+        deleteStudentCourse(student_id, course_section_id)
+        return redirect(url_for('course_sections.showSectionView', course_section_id=course_section_id))
+    
+    return render_template('course_sections.showSectionView', course_section_id=course_section_id)

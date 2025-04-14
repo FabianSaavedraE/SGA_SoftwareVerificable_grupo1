@@ -50,7 +50,11 @@ def updateSectionView(course_section_id):
     
     return render_template('course_sections/edit.html', course_section=course_section, teachers=teachers)
 
-@course_section_bp.route('/<int:course_section_id>/delete', methods=['POST'])
-def deleteSectionView(course_section_id):
-    deleteSection(course_section_id)
-    return redirect(url_for('course_sections.getSectionsView'))
+@course_section_bp.route('/<int:course_section_id>/<int:course_instance_id>/delete', methods=['POST'])
+def deleteSectionView(course_section_id, course_instance_id):
+    course_section = getSection(course_section_id)
+    if course_section:
+        deleteSection(course_section)
+        return redirect(url_for('course_instances.showCourseInstanceView', course_instance_id=course_instance_id))
+    
+    return render_template('course_instances.showCourseInstanceView', course_instance_id=course_instance_id)

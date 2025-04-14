@@ -209,6 +209,12 @@
                                 Editar
                             </a>
                         </td>
+                        <td>
+                            <form action="{{ url_for('student_courses.deleteStudentCourseView', student_id=sc.student.id, course_section_id=course_section.id) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

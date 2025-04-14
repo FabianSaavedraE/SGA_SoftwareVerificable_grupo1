@@ -90,13 +90,22 @@
     <h1>Editar el Estado del Estudiante</h1>
 
     <p><strong>Estudiante:</strong> {{ student_course.student.first_name }} {{ student_course.student.last_name }}</p>
-    <p><strong>Curso:</strong> {{ student_course.course_section.course.name }}</p>
+    <p><strong>Curso:</strong> 
+        {{ student_course.course_section.course_instance.course.name }} 
+        {{ student_course.course_section.course_instance.year}}-
+        {{ student_course.course_section.course_instance.semester}}
+    </p>
     <p><strong>Sección:</strong> {{ student_course.course_section.nrc }}</p>
 
     <form method="POST">
         <label for="state">Estado:</label>
-        <input type="text" name="state" id="state" value="{{ student_course.state }}">
+        <select name="state" id="state" required>
+            <option value="Inscrito" {% if student_course.state == 'Inscrito' %}selected{% endif %}>Inscrito</option>
+            <option value="Aprobado" {% if student_course.state == 'Aprobado' %}selected{% endif %}>Aprobado</option>
+            <option value="Reprobado" {% if student_course.state == 'Reprobado' %}selected{% endif %}>Reprobado</option>
+        </select>
         <br>
+
         <button type="submit">Guardar</button>
     </form>
 

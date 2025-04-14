@@ -38,13 +38,10 @@ def updateSection(course_section, data):
     db.session.commit()
     return course_section
 
-def deleteSection(course_section_id):
-    course_section = getSection(course_section_id)
+def deleteSection(course_section):
+    if not course_section:
+        return False
     
-    if course_section:
-        db.session.delete(course_section)
-        db.session.commit()
-        return True
-    return False
-
-    
+    db.session.delete(course_section)
+    db.session.commit()
+    return True
