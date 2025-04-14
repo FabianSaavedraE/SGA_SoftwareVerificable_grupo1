@@ -116,7 +116,6 @@
 <body>
 
     <div class="sidebar">
-        <!-- Aquí podés poner íconos o links -->
     </div>
 
     <div class="main">
@@ -143,6 +142,12 @@
                     <td>{{instance.semester}}</td>
                     <td>
                         <a href="{{url_for('course_instances.showCourseInstanceView', course_instance_id=instance.id)}}">Ver</a>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('course_instances.deleteCourseInstanceView', course_instance_id=instance.id, course_id=instance.course.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
             {% endfor %}

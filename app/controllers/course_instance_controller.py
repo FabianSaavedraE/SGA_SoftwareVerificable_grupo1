@@ -29,3 +29,11 @@ def updateCourseInstance(course_instance, data):
 
     db.session.commit()
     return course_instance
+
+def deleteCourseInstance(course_instance):
+    if not course_instance:
+        return False
+    
+    db.session.delete(course_instance)
+    db.session.commit()
+    return True
