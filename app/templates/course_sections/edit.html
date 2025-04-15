@@ -97,14 +97,14 @@
     </select>
     <br>
 
-    <label for="teacher_id">Profesor:</label>
-    <select name="teacher_id" id="teacher_id" required>
+    <label for="teacher_id">Profesor (opcional):</label>
+    <select name="teacher_id" id="teacher_id">
+        <option value="">Sin Profesor</option>
         {% for teacher in teachers %}
-            <option value="{{teacher.id}}">
-                {% if teacher.id == course_section.teacher_id %}selected{% endif %}>
-                {{teacher.first_name}} {{teacher.last_name}}
+            <option value="{{ teacher.id }}" {% if teacher.id == course_section.teacher_id %}selected{% endif %}>
+                {{ teacher.first_name }} {{ teacher.last_name }}
             </option>
-        {% endfor %} 
+        {% endfor %}
     </select>
     <br>
 

@@ -1,37 +1,135 @@
-<h1>Detalles de la instancia {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de la Instancia</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
 
-<h1>Secciones:</h1>
-{% if course_instance.sections %}
-    <table>
-        <thead>
-            <tr>
-                <th>NRC</th>
-                <th>Profesor</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for section in course_instance.sections %}
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+        }
+
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2f3943;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid red;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            color: red;
+        }
+
+        a.button {
+            display: inline-block;
+            background-color: red;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        a.button:hover {
+            background-color: darkred;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar"></div>
+
+<div class="main">
+
+    <h1>Detalles de la instancia {{ course_instance.course.name }} {{ course_instance.year }}-{{ course_instance.semester }}</h1>
+
+    <h1>Secciones:</h1>
+    {% if course_instance.sections %}
+        <table>
+            <thead>
                 <tr>
-                    <td>{{section.nrc}}</td>
-                    <td>{{section.teacher}}</td>
-                    <td>
-                        <a href="{{url_for('course_sections.showSectionView', course_section_id=section.id)}}">Ver</a>
-                    </td>
-                    <td>
-                        <a href="{{url_for('course_sections.updateSectionView', course_section_id=section.id)}}">Editar</a>
-                    </td>
-                    <td>
-                        <form action="{{ url_for('course_sections.deleteSectionView', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" method="POST" style="display:inline;">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit">Eliminar</button>
-                        </form>
-                    </td>
+                    <th>NRC</th>
+                    <th>Profesor</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Esta instancia no tiene secciones.</p>
-{% endif %}
+            </thead>
+            <tbody>
+                {% for section in course_instance.sections %}
+                    <tr>
+                        <td>{{ section.nrc }}</td>
+                        <td>
+                            {% if section.teacher %}
+                                {{ section.teacher.first_name }} {{ section.teacher.last_name }}
+                            {% else %}
+                                Sin Profesor
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="button">Ver</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="button">Editar</a>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('course_sections.deleteSectionView', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="button" style="background-color: #555;">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Esta instancia no tiene secciones.</p>
+    {% endif %}
 
-<a href="{{url_for('course_sections.createSectionView', course_instance_id=course_instance.id)}}">Crear Sección</a>
+    <a href="{{ url_for('course_sections.createSectionView', course_instance_id=course_instance.id) }}">Crear Sección</a>
+</div>
+
+</body>
+</html>

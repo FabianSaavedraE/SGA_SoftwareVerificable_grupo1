@@ -20,7 +20,7 @@ def createSection(data):
         nrc = data.get('nrc'),
         overall_ponderation_type = data.get('overall_ponderation_type'),
         course_instance_id = data.get('course_instance_id'),
-        teacher_id = data.get('teacher_id')
+        teacher_id = data.get('teacher_id') or None
     )
     db.session.add(new_section)
     db.session.commit()
@@ -33,7 +33,7 @@ def updateSection(course_section, data):
 
     course_section.nrc = data.get('nrc', course_section.nrc)
     course_section.overall_ponderation_type = data.get('overall_ponderation_type', course_section.overall_ponderation_type)
-    course_section.teacher_id = data.get('teacher_id', course_section.teacher_id)
+    course_section.teacher_id = data.get('teacher_id', course_section.teacher_id) or None
 
     db.session.commit()
     return course_section

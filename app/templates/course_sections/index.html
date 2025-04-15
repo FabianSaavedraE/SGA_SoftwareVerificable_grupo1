@@ -108,7 +108,13 @@
                 <tr>
                     <td>{{ section.nrc }}</td>
                     <td>{{ section.course_instance.course.name }} {{section.course_instance.year}}-{{section.course_instance.semester}}</td>
-                    <td>{{ section.teacher.first_name }} {{ section.teacher.last_name }}</td>
+                    <td>
+                        {% if section.teacher %}
+                            {{ section.teacher.first_name }} {{ section.teacher.last_name }}
+                        {% else %}
+                            Sin Profesor
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="button">Ver</a>
                         <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="button">Editar</a>
