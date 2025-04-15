@@ -197,6 +197,8 @@
                 <tr>
                     <td><strong>Nombre</strong></td>
                     <td><strong>Estado</strong></td>
+                    <td><strong>Nota Final</strong></td>
+                    <td><strong>Acciones</strong></td>
                 </tr>
             </thead>
             <tbody>
@@ -204,6 +206,7 @@
                     <tr>
                         <td>{{ sc.student.first_name }} {{ sc.student.last_name }}</td>
                         <td>{{ sc.state }}</td>
+                        <td>{{ sc.final_grade if sc.final_grade is not none else "—" }}</td>
                         <td>
                             <a href="{{ url_for('student_courses.updateStudentCourseView', student_id=sc.student.id, course_section_id=course_section.id) }}">
                                 Editar

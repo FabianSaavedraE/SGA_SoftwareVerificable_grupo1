@@ -9,6 +9,7 @@ class StudentCourses(db.Model):
         db.Enum('Inscrito', 'Aprobado', 'Reprobado', name='state_type_enum'),
         nullable=False
     )
+    final_grade = db.Column(db.Float, nullable=True)
 
     student = db.relationship('Student', back_populates='student_courses', passive_deletes=True)
     course_section = db.relationship('CourseSection', back_populates='student_courses', passive_deletes=True)

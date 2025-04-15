@@ -106,6 +106,12 @@
         </select>
         <br>
 
+        <label for="final_grade">Nota Final:</label>
+        <input type="text" name="final_grade" id="final_grade"
+               value="{{ student_course.final_grade if student_course.final_grade is not none else '' }}"
+               placeholder="Ej: 5.5 o dejar vacío">
+        <br>
+
         <button type="submit">Guardar</button>
     </form>
 

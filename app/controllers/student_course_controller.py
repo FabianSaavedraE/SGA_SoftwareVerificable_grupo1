@@ -21,6 +21,15 @@ def updateStudentCourse(student_course, data):
         return None
 
     student_course.state = data.get('state', student_course.state)
+    
+    final_grade = data.get('final_grade')
+    if final_grade == '':
+        student_course.final_grade = None
+    elif final_grade is not None:
+        try:
+            student_course.final_grade = float(final_grade)
+        except ValueError:
+            pass
 
     db.session.commit()
     return student_course
