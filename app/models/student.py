@@ -1,4 +1,5 @@
 from app import db
+from datetime import date
 
 class Student(db.Model):
     __tablename__ = 'students'
@@ -7,6 +8,7 @@ class Student(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
+    entry_date = db.Column(db.Date, nullable=False, default=date.today)
 
     student_courses = db.relationship('StudentCourses', back_populates='student', cascade="all, delete-orphan", passive_deletes=True)
     student_evaluations = db.relationship('StudentEvaluations', back_populates='student', cascade="all, delete-orphan", passive_deletes=True)

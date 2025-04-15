@@ -111,7 +111,7 @@
 <body>
 
     <div class="sidebar">
-        <!-- Aquí podrías agregar íconos o navegación lateral -->
+        <!-- íconos opcionales -->
     </div>
 
     <div class="main">
@@ -125,6 +125,7 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Email</th>
+                        <th>Fecha de Ingreso</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -133,6 +134,13 @@
                         <tr>
                             <td>{{ student.first_name }} {{ student.last_name }}</td>
                             <td>{{ student.email }}</td>
+                            <td>
+                                {% if student.entry_date %}
+                                    {{ student.entry_date.isoformat() }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{{ url_for('students.updateStudentView', student_id=student.id) }}">Editar</a>
                                 <form action="{{ url_for('students.deleteStudentView', student_id=student.id) }}" method="POST" style="display:inline;">

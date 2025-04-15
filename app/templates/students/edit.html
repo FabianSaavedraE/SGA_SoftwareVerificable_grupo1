@@ -127,6 +127,12 @@
                     <input type="text" id="email" name="email" value="{{ student.email }}" required>
                 </div>
 
+                <div>
+                    <label for="entry_date">Fecha de ingreso (opcional):</label>
+                    <input type="date" id="entry_date" name="entry_date"
+                           value="{{ student.entry_date.isoformat() if student.entry_date else '' }}">
+                </div>
+
                 <button type="submit">Actualizar Estudiante</button>
             </form>
 

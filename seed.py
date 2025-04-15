@@ -1,4 +1,5 @@
 import random
+from datetime import date, timedelta
 from app import create_app, db
 from app.models.student import Student
 from app.models.course import Course
@@ -20,19 +21,23 @@ with app.app_context():
 
     estudiantes = []
     used_emails = set()
+    
+    base_date = date.today() - timedelta(days=365)
 
     while len(estudiantes) < 30:
         nombre = random.choice(nombres)
         apellido = random.choice(apellidos)
         email_base = f"{nombre.lower()}.{apellido.lower()}@miuandes.cl"
         email = email_base
+        random_days = random.randint(0, 365)
+        entry_date = base_date + timedelta(days=random_days)
         count = 1
         while email in used_emails:
             email = f"{nombre.lower()}.{apellido.lower()}{count}@miuandes.cl"
             count += 1
         used_emails.add(email)
 
-        estudiante = Student(first_name=nombre, last_name=apellido, email=email)
+        estudiante = Student(first_name=nombre, last_name=apellido, email=email, entry_date=entry_date)
         estudiantes.append(estudiante)
 
     db.session.add_all(estudiantes)
