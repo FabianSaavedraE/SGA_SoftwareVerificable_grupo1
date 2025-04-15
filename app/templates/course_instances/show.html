@@ -128,7 +128,9 @@
         <p>Esta instancia no tiene secciones.</p>
     {% endif %}
 
-    <a href="{{ url_for('course_sections.createSectionView', course_instance_id=course_instance.id) }}">Crear Sección</a>
+    <a href="{{ url_for('course_sections.createSectionView', course_instance_id=course_instance.id) }}" class="button">Crear Sección</a>
+    <a href="{{ url_for('course_sections.getSectionsView') }}" class="button">Listado de Secciones</a>
+    <a href="/" class="button">Ir al inicio</a>
 </div>
 
 </body>

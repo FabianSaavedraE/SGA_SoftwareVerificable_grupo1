@@ -1,23 +1,133 @@
-<h1>Crear Evaluación de tipo {{evaluation_type.topic}}</h1>
-<p>Curso: 
-    {{evaluation_type.course_section.course_instance.course.name}}
-    {{evaluation_type.course_section.course_instance.year}}-
-    {{evaluation_type.course_section.course_instance.semester}}
-</p>
-<p>NRC: {{evaluation_type.course_section.nrc}}</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Evaluación</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: sans-serif;
+        }
+        body {
+            display: flex;
+        }
+        .sidebar {
+            width: 60px;
+            background-color: #2f3943;
+            height: 100vh;
+            /* Puedes agregar aquí íconos o menú lateral */
+        }
+        .main {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: white;
+            overflow-y: auto;
+        }
+        h1 {
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: #2f3943;
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: #2f3943;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #2f3943;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="checkbox"] {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: darkred;
+        }
+        .btn-back {
+            display: inline-block;
+            background-color: #2f3943;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn-back:hover {
+            background-color: #1c2229;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- menú lateral -->
+    </div>
+    <div class="main">
+        <h1>Crear Evaluación de tipo {{ evaluation_type.topic }}</h1>
+        <h2>
+            Curso:
+            {{ evaluation_type.course_section.course_instance.course.name }}
+            {{ evaluation_type.course_section.course_instance.year }}-
+            {{ evaluation_type.course_section.course_instance.semester }}
+        </h2>
+        <h2>NRC: {{ evaluation_type.course_section.nrc }}</h2>
 
-<form action="{{url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation_type.id)}}" method="POST">
-    <label for="name">Nombre:</label>
-    <input type="text" id="name" name="name" required>
-    <br>
+        <form action="{{ url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation_type.id) }}" method="POST">
+            <div>
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
-    <label for="ponderation">Ponderación (opcional, se asigna automáticamente si se deja vacío):</label>
-    <input type="number" step="any" id="ponderation" name="ponderation">
-    <br>
+            <div>
+                <label for="ponderation">Ponderación (opcional, se asigna automáticamente si se deja vacío):</label>
+                <input type="number" step="any" id="ponderation" name="ponderation">
+            </div>
 
-    <label for="optional">Obligatoria:</label>
-    <input type="checkbox" id="optional" name="optional">
-    <br>
+            <div>
+                <label for="optional">Obligatoria:</label>
+                <input type="checkbox" id="optional" name="optional">
+            </div>
 
-    <button type="submit">Crear Evaluación</button>
-</form>
+            <button type="submit">Crear Evaluación</button>
+        </form>
+
+        <a href="{{ url_for('course_sections.showSectionView', course_section_id=evaluation_type.course_section.id) }}" class="btn-back">Volver a la sección</a>
+    </div>
+</body>
+</html>
