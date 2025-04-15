@@ -108,6 +108,8 @@
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="student_id" value="{{ student.id }}">
                                     <input type="hidden" name="state" value="enrolled">
+                                    <!-- Agregar el query actual para que se conserve -->
+                                    <input type="hidden" name="q" value="{{ request.args.get('q', '') }}">
                                     <button type="submit">Inscribir</button>
                                 </form>
                             {% endif %}

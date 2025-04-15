@@ -13,18 +13,18 @@ student_course_bp = Blueprint('student_courses', __name__, url_prefix='/student_
 @student_course_bp.route('/create/<int:course_section_id>', methods=['GET', 'POST'])
 def createStudentCourseView(course_section_id):
     section = getSection(course_section_id)
-    
     if not section:
-        return redirect(url_for('course_sections.showSectionView', course_id=section.course_id))
+        return redirect(url_for('course_sections.showSectionView', course_section_id=course_section_id))
 
     if request.method == 'POST':
         data = request.form.to_dict()
         data['course_section_id'] = course_section_id
         data['state'] = 'Inscrito'
         createStudentCourse(data)
-        return redirect(url_for('student_courses.createStudentCourseView', course_section_id=course_section_id))
+        # Preservamos el valor del query de búsqueda
+        q = request.form.get('q', '')
+        return redirect(url_for('student_courses.createStudentCourseView', course_section_id=course_section_id, q=q))
 
-    # Logica para el buscador
     query = request.args.get('q')
     if query:
         students = Student.query.filter(
@@ -35,7 +35,7 @@ def createStudentCourseView(course_section_id):
         ).all()
     else:
         students = []
-
+        
     return render_template('student_courses/create.html', section=section, students=students)
 
 @student_course_bp.route('/<int:student_id>/<int:course_section_id>', methods=['GET', 'POST'])
