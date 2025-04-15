@@ -55,6 +55,15 @@ def deleteSectionView(course_section_id, course_instance_id):
     course_section = getSection(course_section_id)
     if course_section:
         deleteSection(course_section)
+        return redirect(url_for('course_sections.getSectionsView'))
+    
+    return render_template('course_sections.getSectionsView')
+
+@course_section_bp.route('/delete/<int:course_section_id>/<int:course_instance_id>', methods=['POST'])
+def deleteSectionViewFromShow(course_section_id, course_instance_id):
+    course_section = getSection(course_section_id)
+    if course_section:
+        deleteSection(course_section)
         return redirect(url_for('course_instances.showCourseInstanceView', course_instance_id=course_instance_id))
     
-    return render_template('course_instances.showCourseInstanceView', course_instance_id=course_instance_id)
+    render_template('course_instances.showCourseInstanceView', course_instance_id=course_instance_id)

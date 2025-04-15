@@ -95,6 +95,7 @@
                 <tr>
                     <th>NRC</th>
                     <th>Profesor</th>
+                    <th>Tipo de ponderación de las Evaluaciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -109,13 +110,20 @@
                             {% endif %}
                         </td>
                         <td>
+                            {% if section.overall_ponderation_type %}
+                                {{ section.overall_ponderation_type }}
+                            {% else %}
+                                No está definido el tipo de ponderación.
+                            {% endif %}
+                        </td>
+                        <td>
                             <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="button">Ver</a>
                         </td>
                         <td>
                             <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="button">Editar</a>
                         </td>
                         <td>
-                            <form action="{{ url_for('course_sections.deleteSectionView', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" method="POST" style="display:inline;">
+                            <form action="{{ url_for('course_sections.deleteSectionViewFromShow', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="button" style="background-color: #555;">Eliminar</button>
                             </form>
