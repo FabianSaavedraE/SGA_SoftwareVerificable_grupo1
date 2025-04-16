@@ -2,35 +2,60 @@
 
 Este proyecto es una implementación de un Sistema de Gestión Académica (SGA), desarrollado como parte del curso "Diseño de Software Verificable". El sistema tiene como objetivo principal gestionar cursos, profesores, alumnos, secciones y evaluaciones y sus relaciones. Utiliza Python 3.9+, Flask como framework web y MySQL como base de datos.
 
+# Requisitos previos
+Antes de comenzar, deben estar instalados:
+- Python 3.9 o superior
+- pip
+- MySQL
+
 # Setup
-1. Crear un virtual environment 
+1. Clonar el repositorio
 
+2. Crear un entorno virtual 
 ```
-python -m venv .venv
+python -m venv venv
 ```
 
-2. Activar el virtual environment:
-- En Linux/Macos: ``source .venv/bin/activate``
-- En Windows (Command Prompt): ``cd .venv/Scripts && activate && cd ../../``
-- En Windows (PowerShell): ``.\.venv\Scripts\Activate.ps1``
+3. Activar el entorno virtual:
+- En Linux/Macos: 
 
-3. Instalar las dependencias:
+``source venv/bin/activate``
+- En Windows (Command Prompt): 
+
+``cd venv/Scripts && activate && cd ../../``
+- En Windows (PowerShell): 
+
+``.\venv\Scripts\Activate.ps1``
+
+4. Instalar las dependencias:
 ```
 pip install -r requirements.txt
 ```
 
-4. Crear una base de datos en MySQL
+5. Crear la base de datos MySQL:
 
-
-5. Crear un archivo .env en la carpeta raíz del proyecto. Es decir, en SGA_SOFTWAREVERIFICABLE_GRUPO1/
-
-6. Dentro de este archivo .env, agregar las credenciales de la base de datos MySQL. Ejemplo:
+Abrir el cliente MySQL (con el usuario root) y ejecutar:
 ```
-DATABASE_URI=mysql://root:{mysql password}@localhost/{database name}
+CREATE DATABASE academic_db;
+```
+
+6. Crear un archivo .env en la raíz del proyecto:
+
+Crear un archivo llamado .env en el directorio raíz del proyecto con el siguiente contenido:
+```
+DATABASE_URI=mysql://root:tu_contraseña_mysql@localhost:3306/academic_db
 FLASK_APP=run.py
 FLASK_ENV=development
 ```
 
-7. Antes de ejecutar la aplicación, correr el archivo seed.py con `python seed.py` (Esto es opcional, pero sugerido para revisar eliminaciones y testear las relaciones entre entidades rápidamente)
+7. (Opcional, pero recomendado) Poblar la base de datos con datos de prueba
 
-8. Ejecutar la aplicación con: `python run.py`
+Ejecutar el siguiente comando:
+```
+python seed.py
+```
+
+8. Ejecutar la aplicación 
+```
+python run.py
+```
