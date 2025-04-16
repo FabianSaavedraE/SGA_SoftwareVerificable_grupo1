@@ -48,14 +48,21 @@ FLASK_APP=run.py
 FLASK_ENV=development
 ```
 
-7. (Opcional, pero recomendado) Poblar la base de datos con datos de prueba
+7. Inicializar las migraciones y crear las tablas en la base de datos
+```
+flask db init
+flask db migrate
+flask db upgrade
+```
+
+8. (Opcional, pero recomendado) Poblar la base de datos con datos de prueba
 
 Ejecutar el siguiente comando:
 ```
 python seed.py
 ```
 
-8. Ejecutar la aplicación 
+9. Ejecutar la aplicación 
 ```
 python run.py
 ```
