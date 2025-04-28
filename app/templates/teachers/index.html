@@ -15,16 +15,6 @@
             display: flex;
         }
 
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
-
         .main {
             flex-grow: 1;
             height: 100vh;
@@ -110,9 +100,8 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <!-- Aquí podrías agregar íconos o navegación lateral -->
-    </div>
+     {% include 'navbar.html' %}
+
 
     <div class="main">
         <div class="title">Lista de Profesores</div>

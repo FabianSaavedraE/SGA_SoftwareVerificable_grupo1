@@ -13,15 +13,6 @@
         body {
             display: flex;
         }
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
         .main {
             flex-grow: 1;
             padding: 20px;
@@ -78,9 +69,7 @@
 </head>
 <body>
 
-<div class="sidebar">
-    <!-- menú lateral -->
-</div>
+{% include 'navbar.html' %}
 
 <div class="main">
     <h1>Crear Instancia para el curso {{ course.name }}</h1>
