@@ -1,15 +1,15 @@
 from app.models.course import Course
 from app import db
 
-def getAllCourses():
+def get_all_courses():
     courses = Course.query.all()
     return courses
 
-def getCourse(course_id):
+def get_course(course_id):
     course = Course.query.get(course_id)
     return course
 
-def createCourse(data):
+def create_course(data):
     new_course = Course(
         name = data.get('name'),
         description = data.get('description'),
@@ -20,7 +20,7 @@ def createCourse(data):
 
     return new_course
 
-def updateCourse(course, data):
+def update_course(course, data):
     if not course:
         return None
 
@@ -29,7 +29,7 @@ def updateCourse(course, data):
     db.session.commit()
     return course
 
-def deleteCourse(course):
+def delete_course(course):
     if not course:
         return False
 

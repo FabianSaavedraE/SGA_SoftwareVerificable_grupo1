@@ -138,7 +138,7 @@
         <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
 
         <div class="box">
-            <form action="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course.id) }}" method="POST">
+            <form action="{{ url_for('course_prerequisites.update_course_prerequisite_view', course_id=course.id) }}" method="POST">
                 
                 <h3>Prerrequisitos actuales</h3>
                 <ul>
@@ -169,7 +169,7 @@
                 <button type="submit" class="btn">Guardar Cambios</button>
             </form>
 
-            <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}" class="go-back">Volver a la lista de cursos</a>
+            <a href="{{ url_for('course_prerequisites.get_course_prerequisites') }}" class="go-back">Volver a la lista de cursos</a>
         </div>
     </div>
 

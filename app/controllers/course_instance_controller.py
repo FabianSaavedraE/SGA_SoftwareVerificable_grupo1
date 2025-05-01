@@ -1,15 +1,15 @@
 from app.models.course_instance import CourseInstance
 from app import db
 
-def getAllCourseInstances():
+def get_all_course_instances():
     course_instances = CourseInstance.query.all()
     return course_instances
 
-def getCourseInstance(course_instance_id):
+def get_course_instance(course_instance_id):
     course_instance = CourseInstance.query.get(course_instance_id)
     return course_instance
 
-def createCourseInstance(data):
+def create_course_instance(data):
     new_course_instance = CourseInstance(
         year = data.get('year'),
         semester = data.get('semester'),
@@ -20,7 +20,7 @@ def createCourseInstance(data):
 
     return new_course_instance
 
-def updateCourseInstance(course_instance, data):
+def update_course_instance(course_instance, data):
     if not course_instance:
         return None
     
@@ -30,7 +30,7 @@ def updateCourseInstance(course_instance, data):
     db.session.commit()
     return course_instance
 
-def deleteCourseInstance(course_instance):
+def delete_course_instance(course_instance):
     if not course_instance:
         return False
     

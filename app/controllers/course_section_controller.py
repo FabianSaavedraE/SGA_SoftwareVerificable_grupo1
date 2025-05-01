@@ -1,21 +1,21 @@
 from app.models.course_section import CourseSection
 from app.models.student_course import StudentCourses
 from app import db
-from app.controllers.student_course_controller import deleteStudentCourse
+from app.controllers.student_course_controller import delete_student_course
 
-def getAllSections():
+def get_all_sections():
     sections = CourseSection.query.all()
     return sections
 
-def getAllCourseSections(course_instance_id):
+def get_all_course_sections(course_instance_id):
     sections = CourseSection.query.find_by(course_instance_id=course_instance_id).all()
     return sections
 
-def getSection(course_section_id):
+def get_section(course_section_id):
     course_section = CourseSection.query.get(course_section_id)
     return course_section
 
-def createSection(data):
+def create_section(data):
     new_section = CourseSection(
         nrc = data.get('nrc'),
         overall_ponderation_type = data.get('overall_ponderation_type'),
@@ -27,7 +27,7 @@ def createSection(data):
 
     return new_section
 
-def updateSection(course_section, data):
+def update_section(course_section, data):
     if not course_section:
         return None
 
@@ -38,7 +38,7 @@ def updateSection(course_section, data):
     db.session.commit()
     return course_section
 
-def deleteSection(course_section):
+def delete_section(course_section):
     if not course_section:
         return False
     

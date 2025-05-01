@@ -101,7 +101,7 @@
     <p>Profesor: {{course_section.teacher}}</p>
 
     <h1>Tipos de Evaluación:</h1>
-    <a href="{{url_for('evaluation_types.createEvaluationTypeView', course_section_id=course_section.id)}}">Agregar Tipo de Evaluación</a>
+    <a href="{{url_for('evaluation_types.create_evaluation_type_view', course_section_id=course_section.id)}}">Agregar Tipo de Evaluación</a>
 
     {% if course_section.evaluation_types %}
         <table>
@@ -119,15 +119,15 @@
                         <td>{{evaluation.overall_ponderation}}</td>
                         <td>{{evaluation.ponderation_type}}</td>
                         <td>
-                            <a href="{{url_for('evaluation_types.updateEvaluationTypeView', evaluation_type_id=evaluation.id)}}">
+                            <a href="{{url_for('evaluation_types.update_evaluation_type_view', evaluation_type_id=evaluation.id)}}">
                                 Editar
                             </a>
                         </td>
                         <td>
-                            <a href="{{url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation.id)}}">Agregar Instancia</a>
+                            <a href="{{url_for('evaluations.create_evaluation_view', evaluation_type_id=evaluation.id)}}">Agregar Instancia</a>
                         </td>
                         <td>
-                            <form action="{{url_for('evaluation_types.deleteEvaluationTypeView', evaluation_type_id=evaluation.id, course_section_id=evaluation.course_section_id)}}" method="POST" style="display:inline;">
+                            <form action="{{url_for('evaluation_types.delete_evaluation_type_view', evaluation_type_id=evaluation.id, course_section_id=evaluation.course_section_id)}}" method="POST" style="display:inline;">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit">Eliminar</button>
                             </form>
@@ -161,17 +161,17 @@
                                 <td>{{evaluation.ponderation}}</td>
                                 <td>{{evaluation.optional}}</td>
                                 <td>
-                                    <a href="{{ url_for('evaluations.showEvaluationView', evaluation_id=evaluation.id) }}">
+                                    <a href="{{ url_for('evaluations.show_evaluation_view', evaluation_id=evaluation.id) }}">
                                         Ver / Asignar notas
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}">
+                                    <a href="{{url_for('evaluations.update_evaluation_view', evaluation_id=evaluation.id)}}">
                                         Editar
                                     </a>
                                 </td>
                                 <td>
-                                    <form action="{{url_for('evaluations.deleteEvaluationView', evaluation_id=evaluation.id, course_section_id=evaluation.evaluation_type.course_section_id)}}" method="POST" style="display:inline;">
+                                    <form action="{{url_for('evaluations.delete_evaluation_view', evaluation_id=evaluation.id, course_section_id=evaluation.evaluation_type.course_section_id)}}" method="POST" style="display:inline;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <button type="submit">Eliminar</button>
                                     </form>
@@ -189,7 +189,7 @@
     {% endif %}
 
     <h1>Estudiantes:</h1>
-    <a href="{{url_for('student_courses.createStudentCourseView', course_section_id=course_section.id)}}">Agregar Estudiante</a>
+    <a href="{{url_for('student_courses.create_student_course_view', course_section_id=course_section.id)}}">Agregar Estudiante</a>
 
     {% if course_section.student_courses %}
         <table>
@@ -208,12 +208,12 @@
                         <td>{{ sc.state }}</td>
                         <td>{{ sc.final_grade if sc.final_grade is not none else "—" }}</td>
                         <td>
-                            <a href="{{ url_for('student_courses.updateStudentCourseView', student_id=sc.student.id, course_section_id=course_section.id) }}">
+                            <a href="{{ url_for('student_courses.update_student_course_view', student_id=sc.student.id, course_section_id=course_section.id) }}">
                                 Editar
                             </a>
                         </td>
                         <td>
-                            <form action="{{ url_for('student_courses.deleteStudentCourseView', student_id=sc.student.id, course_section_id=course_section.id) }}" method="POST" style="display:inline;">
+                            <form action="{{ url_for('student_courses.delete_student_course_view', student_id=sc.student.id, course_section_id=course_section.id) }}" method="POST" style="display:inline;">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit">Eliminar</button>
                             </form>
@@ -226,7 +226,7 @@
         <p>No hay alumnos inscritos en esta sección.</p>
     {% endif %}
 
-    <a href="{{ url_for('course_sections.getSectionsView') }}", class="btn-back">
+    <a href="{{ url_for('course_sections.get_sections_view') }}", class="btn-back">
         Volver a la lista
     </a>
 </div>

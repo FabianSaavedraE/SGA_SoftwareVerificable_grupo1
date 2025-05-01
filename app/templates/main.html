@@ -114,7 +114,7 @@
         <div class="grid">
             <!-- Estudiantes -->
             <div class="box">
-                <a href="{{ url_for('students.getStudentsView') }}">
+                <a href="{{ url_for('students.get_students_view') }}">
                     <button>Ver estudiantes</button>
                 </a>
                 <ul>
@@ -128,7 +128,7 @@
 
             <!-- Cursos -->
             <div class="box">
-                <a href="{{ url_for('courses.getCoursesView') }}">
+                <a href="{{ url_for('courses.get_courses_view') }}">
                     <button>Ver cursos</button>
                 </a>
                 <ul>
@@ -142,7 +142,7 @@
 
             <!-- Secciones -->
             <div class="box">
-                <a href="{{ url_for('course_sections.getSectionsView') }}">
+                <a href="{{ url_for('course_sections.get_sections_view') }}">
                     <button>Ver secciones</button>
                 </a>
                 <ul>
@@ -156,7 +156,7 @@
 
             <!-- Profesores -->
             <div class="box">
-                <a href="{{ url_for('teachers.getTeachersView') }}">
+                <a href="{{ url_for('teachers.get_teachers_view') }}">
                     <button>Ver profesores</button>
                 </a>
                 <ul>
@@ -170,7 +170,7 @@
 
             <!-- Prerequisitos (ocupa dos columnas) -->
             <div class="box prerequisites">
-                <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">
+                <a href="{{ url_for('course_prerequisites.get_course_prerequisites') }}">
                     <button>Ver prerequisitos</button>
                 </a>
                 <ul>

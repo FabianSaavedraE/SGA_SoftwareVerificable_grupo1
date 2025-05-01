@@ -2,16 +2,16 @@ from app.models.student import Student
 from app import db
 from datetime import datetime, date
 
-def getAllStudents():
+def get_all_students():
     students = Student.query.all()
     return students
 
-def getStudent(student_id):
+def get_student(student_id):
     student = Student.query.get(student_id)
     print(student)
     return student
 
-def createStudent(data):
+def create_student(data):
     entry_date = data.get('entry_date')
     
     if entry_date:
@@ -33,7 +33,7 @@ def createStudent(data):
 
     return new_student
 
-def updateStudent(student, data):
+def update_student(student, data):
     if not student:
         return None
 
@@ -51,7 +51,7 @@ def updateStudent(student, data):
     db.session.commit()
     return student
 
-def deleteStudent(student):
+def delete_student(student):
     print(student)
     if not student:
         return False
