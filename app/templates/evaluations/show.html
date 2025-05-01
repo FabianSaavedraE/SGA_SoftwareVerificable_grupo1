@@ -121,11 +121,11 @@
                     </td>
                     <td>
                         {% if grades.get(student_course.student.id) is not none %}
-                            <a href="{{ url_for('student_evaluations.updateStudentEvaluationView', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
+                            <a href="{{ url_for('student_evaluations.update_student_evaluation_view', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
                                 Editar nota
                             </a>
                         {% else %}
-                            <a href="{{ url_for('student_evaluations.createStudentEvaluationView', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
+                            <a href="{{ url_for('student_evaluations.create_student_evaluation_view', student_id=student_course.student.id, evaluation_id=evaluation.id) }}">
                                 Ingresar nota
                             </a>
                         {% endif %}
@@ -135,7 +135,7 @@
         </tbody>
     </table>
 
-    <a href="{{ url_for('course_sections.showSectionView', course_section_id=course_section.id) }}" class="btn-back">Volver</a>
+    <a href="{{ url_for('course_sections.show_section_view', course_section_id=course_section.id) }}" class="btn-back">Volver</a>
 
 </div>
 

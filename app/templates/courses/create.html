@@ -105,7 +105,7 @@
         <div class="title">Crear Curso</div>
 
         <div class="form-container">
-            <form action="{{ url_for('courses.createCourseView') }}" method="POST">
+            <form action="{{ url_for('courses.create_course_view') }}" method="POST">
                 <label for="name">Nombre:</label>
                 <input type="text" id="name" name="name" required>
 
@@ -117,7 +117,7 @@
 
                 <button type="submit">Crear Curso</button>
             </form>
-            <a href="{{ url_for('courses.getCoursesView') }}" class="btn-back">Volver</a>
+            <a href="{{ url_for('courses.get_courses_view') }}" class="btn-back">Volver</a>
         </div>
     </div>
 

@@ -1,19 +1,19 @@
 from app.models.evaluation import Evaluation
 from app import db
 
-def getAllEvaluations():
+def get_all_evaluations():
     evaluations = Evaluation.query.all()
     return evaluations
 
-def getEvaluationsByTopic(evaluation_type_id):
+def get_evaluations_by_topic(evaluation_type_id):
     evaluations = Evaluation.query.find_by(evaluation_type_id=evaluation_type_id).all()
     return evaluations
 
-def getEvaluation(evaluation_id):
+def get_evaluation(evaluation_id):
     evaluation = Evaluation.query.get(evaluation_id)
     return evaluation
 
-def createEvaluation(data):
+def create_evaluation(data):
     from app.models.evaluation_type import EvaluationType
 
     evaluation_type_id = data.get('evaluation_type_id')
@@ -43,7 +43,7 @@ def createEvaluation(data):
     db.session.commit()
 
     return new_evaluation
-def updateEvaluation(evaluation, data):
+def update_evaluation(evaluation, data):
     if not evaluation:
         return None
     
@@ -54,7 +54,7 @@ def updateEvaluation(evaluation, data):
     db.session.commit()
     return evaluation
 
-def deleteEvaluation(evaluation):
+def delete_evaluation(evaluation):
     if not evaluation:
         return False
 

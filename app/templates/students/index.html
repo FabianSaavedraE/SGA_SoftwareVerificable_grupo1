@@ -118,7 +118,7 @@
         <div class="title">Lista de Estudiantes</div>
 
         <div class="box">
-            <a href="{{ url_for('students.createStudentView') }}" class="top-button">Agregar Estudiante</a>
+            <a href="{{ url_for('students.create_student_view') }}" class="top-button">Agregar Estudiante</a>
 
             <table>
                 <thead>
@@ -142,8 +142,8 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ url_for('students.updateStudentView', student_id=student.id) }}">Editar</a>
-                                <form action="{{ url_for('students.deleteStudentView', student_id=student.id) }}" method="POST" style="display:inline;">
+                                <a href="{{ url_for('students.update_student_view', student_id=student.id) }}">Editar</a>
+                                <form action="{{ url_for('students.delete_student_view', student_id=student.id) }}" method="POST" style="display:inline;">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit">Eliminar</button>
                                 </form>

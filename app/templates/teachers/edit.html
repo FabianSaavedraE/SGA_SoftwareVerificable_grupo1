@@ -100,7 +100,7 @@
 
     <h1>Editar Profesor {{teacher.first_name}} {{teacher.last_name}}</h1>
 
-    <form action="{{url_for('teachers.updateTeacherView', teacher_id=teacher.id)}}" method="POST">
+    <form action="{{url_for('teachers.update_teacher_view', teacher_id=teacher.id)}}" method="POST">
         <label for="first_name">Nombre:</label>
         <input type="text" id="first_name" name="first_name" value="{{teacher.first_name}}" required>
 
@@ -113,7 +113,7 @@
         <button type="submit">Actualizar Profesor</button>
     </form>
 
-    <a href="{{ url_for('teachers.getTeachersView') }}" class="btn-back">Volver</a>
+    <a href="{{ url_for('teachers.get_teachers_view') }}" class="btn-back">Volver</a>
 
 </div>
 

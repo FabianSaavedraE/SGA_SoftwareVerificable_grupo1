@@ -85,7 +85,7 @@
 <div class="main">
     <h1>Crear Instancia para el curso {{ course.name }}</h1>
 
-    <form action="{{ url_for('course_instances.createCourseInstanceView', course_id=course.id) }}" method="POST">
+    <form action="{{ url_for('course_instances.create_course_instance_view', course_id=course.id) }}" method="POST">
         <div>
             <label for="year">Año:</label>
             <input type="text" id="year" name="year" required>
@@ -103,7 +103,7 @@
         <button type="submit">Crear Instancia de Curso</button>
     </form>
 
-    <a href="{{ url_for('courses.showCourseView', course_id=course.id) }}" class="btn-back">Volver</a>
+    <a href="{{ url_for('courses.show_course_view', course_id=course.id) }}" class="btn-back">Volver</a>
 </div>
 
 </body>

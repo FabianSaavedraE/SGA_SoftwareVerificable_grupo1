@@ -111,7 +111,7 @@
         <div class="box">
             <h3 style="text-align:center; color:red;">{{ student.first_name }} {{ student.last_name }}</h3>
 
-            <form action="{{ url_for('students.updateStudentView', student_id=student.id) }}" method="POST">
+            <form action="{{ url_for('students.update_student_view', student_id=student.id) }}" method="POST">
                 <div>
                     <label for="first_name">Nombre:</label>
                     <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" required>
@@ -136,7 +136,7 @@
                 <button type="submit">Actualizar Estudiante</button>
             </form>
 
-            <a href="{{ url_for('students.getStudentsView') }}" class="go-back">Volver a Estudiantes</a>
+            <a href="{{ url_for('students.get_students_view') }}" class="go-back">Volver a Estudiantes</a>
         </div>
     </div>
 

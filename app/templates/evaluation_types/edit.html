@@ -90,7 +90,7 @@
     </p>
     <p><strong>Sección:</strong> {{ evaluation_type.course_section.nrc }}</p>
 
-    <form action="{{ url_for('evaluation_types.updateEvaluationTypeView', evaluation_type_id=evaluation_type.id) }}" method="POST">
+    <form action="{{ url_for('evaluation_types.update_evaluation_type_view', evaluation_type_id=evaluation_type.id) }}" method="POST">
         <label for="topic">Tópico:</label>
         <input type="text" id="topic" name="topic" value="{{ evaluation_type.topic }}" required>
         <br>
@@ -118,7 +118,7 @@
         <button type="submit">Actualizar Tipo de Evaluación</button>
     </form>
 
-    <a href="{{ url_for('course_sections.showSectionView', course_section_id=evaluation_type.course_section.id) }}" class="btn-back">Volver a la sección</a>
+    <a href="{{ url_for('course_sections.show_section_view', course_section_id=evaluation_type.course_section.id) }}" class="btn-back">Volver a la sección</a>
 
 </div>
 

@@ -131,9 +131,9 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="button">Ver</a>
-                        <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="button">Editar</a>
-                        <form method="POST" action="{{ url_for('course_sections.deleteSectionView', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" style="display:inline;">
+                        <a href="{{ url_for('course_sections.show_section_view', course_section_id=section.id) }}" class="button">Ver</a>
+                        <a href="{{ url_for('course_sections.update_section_view', course_section_id=section.id) }}" class="button">Editar</a>
+                        <form method="POST" action="{{ url_for('course_sections.delete_section_view', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" style="display:inline;">
                             <button type="submit" class="button" style="background-color: #555;">Eliminar</button>
                         </form>
                     </td>
