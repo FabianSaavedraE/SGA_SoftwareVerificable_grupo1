@@ -13,12 +13,7 @@
         body {
             display: flex;
         }
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            /* Puedes agregar aquí íconos o menú lateral */
-        }
+
         .main {
             flex-grow: 1;
             padding: 20px;
@@ -95,9 +90,10 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <!-- menú lateral -->
-    </div>
+
+{% include 'navbar.html' %}
+
+
     <div class="main">
         <h1>Crear Evaluación de tipo {{ evaluation_type.topic }}</h1>
         <h2>
