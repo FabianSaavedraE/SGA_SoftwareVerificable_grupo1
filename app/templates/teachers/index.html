@@ -1,146 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Estudiantes</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-            background-color: white;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .box {
-            border: 2px solid red;
-            padding: 15px;
-            box-sizing: border-box;
-            overflow-y: auto;
-        }
-
-        .box h3 {
-            text-align: center;
-            color: red;
-        }
-
-        .box table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .box th, .box td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-
-        .box th {
-            background-color: #f2f2f2;
-        }
-
-        .box a,
-        .box button {
-            padding: 5px 10px;
-            margin: 0 2px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .box a:hover,
-        .box button:hover {
-            background-color: darkred;
-        }
-
-        .box .top-button {
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-
-        .go-back {
-            margin-top: 15px;
-            display: inline-block;
-            padding: 5px 10px;
-            background-color: #2f3943;
-            color: white;
-            border-radius: 4px;
-            text-decoration: none;
-        }
-
-        .go-back:hover {
-            background-color: #1c2229;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
-
-     {% include 'navbar.html' %}
-
-
-    <div class="main">
-        <div class="title">Lista de Profesores</div>
-
-        <div class="box">
-            <a href="{{ url_for('teachers.createTeacherView') }}" class="top-button">Agregar Profesor</a>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for teacher in teachers %}
-                        <tr>
-                            <td>{{ teacher.first_name }} {{ teacher.last_name }}</td>
-                            <td>{{ teacher.email }}</td>
-                            <td>
-                                <a href="{{ url_for('teachers.updateTeacherView', teacher_id=teacher.id) }}">Editar</a>
-                                <form action="{{ url_for('teachers.deleteTeacherView', teacher_id=teacher.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="3">No hay profesores</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <a href="/" class="go-back">Volver al inicio</a>
-        </div>
+{% include 'navbar.html' %}
+<div class="main">
+    
+    <div class="title">
+        Lista de Profesores
     </div>
 
+    <div class="box">
+
+        <a href="{{ url_for('teachers.createTeacherView') }}" class="top-button">Agregar Profesor</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for teacher in teachers %}
+                    <tr>
+                        <td>{{ teacher.first_name }} {{ teacher.last_name }}</td>
+                        <td>{{ teacher.email }}</td>
+                        <td>
+                            <a href="{{ url_for('teachers.updateTeacherView', teacher_id=teacher.id) }}">Editar</a>
+                            <form action="{{ url_for('teachers.deleteTeacherView', teacher_id=teacher.id) }}" method="POST" style="display:inline;">
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No hay profesores</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/" class="go-back">Volver al inicio</a>
+        
+    </div>
+
+</div>
 </body>
+
 </html>
 
