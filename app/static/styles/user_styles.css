@@ -11,7 +11,7 @@ body {
 }
 
 a {
-    color: #273540;
+    color: #273540;     
     text-decoration: none;
 }
 
@@ -114,6 +114,10 @@ th {
     overflow-y: auto;
 }
 
+label {
+    font-weight: bold;
+}
+
 /* ===== BUTTONS & ACTIONS ===== */
 button,
 .btn-back,
@@ -190,11 +194,52 @@ label {
     margin-bottom: 8px;
 }
 
-input {
+input, select {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
     margin-bottom: 20px;
     padding: 10px;
     width: 100%;
+}
+
+/* ===== ACTIONS CELL STYLES ===== */
+td.actions {
+    white-space: nowrap; /* Evita saltos de línea */
+    min-width: 150px; /* Asegura espacio mínimo */
+}
+
+.action-form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.action-btn {
+    display: inline-block;
+    margin: 0 5px;
+    vertical-align: middle;
+}
+
+/* ===== FOR BUTTONS IN FORMS ===== */
+
+a.btn-action {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 4px;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: red; /* Color de botón normal */
+    color: white !important;   /* Fuerza texto blanco */
+    text-decoration: none !important; /* Elimina subrayado */
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    min-width: 70px;
+}
+
+a.btn-action:hover {
+    background-color: darkred; /* Color hover */
+    text-decoration: none !important; /* Mantiene sin subrayado */
+    opacity: 0.9;
 }

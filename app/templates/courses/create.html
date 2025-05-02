@@ -1,113 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Crear Curso</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-            background-color: white;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .title {
-            font-weight: bold;
-            font-size: 22px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-container {
-            border: 2px solid red;
-            padding: 20px;
-            max-width: 500px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: darkred;
-        }
-
-        .btn-back {
-            margin-top: 10px;
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
 <body>
 
-    {% include 'navbar.html' %}
+{% include 'navbar.html' %}
 
-    <div class="main">
-        <div class="title">Crear Curso</div>
+<div class="main">
+    <div class="title">Crear Curso</div>
 
-        <div class="form-container">
-            <form action="{{ url_for('courses.createCourseView') }}" method="POST">
-                <label for="name">Nombre:</label>
-                <input type="text" id="name" name="name" required>
+    <div class="form-container">
+        <form action="{{ url_for('courses.createCourseView') }}" method="POST">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required>
 
-                <label for="description">Descripción:</label>
-                <input type="text" id="description" name="description" required>
+            <label for="description">Descripción:</label>
+            <input type="text" id="description" name="description" required>
 
-                <label for="code">Código:</label>
-                <input type="text" id="code" name="code" required>
+            <label for="code">Código:</label>
+            <input type="text" id="code" name="code" required>
 
-                <button type="submit">Crear Curso</button>
-            </form>
-            <a href="{{ url_for('courses.getCoursesView') }}" class="btn-back">Volver</a>
-        </div>
+            <button type="submit">Crear Curso</button>
+        </form>
+        <a href="{{ url_for('courses.getCoursesView') }}" class="btn-back">Volver</a>
+
     </div>
 
+</div>
 </body>
+
 </html>

@@ -1,109 +1,46 @@
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Crear Sección para el curso {{ course_instance.course.name }}</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .main {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: white;
-            overflow-y: auto;
-        }
-
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2f3943;
-            margin-bottom: 10px;
-        }
-
-        label {
-            font-weight: bold;
-            color: #2f3943;
-        }
-
-        input, select {
-            padding: 10px;
-            margin-bottom: 15px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: red;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: darkred;
-        }
-
-        .btn-back {
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
-  
+
 <body>
-
 {% include 'navbar.html' %}
-
 
 <div class="main">
 
+    <h1>Crear Sección para el curso {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
 
-<h1>Crear Seccion para el curso {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
+    <form action="{{url_for('course_sections.createSectionView', course_instance_id=course_instance.id)}}" method="POST">
+        <label for="nrc">NRC:</label>
+        <input type="text" id="nrc" name="nrc" required>
+        <br>
 
-<form action="{{url_for('course_sections.createSectionView', course_instance_id=course_instance.id)}}" method="POST">
-    <label for="nrc">NRC:</label>
-    <input type="text" id="nrc" name="nrc" required>
-    <br>
+        <label for="overall_ponderation_type">Tipo de Ponderación para la nota final:</label>
+        <select name="overall_ponderation_type" id="overall_ponderation_type" required>
+            <option value="Porcentaje">Porcentaje</option>
+            <option value="Peso">Peso</option>
+        </select>
+        <br>
 
-    <label for="overall_ponderation_type">Tipo de Ponderación para la nota final:</label>
-    <select name="overall_ponderation_type" id="overall_ponderation_type" required>
-        <option value="Porcentaje">Porcentaje</option>
-        <option value="Peso">Peso</option>
-    </select>
-    <br>
+        <label for="teacher_id">Profesor (opcional):</label>
+        <select name="teacher_id" id="teacher_id">
+            <option value="">Sin Profesor</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}">
+                    {{ teacher.first_name }} {{ teacher.last_name }}
+                </option>
+            {% endfor %}
+        </select>
+        <br>
 
-    <label for="teacher_id">Profesor (opcional):</label>
-    <select name="teacher_id" id="teacher_id">
-        <option value="">Sin Profesor</option>
-        {% for teacher in teachers %}
-            <option value="{{ teacher.id }}">
-                {{ teacher.first_name }} {{ teacher.last_name }}
-            </option>
-        {% endfor %}
-    </select>
-    <br>
+        <button type="submit">Crear Sección</button>
+    </form>
+    
+</div>
+</body>
 
-    <button type="submit">Crear Sección</button>
-</form>
+</html>

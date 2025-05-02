@@ -1,104 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Editar Prerrequisitos de Curso</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 
-        body {
-            display: flex;
-        }
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-            background-color: white;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .box {
-            border: 2px solid red;
-            padding: 20px;
-            box-sizing: border-box;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .btn, .go-back {
-            padding: 8px 12px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn:hover, .go-back:hover {
-            background-color: darkred;
-        }
-
-        .go-back {
-            margin-top: 15px;
-            background-color: #2f3943;
-        }
-
-        .go-back:hover {
-            background-color: #1c2229;
-        }
-
-        form button[type="button"] {
-            background-color: #555;
-        }
-
-        form button[type="button"]:hover {
-            background-color: #333;
-        }
-
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        li {
-            margin-bottom: 10px;
-        }
-
-        .actions {
-            margin-top: 10px;
-        }
-
-    </style>
     <script>
         function addPrerequisiteField() {
             const container = document.getElementById('new-prereqs');
@@ -116,49 +23,52 @@
             container.appendChild(select);
         }
     </script>
-</head>
-<body>
 
+</head>
+
+<body>
     {% include 'navbar.html' %}
 
-    <div class="main">
-        <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
+<div class="main">
 
-        <div class="box">
-            <form action="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course.id) }}" method="POST">
-                
-                <h3>Prerrequisitos actuales</h3>
-                <ul>
-                    {% for prereq in prerequisites %}
-                        <li>
-                            {{ prereq.prerequisite.name }}
-                            <button type="submit" name="delete_prerequisite_id" value="{{ prereq.prerequisite.id }}">Eliminar</button>
-                        </li>
-                    {% endfor %}
-                </ul>
+    <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
 
-                <div class="actions">
-                    <h3>Añadir nuevo(s) prerrequisito(s)</h3>
-                    <label for="new_prerequisite">Selecciona un curso como prerrequisito:</label>
+    <div class="box">
+        <form action="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course.id) }}" method="POST">
+            
+            <h3>Prerrequisitos actuales</h3>
+            <ul>
+                {% for prereq in prerequisites %}
+                    <li>
+                        {{ prereq.prerequisite.name }}
+                        <button type="submit" name="delete_prerequisite_id" value="{{ prereq.prerequisite.id }}">Eliminar</button>
+                    </li>
+                {% endfor %}
+            </ul>
 
-                    <div id="new-prereqs">
-                        <select name="new_prerequisite[]" class="prerequisite-select">
-                            {% for prereq in available_prereqs %}
-                                <option value="{{ prereq.id }}">{{ prereq.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <div class="actions">
+                <h3>Añadir nuevo(s) prerrequisito(s)</h3>
+                <label for="new_prerequisite">Selecciona un curso como prerrequisito:</label>
 
-                    <button type="button" onclick="addPrerequisiteField()">Añadir otro prerrequisito</button>
+                <div id="new-prereqs">
+                    <select name="new_prerequisite[]" class="prerequisite-select">
+                        {% for prereq in available_prereqs %}
+                            <option value="{{ prereq.id }}">{{ prereq.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-                <br>
-                <button type="submit" class="btn">Guardar Cambios</button>
-            </form>
+                <button type="button" onclick="addPrerequisiteField()">Añadir otro prerrequisito</button>
+            </div>
 
-            <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}" class="go-back">Volver a la lista de cursos</a>
-        </div>
+            <br>
+            <button type="submit" class="btn">Guardar Cambios</button>
+        </form>
+
+        <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}" class="go-back">Volver a la lista de cursos</a>
     </div>
 
+</div>
 </body>
+
 </html>
