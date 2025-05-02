@@ -1,5 +1,5 @@
-from app.models.course import Course
 from app import db
+from app.models.course import Course
 
 def get_all_courses():
     courses = Course.query.all()

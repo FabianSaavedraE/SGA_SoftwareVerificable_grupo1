@@ -1,5 +1,5 @@
-from app.models.evaluation_type import EvaluationType
 from app import db
+from app.models.evaluation_type import EvaluationType
 
 def get_evaluation_types_by_course(course_id):
     evaluation_types = EvaluationType.query.find_by(course_id=course_id).all()
@@ -27,8 +27,14 @@ def update_evaluation_type(evaluation_type, data):
         return None
 
     evaluation_type.topic = data.get('topic', evaluation_type.topic)
-    evaluation_type.ponderation_type = data.get('ponderation_type', evaluation_type.ponderation_type)
-    evaluation_type.overall_ponderation = data.get('overall_ponderation', evaluation_type.overall_ponderation)
+    evaluation_type.ponderation_type = data.get(
+        'ponderation_type',
+        evaluation_type.ponderation_type
+    )
+    evaluation_type.overall_ponderation = data.get(
+        'overall_ponderation',
+        evaluation_type.overall_ponderation
+    )
 
     db.session.commit()
     return evaluation_type
@@ -36,7 +42,7 @@ def update_evaluation_type(evaluation_type, data):
 def delete_evaluation_type(evaluation_type):
     if not evaluation_type:
         return False
-    
+
     db.session.delete(evaluation_type)
     db.session.commit()
     return True

@@ -48,8 +48,8 @@ def show_evaluation_view(evaluation_id):
     students = course_section.student_courses
 
     grades = {
-        (se.student_id): se.grade
-        for se in evaluation.student_evaluations
+        (student_evaluation.student_id): student_evaluation.grade
+        for student_evaluation in evaluation.student_evaluations
     }
 
     return render_template(
