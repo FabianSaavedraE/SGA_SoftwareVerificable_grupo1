@@ -29,7 +29,7 @@ def create_evaluation(data):
     ).all()
     ponderation = data.get('ponderation')
 
-    if ponderation is '':
+    if ponderation == '':
         if evaluation_type.ponderation_type == 'Peso':
             ponderation = 1
         elif evaluation_type.ponderation_type == 'Porcentaje':

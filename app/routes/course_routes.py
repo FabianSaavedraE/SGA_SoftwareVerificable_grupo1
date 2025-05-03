@@ -1,7 +1,8 @@
-from flask import Blueprint, jsonify, request, render_template, redirect, url_for
-from app.models.course import Course
-from app.controllers.course_controller import get_all_courses, get_course, create_course, update_course, delete_course
-from app import db
+from flask import Blueprint, request, render_template, redirect, url_for
+
+from app.controllers.course_controller import (
+    get_all_courses, get_course, create_course, update_course, delete_course
+)
 
 course_bp = Blueprint('courses', __name__, url_prefix='/courses')
 
@@ -19,7 +20,7 @@ def show_course_view(course_id):
     return render_template('courses/show.html', course=course)
 
 @course_bp.route('/create', methods=['GET', 'POST'])
-def create_course_View():
+def create_course_view():
     if request.method == 'POST':
         data = request.form
         create_course(data)
@@ -49,4 +50,3 @@ def delete_course_view(course_id):
         return redirect(url_for('courses.get_courses_view'))
 
     return redirect(url_for('courses.get_courses_view'))
-    

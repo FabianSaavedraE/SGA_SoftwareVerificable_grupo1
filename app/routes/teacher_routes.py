@@ -1,5 +1,9 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for
-from app.controllers.teacher_controller import get_all_teachers, get_teacher, create_teacher, update_teacher, delete_teacher
+from flask import Blueprint, request, render_template, redirect, url_for
+
+from app.controllers.teacher_controller import (
+    get_all_teachers, get_teacher, create_teacher,
+    update_teacher, delete_teacher
+)
 
 teacher_bp = Blueprint('teachers', __name__, url_prefix='/teachers')
 
