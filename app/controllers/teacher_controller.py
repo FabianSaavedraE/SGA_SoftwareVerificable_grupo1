@@ -1,5 +1,5 @@
-from app.models.teacher import Teacher
 from app import db
+from app.models.teacher import Teacher
 
 def get_all_teachers():
     teachers = Teacher.query.all()

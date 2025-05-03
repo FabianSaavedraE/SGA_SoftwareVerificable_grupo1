@@ -1,5 +1,5 @@
-from app.models.student_course import StudentCourses
 from app import db
+from app.models.student_course import StudentCourses
 
 def get_student_course(student_id, course_section_id):
     student_course = StudentCourses.query.get((student_id, course_section_id))
@@ -21,7 +21,7 @@ def update_student_course(student_course, data):
         return None
 
     student_course.state = data.get('state', student_course.state)
-    
+
     final_grade = data.get('final_grade')
     if final_grade == '':
         student_course.final_grade = None

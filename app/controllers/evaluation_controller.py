@@ -1,12 +1,14 @@
-from app.models.evaluation import Evaluation
 from app import db
+from app.models.evaluation import Evaluation
 
 def get_all_evaluations():
     evaluations = Evaluation.query.all()
     return evaluations
 
 def get_evaluations_by_topic(evaluation_type_id):
-    evaluations = Evaluation.query.find_by(evaluation_type_id=evaluation_type_id).all()
+    evaluations = Evaluation.query.find_by(
+        evaluation_type_id=evaluation_type_id
+    ).all()
     return evaluations
 
 def get_evaluation(evaluation_id):
@@ -22,10 +24,12 @@ def create_evaluation(data):
     if not evaluation_type:
         return None  # Fallback defensivo
 
-    existing_evaluations = Evaluation.query.filter_by(evaluation_type_id=evaluation_type_id).all()
+    existing_evaluations = Evaluation.query.filter_by(
+        evaluation_type_id=evaluation_type_id
+    ).all()
     ponderation = data.get('ponderation')
 
-    if ponderation is '':
+    if ponderation == '':
         if evaluation_type.ponderation_type == 'Peso':
             ponderation = 1
         elif evaluation_type.ponderation_type == 'Porcentaje':
@@ -43,10 +47,11 @@ def create_evaluation(data):
     db.session.commit()
 
     return new_evaluation
+
 def update_evaluation(evaluation, data):
     if not evaluation:
         return None
-    
+
     evaluation.name = data.get('name', evaluation.name)
     evaluation.ponderation = data.get('ponderation', evaluation.ponderation)
     evaluation.optional = data.get('optional', evaluation.optional)
