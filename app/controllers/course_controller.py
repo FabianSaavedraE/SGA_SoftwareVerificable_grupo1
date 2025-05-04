@@ -25,6 +25,8 @@ def update_course(course, data):
         return None
 
     course.name = data.get('name', course.name)
+    course.description = data.get("description", course.description)
+    course.code = data.get("code", course.code)
 
     db.session.commit()
     return course
