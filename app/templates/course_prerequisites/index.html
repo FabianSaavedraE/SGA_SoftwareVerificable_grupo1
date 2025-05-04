@@ -1,158 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Prerrequisitos de Cursos</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
-
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-            background-color: white;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .box {
-            border: 2px solid red;
-            padding: 20px;
-            box-sizing: border-box;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .actions a, .actions form {
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        button, .add-btn, .go-back {
-            padding: 8px 12px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        button:hover, .add-btn:hover, .go-back:hover {
-            background-color: darkred;
-        }
-
-        .top-buttons {
-            margin-bottom: 10px;
-        }
-
-        .go-back {
-            margin-top: 15px;
-            background-color: #2f3943;
-        }
-
-        .go-back:hover {
-            background-color: #1c2229;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
+
 <body>
+{% include 'navbar.html' %}
 
-    <div class="sidebar">
-        <!-- íconos si querés -->
-    </div>
+<div class="main">
+    
+    <div class="title">Lista de Prerrequisitos</div>
 
-    <div class="main">
-        <div class="title">Lista de Prerrequisitos</div>
-
-        <div class="box">
-            <div class="top-buttons">
-                <a href="{{ url_for('course_prerequisites.create_course_prerequisite_view') }}" class="add-btn">Crear nuevo prerrequisito</a>
-            </div>
-
-            {% if grouped_prerequisites %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Curso</th>
-                            <th>Prerrequisitos</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for course_id, data in grouped_prerequisites.items() %}
-                            <tr>
-                                <td><strong>{{ data['name'] }}</strong></td>
-                                <td>
-                                    <ul>
-                                        {% for prereq in data['prerequisites'] %}
-                                            <li>
-                                                {{ prereq['name'] }}
-                                                <form action="{{ url_for('course_prerequisites.delete_course_prerequisite_view', course_id=course_id, prerequisite_id=prereq['id']) }}" method="POST" style="display:inline;">
-                                                    <button type="submit">Eliminar</button>
-                                                </form>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('course_prerequisites.update_course_prerequisite_view', course_id=course_id) }}" class="add-btn">Editar</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No hay prerrequisitos establecidos todavía.</p>
-            {% endif %}
-
-            <a href="/" class="go-back">Volver al inicio</a>
+    <div class="box">
+        <div class="top-buttons">
+            <a href="{{ url_for('course_prerequisites.createCoursePrerequisiteView') }}" class="add-btn">Crear nuevo prerrequisito</a>
         </div>
+
+        {% if grouped_prerequisites %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Curso</th>
+                        <th>Prerrequisitos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for course_id, data in grouped_prerequisites.items() %}
+                        <tr>
+                            <td><strong>{{ data['name'] }}</strong></td>
+                            <td class = "actions">
+                                <ul>
+                                    {% for prereq in data['prerequisites'] %}
+                                        <li>
+                                            {{ prereq['name'] }}
+                                            <form action="{{ url_for('course_prerequisites.deleteCoursePrerequisiteView', course_id=course_id, prerequisite_id=prereq['id']) }}" method="POST" style="display:inline;">
+                                                <button type="submit">Eliminar</button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('course_prerequisites.updateCoursePrerequisiteView', course_id=course_id) }}" class="add-btn">Editar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        {% else %}
+            <p>No hay prerrequisitos establecidos todavía.</p>
+        {% endif %}
+
+        <a href="/" class="go-back">Volver al inicio</a>
     </div>
 
+</div>
 </body>
+
 </html>

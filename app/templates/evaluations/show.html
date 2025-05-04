@@ -1,93 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Evaluación: {{ evaluation.name }}</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-        }
-
-        .main {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: white;
-            overflow-y: auto;
-        }
-
-        h2 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2f3943;
-            margin-bottom: 10px;
-        }
-
-        p {
-            font-size: 18px;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            color: #2f3943;
-        }
-
-        td {
-            background-color: #fafafa;
-        }
-
-        a {
-            color: #2f3943;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .btn-back {
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
-<body>
 
-<div class="sidebar"></div>
+<body>
+{% include 'navbar.html' %}
 
 <div class="main">
 
@@ -108,6 +29,7 @@
                 <th>Acción</th>
             </tr>
         </thead>
+        
         <tbody>
             {% for student_course in students %}
                 <tr>
@@ -138,6 +60,6 @@
     <a href="{{ url_for('course_sections.show_section_view', course_section_id=course_section.id) }}" class="btn-back">Volver</a>
 
 </div>
-
 </body>
+
 </html>

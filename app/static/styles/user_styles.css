@@ -1,0 +1,245 @@
+/* ===== RESET & BASE STYLES ===== */
+html, body {
+    font-family: sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+}
+
+a {
+    color: #273540;     
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===== LAYOUT & CONTAINERS ===== */
+.main {
+    background-color: white;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100vh;
+    overflow: auto;
+    padding: 20px;
+}
+
+.box {
+    border: 2px solid red;
+    box-sizing: border-box;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.grid {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1 {
+    color: #2f3943;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.box h3 {
+    color: red;
+    text-align: center;
+}
+
+p {
+    color: #333;
+    font-size: 18px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* ===== TABLES ===== */
+table {
+    border-collapse: collapse;
+    margin-top: 10px;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.box table {
+    margin-top: 10px;
+}
+
+.box th, 
+.box td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.box.prerequisites {
+    grid-column: span 2;
+    overflow-y: auto;
+}
+
+.box ul {
+    list-style: none;
+    padding-left: 10px;
+    font-size: 14px;
+    max-height: 70px;
+    overflow-y: auto;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* ===== BUTTONS & ACTIONS ===== */
+button,
+.btn-back,
+.go-back,
+.add-btn {
+    background-color: #2f3943;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    padding: 10px 15px;
+    text-decoration: none;
+}
+
+button:hover,
+.btn-back:hover,
+.go-back:hover,
+.add-btn:hover {
+    background-color: #1c2229;
+}
+
+.btn-back {
+    width: auto;         
+    max-width: fit-content;  
+    margin-top: 20px;    
+}
+/* Action buttons inside .box */
+
+.box a,
+.box button {
+    background-color: red;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 2px;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+.box a:hover,
+.box button:hover {
+    background-color: darkred;
+}
+
+.actions a, 
+.actions form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+.actions form button {
+    margin: 0;
+}
+
+/* ===== FORMS ===== */
+form {
+    background-color: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+label {
+    color: #333;
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+input, select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 100%;
+}
+
+/* ===== ACTIONS CELL STYLES ===== */
+td.actions {
+    white-space: nowrap; /* Evita saltos de línea */
+    min-width: 150px; /* Asegura espacio mínimo */
+}
+
+.action-form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.action-btn {
+    display: inline-block;
+    margin: 0 5px;
+    vertical-align: middle;
+}
+
+/* ===== FOR BUTTONS IN FORMS ===== */
+
+a.btn-action {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 4px;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: red; /* Color de botón normal */
+    color: white !important;   /* Fuerza texto blanco */
+    text-decoration: none !important; /* Elimina subrayado */
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    min-width: 70px;
+}
+
+a.btn-action:hover {
+    background-color: darkred; /* Color hover */
+    text-decoration: none !important; /* Mantiene sin subrayado */
+    opacity: 0.9;
+}

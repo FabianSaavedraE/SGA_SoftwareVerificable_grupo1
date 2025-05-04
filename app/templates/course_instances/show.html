@@ -1,91 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Detalles de la Instancia</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-        }
-
-        .main {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: white;
-            overflow-y: auto;
-        }
-
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2f3943;
-            margin-bottom: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid red;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            color: red;
-        }
-
-        a.button {
-            display: inline-block;
-            background-color: red;
-            color: white;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
-
-        a.button:hover {
-            background-color: darkred;
-        }
-
-        .btn-back {
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-        }
-
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
-<body>
 
-<div class="sidebar"></div>
+<body>
+{% include 'navbar.html' %}
 
 <div class="main">
-
     <h1>Detalles de la instancia {{ course_instance.course.name }} {{ course_instance.year }}-{{ course_instance.semester }}</h1>
 
     <h1>Secciones:</h1>
@@ -136,10 +61,11 @@
         <p>Esta instancia no tiene secciones.</p>
     {% endif %}
 
-    <a href="{{ url_for('course_sections.create_section_view', course_instance_id=course_instance.id) }}" class="button">Crear Sección</a>
-    <a href="{{ url_for('course_sections.get_sections_view') }}" class="button">Listado de Secciones</a>
-    <a href="/" class="button">Ir al inicio</a>
-</div>
+    <a href="{{ url_for('course_sections.createSectionView', course_instance_id=course_instance.id) }}" class="btn-back">Crear Sección</a>
+    <a href="{{ url_for('course_sections.getSectionsView') }}" class="btn-back">Listado de Secciones</a>
+    <a href="/" class="btn-back">Ir al inicio</a>
 
+</div>
 </body>
+
 </html>

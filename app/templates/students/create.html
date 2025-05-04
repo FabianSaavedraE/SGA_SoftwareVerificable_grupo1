@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Crear Estudiante</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
     <style>
         html, body {
             margin: 0;
@@ -13,16 +14,6 @@
 
         body {
             display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
         }
 
         .main {
@@ -101,9 +92,7 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <!-- Logo o íconos si querés -->
-    </div>
+{% include 'navbar.html' %}
 
     <div class="main">
         <div class="title">Crear Estudiante</div>

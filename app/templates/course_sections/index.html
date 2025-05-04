@@ -1,111 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Secciones</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
-
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            padding: 20px;
-            background-color: white;
-            overflow: auto;
-        }
-
-        .title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid red;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f5f5f5;
-            color: red;
-        }
-
-        a.button {
-            display: inline-block;
-            background-color: red;
-            color: white;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
-
-        .go-back {
-            padding: 8px 12px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        a.button:hover {
-            background-color: darkred;
-        }
-
-        .btn-back {
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-        }
-
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-
-        .go-back {
-            margin-top: 15px;
-            background-color: #2f3943;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
-<body>
 
-<div class="sidebar">
-  </div>
-    <div class="main">
+<body>
+{% include 'navbar.html' %}
+<div class="main">
 
     <h1>Secciones</h1>
 
@@ -118,6 +22,7 @@
                 <th>Acciones</th>
             </tr>
         </thead>
+
         <tbody>
             {% for section in sections %}
                 <tr>
@@ -131,9 +36,9 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{{ url_for('course_sections.show_section_view', course_section_id=section.id) }}" class="button">Ver</a>
-                        <a href="{{ url_for('course_sections.update_section_view', course_section_id=section.id) }}" class="button">Editar</a>
-                        <form method="POST" action="{{ url_for('course_sections.delete_section_view', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" style="display:inline;">
+                        <a href="{{ url_for('course_sections.showSectionView', course_section_id=section.id) }}" class="btn-action">Ver</a>
+                        <a href="{{ url_for('course_sections.updateSectionView', course_section_id=section.id) }}" class="btn-action">Editar</a>
+                        <form method="POST" action="{{ url_for('course_sections.deleteSectionView', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" style="display:inline;">
                             <button type="submit" class="button" style="background-color: #555;">Eliminar</button>
                         </form>
                     </td>
@@ -143,7 +48,9 @@
         </tbody>
     </table>
 
-    <a href="/" class="go-back">Volver al inicio</a>
+    <a href="/" class="btn-back">Volver al inicio</a>
 
-  </div>
- 
+</div>
+</body>
+
+</html>
