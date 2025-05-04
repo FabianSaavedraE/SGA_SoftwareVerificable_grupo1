@@ -126,8 +126,9 @@
                 </div>
 
                 <div>
-                    <label for="entry_date">Fecha de Ingreso (opcional):</label>
-                    <input type="date" id="entry_date" name="entry_date">
+                    <label for="entry_year">Año de Ingreso (opcional):</label>
+                    <input type="number" id="entry_year" name="entry_year"
+                           min="1900" max="{{ current_year }}" value="{{ student.entry_year if student else '' }}">
                 </div>            
 
                 <button type="submit">Crear Estudiante</button>

@@ -9,7 +9,7 @@ class Student(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
-    entry_date = db.Column(db.Date, nullable=False, default=date.today)
+    entry_year = db.Column(db.Integer, nullable=False, default=date.today().year)
 
     student_courses = db.relationship(
         'StudentCourses',

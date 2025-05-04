@@ -7,6 +7,7 @@ class Course(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100), nullable=False)
     code = db.Column(db.String(50), nullable=False, unique=True)
+    credits = db.Column(db.Integer, nullable=False, default=0)
 
     instances = db.relationship(
         'CourseInstance',
