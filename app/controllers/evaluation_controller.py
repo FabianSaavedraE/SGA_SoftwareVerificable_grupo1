@@ -1,19 +1,21 @@
-from app.models.evaluation import Evaluation
 from app import db
+from app.models.evaluation import Evaluation
 
-def getAllEvaluations():
+def get_all_evaluations():
     evaluations = Evaluation.query.all()
     return evaluations
 
-def getEvaluationsByTopic(evaluation_type_id):
-    evaluations = Evaluation.query.find_by(evaluation_type_id=evaluation_type_id).all()
+def get_evaluations_by_topic(evaluation_type_id):
+    evaluations = Evaluation.query.find_by(
+        evaluation_type_id=evaluation_type_id
+    ).all()
     return evaluations
 
-def getEvaluation(evaluation_id):
+def get_evaluation(evaluation_id):
     evaluation = Evaluation.query.get(evaluation_id)
     return evaluation
 
-def createEvaluation(data):
+def create_evaluation(data):
     from app.models.evaluation_type import EvaluationType
 
     evaluation_type_id = data.get('evaluation_type_id')
@@ -22,10 +24,12 @@ def createEvaluation(data):
     if not evaluation_type:
         return None  # Fallback defensivo
 
-    existing_evaluations = Evaluation.query.filter_by(evaluation_type_id=evaluation_type_id).all()
+    existing_evaluations = Evaluation.query.filter_by(
+        evaluation_type_id=evaluation_type_id
+    ).all()
     ponderation = data.get('ponderation')
 
-    if ponderation is '':
+    if ponderation == '':
         if evaluation_type.ponderation_type == 'Peso':
             ponderation = 1
         elif evaluation_type.ponderation_type == 'Porcentaje':
@@ -43,10 +47,11 @@ def createEvaluation(data):
     db.session.commit()
 
     return new_evaluation
-def updateEvaluation(evaluation, data):
+
+def update_evaluation(evaluation, data):
     if not evaluation:
         return None
-    
+
     evaluation.name = data.get('name', evaluation.name)
     evaluation.ponderation = data.get('ponderation', evaluation.ponderation)
     evaluation.optional = data.get('optional', evaluation.optional)
@@ -54,7 +59,7 @@ def updateEvaluation(evaluation, data):
     db.session.commit()
     return evaluation
 
-def deleteEvaluation(evaluation):
+def delete_evaluation(evaluation):
     if not evaluation:
         return False
 

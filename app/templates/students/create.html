@@ -98,7 +98,7 @@
         <div class="title">Crear Estudiante</div>
 
         <div class="box">
-            <form action="{{ url_for('students.createStudentView') }}" method="POST">
+            <form action="{{ url_for('students.create_student_view') }}" method="POST">
                 <div>
                     <label for="first_name">Nombre:</label>
                     <input type="text" id="first_name" name="first_name" required>
@@ -122,7 +122,7 @@
                 <button type="submit">Crear Estudiante</button>
             </form>
 
-            <a href="{{ url_for('students.getStudentsView') }}" class="go-back">Volver a Estudiantes</a>
+            <a href="{{ url_for('students.get_students_view') }}" class="go-back">Volver a Estudiantes</a>
         </div>
     </div>
 

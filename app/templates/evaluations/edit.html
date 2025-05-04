@@ -15,7 +15,7 @@
     <h1>Editar Evaluación: {{evaluation.name}}</h1>
     <p><strong>Sección:</strong> {{evaluation.evaluation_type.course_section.course}} {{evaluation.evaluation_type.course_section.nrc}}</p>
 
-    <form action="{{url_for('evaluations.updateEvaluationView', evaluation_id=evaluation.id)}}" method="POST">
+    <form action="{{url_for('evaluations.update_evaluation_view', evaluation_id=evaluation.id)}}" method="POST">
         <label for="name">Nombre:</label>
         <input type="text" id="name" name="name" value="{{evaluation.name}}" required>
         
@@ -28,7 +28,7 @@
         <button type="submit">Actualizar Evaluación</button>
     </form>
 
-    <a href="{{ url_for('course_sections.showSectionView', course_section_id=evaluation.evaluation_type.course_section_id) }}" class="btn-back">Volver</a>
+    <a href="{{ url_for('course_sections.show_section_view', course_section_id=evaluation.evaluation_type.course_section_id) }}" class="btn-back">Volver</a>
 
 </div>
 </body>

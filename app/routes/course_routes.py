@@ -1,52 +1,52 @@
-from flask import Blueprint, jsonify, request, render_template, redirect, url_for
-from app.models.course import Course
-from app.controllers.course_controller import getAllCourses, getCourse, createCourse, updateCourse, deleteCourse
-from app import db
+from flask import Blueprint, request, render_template, redirect, url_for
+
+from app.controllers.course_controller import (
+    get_all_courses, get_course, create_course, update_course, delete_course
+)
 
 course_bp = Blueprint('courses', __name__, url_prefix='/courses')
 
 @course_bp.route('/', methods=['GET'])
-def getCoursesView():
-    courses = getAllCourses()
+def get_courses_view():
+    courses = get_all_courses()
     return render_template('courses/index.html', courses=courses)
 
 @course_bp.route('/<int:course_id>/show', methods=['GET'])
-def showCourseView(course_id):
-    course = getCourse(course_id)
+def show_course_view(course_id):
+    course = get_course(course_id)
     if not course:
-        return redirect(url_for('courses.getCoursesView'))
+        return redirect(url_for('courses.get_courses_view'))
 
     return render_template('courses/show.html', course=course)
 
 @course_bp.route('/create', methods=['GET', 'POST'])
-def createCourseView():
+def create_course_view():
     if request.method == 'POST':
         data = request.form
-        createCourse(data)
-        return redirect(url_for('courses.getCoursesView'))
+        create_course(data)
+        return redirect(url_for('courses.get_courses_view'))
 
     return render_template('courses/create.html')
 
 @course_bp.route('/<int:course_id>', methods=['GET', 'POST'])
-def updateCourseView(course_id):
-    course = getCourse(course_id)
+def update_course_view(course_id):
+    course = get_course(course_id)
     if not course:
-        return redirect(url_for('courses.getCoursesView'))
+        return redirect(url_for('courses.get_courses_view'))
 
     if request.method == 'POST':
         data = request.form
-        updateCourse(course, data)
+        update_course(course, data)
 
-        return redirect(url_for('courses.getCoursesView'))
+        return redirect(url_for('courses.get_courses_view'))
 
     return render_template('courses/edit.html', course=course)
 
 @course_bp.route('/delete/<int:course_id>', methods=['POST'])
-def deleteCourseView(course_id):
-    course = getCourse(course_id)
+def delete_course_view(course_id):
+    course = get_course(course_id)
     if course:
-        deleteCourse(course)
-        return redirect(url_for('courses.getCoursesView'))
+        delete_course(course)
+        return redirect(url_for('courses.get_courses_view'))
 
-    return redirect(url_for('courses.getCoursesView'))
-    
+    return redirect(url_for('courses.get_courses_view'))

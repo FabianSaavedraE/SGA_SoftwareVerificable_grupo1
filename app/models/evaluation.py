@@ -8,9 +8,14 @@ class Evaluation(db.Model):
     ponderation = db.Column(db.Float, nullable=True)
     optional = db.Column(db.Boolean, nullable=True)
 
-    evaluation_type_id = db.Column(db.Integer, db.ForeignKey('evaluation_types.id', ondelete='CASCADE'), nullable=False)
+    evaluation_type_id = db.Column(
+        db.Integer,
+        db.ForeignKey('evaluation_types.id', ondelete='CASCADE'),
+        nullable=False
+    )
+
     student_evaluations = db.relationship(
-        'StudentEvaluations', 
+        'StudentEvaluations',
         back_populates='evaluation',
         cascade='all, delete-orphan',
         passive_deletes=True
@@ -18,4 +23,3 @@ class Evaluation(db.Model):
 
     def __repr__(self):
         return f"<{self.name}>"
-    
