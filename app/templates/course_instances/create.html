@@ -1,91 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Crear Instancia para el curso {{ course.name }}</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-        body {
-            display: flex;
-        }
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
-        .main {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: white;
-            overflow-y: auto;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2f3943;
-            margin-bottom: 20px;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 500px;
-        }
-        label {
-            font-weight: bold;
-            color: #2f3943;
-        }
-        input[type="text"],
-        select {
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: red;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: darkred;
-        }
-        .btn-back {
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
-<body>
 
-<div class="sidebar">
-    <!-- menú lateral -->
-</div>
+<body>
+{% include 'navbar.html' %}
 
 <div class="main">
     <h1>Crear Instancia para el curso {{ course.name }}</h1>
 
-    <form action="{{ url_for('course_instances.createCourseInstanceView', course_id=course.id) }}" method="POST">
+    <form action="{{ url_for('course_instances.create_course_instance_view', course_id=course.id) }}" method="POST">
         <div>
             <label for="year">Año:</label>
             <input type="text" id="year" name="year" required>
@@ -103,8 +31,8 @@
         <button type="submit">Crear Instancia de Curso</button>
     </form>
 
-    <a href="{{ url_for('courses.showCourseView', course_id=course.id) }}" class="btn-back">Volver</a>
+    <a href="{{ url_for('courses.show_course_view', course_id=course.id) }}" class="btn-back">Volver</a>
 </div>
-
 </body>
+
 </html>

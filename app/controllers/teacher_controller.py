@@ -1,15 +1,15 @@
-from app.models.teacher import Teacher
 from app import db
+from app.models.teacher import Teacher
 
-def getAllTeachers():
+def get_all_teachers():
     teachers = Teacher.query.all()
     return teachers
 
-def getTeacher(teacher_id):
+def get_teacher(teacher_id):
     teacher = Teacher.query.get(teacher_id)
     return teacher
 
-def createTeacher(data):
+def create_teacher(data):
     new_teacher = Teacher(
         first_name = data.get('first_name'),
         last_name = data.get('last_name'),
@@ -20,7 +20,7 @@ def createTeacher(data):
 
     return new_teacher
 
-def updateTeacher(teacher, data):
+def update_teacher(teacher, data):
     if not teacher:
         return None
 
@@ -31,7 +31,7 @@ def updateTeacher(teacher, data):
     db.session.commit()
     return teacher
 
-def deleteTeacher(teacher):
+def delete_teacher(teacher):
     if not teacher:
         return False
 

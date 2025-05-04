@@ -11,7 +11,12 @@ class EvaluationType(db.Model):
     )
     overall_ponderation = db.Column(db.Float, nullable=False)
 
-    course_section_id = db.Column(db.Integer, db.ForeignKey('course_sections.id', ondelete='CASCADE'), nullable=False)
+    course_section_id = db.Column(
+        db.Integer,
+        db.ForeignKey('course_sections.id', ondelete='CASCADE'),
+        nullable=False
+    )
+
     evaluations = db.relationship(
         'Evaluation',
         backref='evaluation_type',
@@ -20,7 +25,5 @@ class EvaluationType(db.Model):
         passive_deletes=True
     )
 
-
     def __rpr__(self):
         return f"{self.topic}"
-        

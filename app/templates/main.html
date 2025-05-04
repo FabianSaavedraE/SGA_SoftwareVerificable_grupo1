@@ -1,124 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>CAMBAS Landing Page</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
-
-        .sidebar img.logo {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 20px;
-        }
-
-        .sidebar img.user-icon {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: default;
-        }
-
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-            background-color: white;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .grid {
-            flex-grow: 1;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .box {
-            border: 2px solid red;
-            padding: 10px;
-            box-sizing: border-box;
-            overflow-y: auto;
-        }
-
-        .box h3 {
-            text-align: center;
-            color: red;
-        }
-
-        .box ul {
-            list-style: none;
-            padding-left: 10px;
-            font-size: 14px;
-            max-height: 70px;
-            overflow-y: auto;
-        }
-
-        .box button {
-            display: block;
-            margin: 10px auto 0;
-            padding: 5px 10px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .box button:hover {
-            background-color: darkred;
-        }
-
-        .box.prerequisites {
-            grid-column: span 2;
-            overflow-y: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main_styles.css') }}">
 </head>
+
 <body>
-
-    <div class="sidebar">
-    </div>
-
+    {% include 'navbar.html' %}
     <div class="main">
         <div class="title">
             <h1> CAMBAS </h1>
         </div>
 
         <div class="grid">
+
             <!-- Estudiantes -->
             <div class="box">
-                <a href="{{ url_for('students.getStudentsView') }}">
+                <a href="{{ url_for('students.get_students_view') }}">
                     <button>Ver estudiantes</button>
                 </a>
                 <ul>
@@ -132,7 +32,7 @@
 
             <!-- Cursos -->
             <div class="box">
-                <a href="{{ url_for('courses.getCoursesView') }}">
+                <a href="{{ url_for('courses.get_courses_view') }}">
                     <button>Ver cursos</button>
                 </a>
                 <ul>
@@ -146,7 +46,7 @@
 
             <!-- Secciones -->
             <div class="box">
-                <a href="{{ url_for('course_sections.getSectionsView') }}">
+                <a href="{{ url_for('course_sections.get_sections_view') }}">
                     <button>Ver secciones</button>
                 </a>
                 <ul>
@@ -160,7 +60,7 @@
 
             <!-- Profesores -->
             <div class="box">
-                <a href="{{ url_for('teachers.getTeachersView') }}">
+                <a href="{{ url_for('teachers.get_teachers_view') }}">
                     <button>Ver profesores</button>
                 </a>
                 <ul>
@@ -174,7 +74,7 @@
 
             <!-- Prerequisitos (ocupa dos columnas) -->
             <div class="box prerequisites">
-                <a href="{{ url_for('course_prerequisites.getCoursePrerequisites') }}">
+                <a href="{{ url_for('course_prerequisites.get_course_prerequisites') }}">
                     <button>Ver prerequisitos</button>
                 </a>
                 <ul>
@@ -185,8 +85,10 @@
                     {% endfor %}
                 </ul>
             </div>
-        </div>
-    </div>
 
+        </div>
+
+    </div>
 </body>
+
 </html>
