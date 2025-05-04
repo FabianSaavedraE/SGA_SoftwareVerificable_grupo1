@@ -24,9 +24,9 @@ def create_student_evaluation_view(student_id, evaluation_id):
         return redirect(url_for('evaluations.indexView'))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['evaluation_id'] = evaluation_id
-        data['student_id'] = student_id
+        data = build_student_evaluation_data(
+            request.form, evaluation_id, student_id
+        )
         create_student_evaluation(data)
         return redirect(url_for(
             'evaluations.show_evaluation_view',
@@ -69,3 +69,9 @@ def update_student_evaluation_view(student_id, evaluation_id):
         student_evaluation=student_evaluation,
         student=student, evaluation=evaluation
     )
+
+def build_student_evaluation_data(form_data, evaluation_id, student_id):
+    data = form_data.to_dict()
+    data['evaluation_id'] = evaluation_id
+    data['student_id'] = student_id
+    return data

@@ -37,8 +37,7 @@ def create_evaluation_type_view(course_section_id):
         ))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['course_section_id'] = course_section_id
+        data = build_evaluation_type_data(request.form, course_section_id)
         create_evaluation_type(data)
         return redirect(url_for(
             'course_sections.show_section_view',
@@ -90,3 +89,8 @@ def delete_evaluation_type_view(evaluation_type_id, course_section_id):
         'course_sections.show_section_view',
         course_section_id=course_section_id
     ))
+
+def build_evaluation_type_data(form_data, course_section_id):
+    data = form_data.to_dict()
+    data['course_section_id'] = course_section_id
+    return data

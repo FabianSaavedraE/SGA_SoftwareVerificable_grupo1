@@ -21,10 +21,9 @@ def create_evaluation_view(evaluation_type_id):
         ))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['evaluation_type_id'] = evaluation_type_id
-        data['optional'] = request.form.get('optional') == 'on'
+        data = build_evaluation_data(request.form, evaluation_type_id)
         create_evaluation(data)
+
         return redirect(url_for(
             'course_sections.show_section_view',
             course_section_id=evaluation_type.course_section_id
@@ -45,8 +44,8 @@ def update_evaluation_view(evaluation_id):
         ))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['optional'] = request.form.get('optional') == 'on'
+        data = build_evaluation_data(request.form)
+
         update_evaluation(evaluation, data)
 
         return redirect(url_for(
@@ -66,10 +65,7 @@ def show_evaluation_view(evaluation_id):
     course_section = get_section(evaluation_type.course_section_id)
     students = course_section.student_courses
 
-    grades = {
-        (student_evaluation.student_id): student_evaluation.grade
-        for student_evaluation in evaluation.student_evaluations
-    }
+    grades = build_grades_dict(evaluation)
 
     return render_template(
         'evaluations/show.html',
@@ -97,3 +93,18 @@ def delete_evaluation_view(evaluation_id, course_section_id):
         'course_sections.show_section_view',
         course_section_id=course_section_id
     ))
+
+def build_evaluation_data(form_data, evaluation_type_id=None):
+    data = form_data.to_dict()
+    data['optional'] = form_data.get('optional') == 'on'
+
+    if evaluation_type_id:
+        data['evaluation_type_id'] = evaluation_type_id
+    
+    return data
+
+def build_grades_dict(evaluation):
+    return {
+        student_evaluation.student_id: student_evaluation.grade
+        for student_evaluation in evaluation.student_evaluations
+    }

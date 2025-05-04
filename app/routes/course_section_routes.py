@@ -41,8 +41,7 @@ def create_section_view(course_instance_id):
         ))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['course_instance_id'] = course_instance_id
+        data = build_section_data(request.form, course_instance_id)
         create_section(data)
         return redirect(url_for(
             'course_instances.show_course_instance_view',
@@ -106,3 +105,8 @@ def delete_section_view_from_show(course_section_id, course_instance_id):
         'course_instances.show_course_instance_view',
         course_instance_id=course_instance_id
     )
+
+def build_section_data(form_data, course_instance_id):
+    data = form_data.to_dict()
+    data['course_instance_id'] = course_instance_id
+    return data

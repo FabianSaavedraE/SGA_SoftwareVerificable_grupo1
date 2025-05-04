@@ -26,9 +26,8 @@ def create_student_course_view(course_section_id):
         ))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['course_section_id'] = course_section_id
-        data['state'] = 'Inscrito'
+        data = build_student_course_data(request.form, course_section_id)
+
         create_student_course(data)
         # Preservamos el valor del query de búsqueda
         q = request.form.get('q', '')
@@ -39,15 +38,7 @@ def create_student_course_view(course_section_id):
         ))
 
     query = request.args.get('q')
-    if query:
-        students = Student.query.filter(
-            or_(
-                Student.first_name.ilike(f"%{query}%"),
-                Student.last_name.ilike(f"%{query}%")
-            )
-        ).all()
-    else:
-        students = []
+    students = get_students_by_query(query) if query else []
 
     return render_template(
         'student_courses/create.html',
@@ -98,3 +89,17 @@ def delete_student_course_view(student_id, course_section_id):
         'course_sections.show_section_view',
         course_section_id=course_section_id
     )
+
+def build_student_course_data(form_data, course_section_id):
+    data = form_data.to_dict()
+    data['course_section_id'] = course_section_id
+    data['state'] = 'Inscrito'
+    return data
+
+def get_students_by_query(query):
+    return Student.query.filter(
+        or_(
+            Student.first_name.ilike(f"%{query}%"),
+            Student.last_name.ilike(f"%{query}%")
+        )
+    ).all()

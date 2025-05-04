@@ -34,8 +34,7 @@ def create_course_instance_view(course_id):
         return redirect(url_for('courses.get_course_view'))
 
     if request.method == 'POST':
-        data = request.form.to_dict()
-        data['course_id'] = course_id
+        data = build_course_instance_data(request.form, course_id)
         create_course_instance(data)
         return redirect(url_for(
             'courses.show_course_view',
@@ -82,3 +81,8 @@ def delete_course_instance_view(course_instance_id, course_id):
     return render_template(
         url_for('courses.show_course_view', coures_id=course_id)
     )
+
+def build_course_instance_data(form_data, course_id):
+    data = form_data.to_dict()
+    data['course_id'] = course_id
+    return data
