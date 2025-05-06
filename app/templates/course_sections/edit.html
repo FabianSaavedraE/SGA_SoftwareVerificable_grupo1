@@ -14,7 +14,7 @@
 
     <h1>Editar Sección {{course_section.nrc}}</h1>
 
-    <form action="{{url_for('course_sections.updateSectionView', course_section_id=course_section.id)}}" method="POST">
+    <form action="{{url_for('course_sections.update_section_view', course_section_id=course_section.id)}}" method="POST">
         <label for="nrc">Nrc:</label>
         <input type="text" id="nrc" name="nrc" value="{{course_section.nrc}}" required>
         <br>

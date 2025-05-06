@@ -12,7 +12,7 @@
     <div class="title">Editar Curso: {{ course.name }}</div>
 
     <div class="form-container">
-        <form action="{{ url_for('courses.updateCourseView', course_id=course.id) }}" method="POST">
+        <form action="{{ url_for('courses.update_course_view', course_id=course.id) }}" method="POST">
             <label for="name">Nombre:</label>
             <input type="text" id="name" name="name" value="{{ course.name }}" required>
 
@@ -24,7 +24,7 @@
 
             <button type="submit">Actualizar Curso</button>
         </form>
-        <a href="{{ url_for('courses.getCoursesView') }}" class="btn-back">Volver</a>
+        <a href="{{ url_for('courses.get_courses_view') }}" class="btn-back">Volver</a>
     </div>
     
 </div>

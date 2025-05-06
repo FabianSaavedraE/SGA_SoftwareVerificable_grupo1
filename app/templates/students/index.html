@@ -14,7 +14,7 @@
         <div class="title">Lista de Estudiantes</div>
 
         <div class="box">
-            <a href="{{ url_for('students.createStudentView') }}" class="top-button">Agregar Estudiante</a>
+            <a href="{{ url_for('students.create_student_view') }}" class="top-button">Agregar Estudiante</a>
 
             <table>
                 <thead>
@@ -39,8 +39,8 @@
                                 {% endif %}
                             </td>
                             <td class="actions">
-                                <a href="{{ url_for('students.updateStudentView', student_id=student.id) }}" class="btn-action">Editar</a>
-                                <form action="{{ url_for('students.deleteStudentView', student_id=student.id) }}" method="POST" class="action-form">
+                                <a href="{{ url_for('students.update_student_view', student_id=student.id) }}" class="btn-action">Editar</a>
+                                <form action="{{ url_for('students.delete_student_view', student_id=student.id) }}" method="POST" class="action-form">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="action-btn">Eliminar</button>
                                 </form>
