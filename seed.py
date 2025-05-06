@@ -21,23 +21,21 @@ with app.app_context():
 
     estudiantes = []
     used_emails = set()
+    base_year = date.today().year - 1
     
-    base_date = date.today() - timedelta(days=365)
-
     while len(estudiantes) < 30:
         nombre = random.choice(nombres)
         apellido = random.choice(apellidos)
         email_base = f"{nombre.lower()}.{apellido.lower()}@miuandes.cl"
         email = email_base
-        random_days = random.randint(0, 365)
-        entry_date = base_date + timedelta(days=random_days)
+        entry_year = random.randint(base_year, date.today().year)
         count = 1
         while email in used_emails:
             email = f"{nombre.lower()}.{apellido.lower()}{count}@miuandes.cl"
             count += 1
         used_emails.add(email)
 
-        estudiante = Student(first_name=nombre, last_name=apellido, email=email, entry_date=entry_date)
+        estudiante = Student(first_name=nombre, last_name=apellido, email=email, entry_year=entry_year)
         estudiantes.append(estudiante)
 
     db.session.add_all(estudiantes)
@@ -67,7 +65,17 @@ with app.app_context():
         "Criptografía", "Robótica"
     ]
 
-    cursos = [Course(name=nombre, description="Curso de " + nombre, code=f"C-{i+100}") for i, nombre in enumerate(cursos_nombres)]
+    cursos = []
+    for i, nombre in enumerate(cursos_nombres):
+        credits = random.randint(1, 6)
+        curso = Course(
+            name=nombre,
+            description="Curso de " + nombre,
+            code=f"C-{i+100}",
+            credits=credits
+        )
+        cursos.append(curso)
+
     db.session.add_all(cursos)
     db.session.commit()
     print("20 cursos creados.")

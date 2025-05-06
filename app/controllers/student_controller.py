@@ -13,21 +13,23 @@ def get_student(student_id):
     return student
 
 def create_student(data):
-    entry_date = data.get('entry_date')
+    entry_year = data.get('entry_year')
 
-    if entry_date:
+    if entry_year:
         try:
-            entry_date = datetime.strptime(entry_date, '%Y-%m-%d').date()
+            entry_year = int(entry_year)
         except ValueError:
-            entry_date = date.today()
+            entry_year = date.today().year
     else:
-        entry_date = date.today()
+        entry_year = date.today().year
+        
+    entry_year = max(1900, min(date.today().year, entry_year))
 
     new_student = Student(
         first_name = data.get('first_name'),
         last_name = data.get('last_name'),
         email = data.get('email'),
-        entry_date=entry_date
+        entry_year=entry_year
     )
     db.session.add(new_student)
     db.session.commit()
@@ -42,13 +44,10 @@ def update_student(student, data):
     student.last_name = data.get('last_name', student.last_name)
     student.email = data.get('email', student.email)
 
-    entry_date = data.get('entry_date')
-    if entry_date:
+    entry_year = data.get('entry_year')
+    if entry_year:
         try:
-            student.entry_date = datetime.strptime(
-                entry_date,
-                '%Y-%m-%d'
-            ).date()
+            student.entry_year = max(1900, min(date.today().year, int(entry_year)))
         except ValueError:
             pass
 

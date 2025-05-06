@@ -10,10 +10,12 @@ def get_course(course_id):
     return course
 
 def create_course(data):
+    credits = int(data.get('credits', 0))
     new_course = Course(
         name = data.get('name'),
         description = data.get('description'),
-        code = data.get('code')
+        code = data.get('code'),
+        credits=credits
     )
     db.session.add(new_course)
     db.session.commit()
@@ -25,8 +27,9 @@ def update_course(course, data):
         return None
 
     course.name = data.get('name', course.name)
-    course.description = data.get("description", course.description)
-    course.code = data.get("code", course.code)
+    course.description = data.get('description', course.description)
+    course.code = data.get('code', course.code)
+    course.credits = data.get('credits', course.credits)
 
     db.session.commit()
     return course

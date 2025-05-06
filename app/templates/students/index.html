@@ -32,8 +32,8 @@
                             <td>{{ student.first_name }} {{ student.last_name }}</td>
                             <td>{{ student.email }}</td>
                             <td>
-                                {% if student.entry_date %}
-                                    {{ student.entry_date.isoformat() }}
+                                {% if student.entry_year %}
+                                    {{ student.entry_year }}
                                 {% else %}
                                     —
                                 {% endif %}
