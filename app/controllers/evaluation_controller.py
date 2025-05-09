@@ -6,7 +6,7 @@ def get_all_evaluations():
     return evaluations
 
 def get_evaluations_by_topic(evaluation_type_id):
-    evaluations = Evaluation.query.find_by(
+    evaluations = Evaluation.query.filter_by(
         evaluation_type_id=evaluation_type_id
     ).all()
     return evaluations

@@ -9,7 +9,6 @@ def get_all_students():
 
 def get_student(student_id):
     student = Student.query.get(student_id)
-    print(student)
     return student
 
 def create_student(data):
