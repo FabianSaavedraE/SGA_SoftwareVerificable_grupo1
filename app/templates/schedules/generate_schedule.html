@@ -1,0 +1,19 @@
+<!-- templates/schedules/generate_schedule.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Horario</title>
+</head>
+<body>
+
+    <h1>Generar Horario</h1>
+
+    <form action="{{ url_for('schedules.generate_schedule_view') }}" method="POST">
+        <button type="submit">Generar Horario</button>
+    </form>
+
+    <a href="{{ url_for('landing_page') }}">Volver a inicio</a>
+
+</body>
+</html>
