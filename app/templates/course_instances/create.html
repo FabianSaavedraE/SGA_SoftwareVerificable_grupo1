@@ -13,6 +13,10 @@
 <div class="main">
     <h1>Crear Instancia para el curso {{ course.name }}</h1>
 
+    {% if error %}
+    <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
     <form action="{{ url_for('course_instances.create_course_instance_view', course_id=course.id) }}" method="POST">
         <div>
             <label for="year">Año:</label>
