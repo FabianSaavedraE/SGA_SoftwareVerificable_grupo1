@@ -29,6 +29,7 @@ def show_course_instance_view(course_instance_id):
 @course_instance_bp.route('/create/<int:course_id>', methods=['GET', 'POST'])
 def create_course_instance_view(course_id):
     course = get_course(course_id)
+    error = None
 
     if not course:
         return redirect(url_for('courses.get_course_view'))
