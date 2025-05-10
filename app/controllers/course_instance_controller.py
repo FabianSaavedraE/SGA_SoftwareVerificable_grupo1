@@ -10,6 +10,14 @@ def get_course_instance(course_instance_id):
     return course_instance
 
 def create_course_instance(data):
+    exists = CourseInstance.query.filter_by(
+        course_id=data['course_id'],
+        year=data['year'],
+        semester=data['semester']
+    ).first()
+    if exists:
+        return None
+    
     new_course_instance = CourseInstance(
         year = data.get('year'),
         semester = data.get('semester'),

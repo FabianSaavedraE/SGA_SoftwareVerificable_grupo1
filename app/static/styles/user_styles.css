@@ -243,3 +243,12 @@ a.btn-action:hover {
     text-decoration: none !important; /* Mantiene sin subrayado */
     opacity: 0.9;
 }
+
+.error-msg {
+    background-color: #fdd;
+    color: #900;
+    border: 1px solid #900;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}

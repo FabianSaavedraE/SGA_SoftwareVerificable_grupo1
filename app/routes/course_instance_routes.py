@@ -35,13 +35,18 @@ def create_course_instance_view(course_id):
 
     if request.method == 'POST':
         data = build_course_instance_data(request.form, course_id)
-        create_course_instance(data)
-        return redirect(url_for(
-            'courses.show_course_view',
-            course_id=course_id
-        ))
+        course_instance = create_course_instance(data)
+        if course_instance is None:
+            error = "Ya existe una instancia de este curso para ese año y semestre."
+        else:
+            return redirect(url_for(
+                'courses.show_course_view',
+                course_id=course_id
+            ))
 
-    return render_template('course_instances/create.html', course=course)
+    return render_template(
+        'course_instances/create.html', course=course, error=error
+    )
 
 @course_instance_bp.route('/<int:course_instance_id>', methods=['GET', 'POST'])
 def update_course_instance_view(course_instance_id):
