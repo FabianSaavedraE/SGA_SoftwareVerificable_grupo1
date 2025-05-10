@@ -1,29 +1,63 @@
-def rank_sections(rankings, weights=None):
-    num_students_list = [r['num_students'] for r in rankings]
-    num_credits_list = [r['num_credits'] for r in rankings]
-    shared_sections_list = [r['shared_sections'] for r in rankings]
+from app.controllers.course_section_controller import (
+    get_course_sections_by_parameters
+)
 
-    students_normalized = normalize(num_students_list)
-    credits_normalized = normalize(num_credits_list)
-    shared_sections_normalized = normalize(shared_sections_list)
+SHARED_SECTIONS_WEIGHT = 0.5
+CREDITS_WEIGHT = 0.3
+STUDENTS_WEIGHT = 0.2
 
-    for i, r in enumerate(rankings):
-        weight_students = weights['students'] if weights else 1
-        weights_credits = weights['credits'] if weights else 1
-        weights_shared_sections = weights['shared'] if weights else 1
+def get_sections_ranking(year, semester):
+    course_sections = get_course_sections_by_parameters(year, semester)
+    sections_with_metrics = get_all_sections_metrics(course_sections)
 
-        r['score'] = (
-            students_normalized[i] * weight_students +
-            credits_normalized[i] * weights_credits +
-            shared_sections_normalized[i] * weights_shared_sections
+    weights = {
+        'shared': SHARED_SECTIONS_WEIGHT,
+        'credits': CREDITS_WEIGHT,
+        'students': STUDENTS_WEIGHT
+    }
+
+    ranking = rank_sections(sections_with_metrics, weights)
+
+    return ranking
+
+def rank_sections(sections, weights=None):
+    scored_sections = calculate_scores(sections, weights)
+    return sorted(
+        scored_sections,
+        key=lambda section: section['score'],
+        reverse=True
+    )
+
+def calculate_scores(sections, weights):
+    num_students_list = get_attributes_from_sections(sections, 'num_students')
+    num_credits_list = get_attributes_from_sections(sections, 'num_credits')
+    shared_sections_list = get_attributes_from_sections(
+        sections, 'shared_sections'
+    )
+
+    normalized_students = normalize(num_students_list)
+    normalized_credits = normalize(num_credits_list)
+    normalized_shared_sections = normalize(shared_sections_list)
+
+    for index, section in enumerate(sections):
+        section['score'] = (
+            normalized_students[index] * get_weight(weights, 'students') +
+            normalized_credits[index] * get_weight(weights, 'credits') +
+            normalized_shared_sections[index] * get_weight(weights, 'shared')
         )
 
-    return sorted(rankings, key=lambda x: x['score'], reverse=True)
+    return sections
 
-def generate_section_ranking(sections):
-    return [build_section_ranking(section, sections) for section in sections]
+def get_attributes_from_sections(rankings, attribute):
+    return [ranking[attribute] for ranking in rankings]
 
-def build_section_ranking(section, all_sections):
+def get_weight(weights, key, default=1):
+    return weights.get(key, default) if weights else default
+
+def get_all_sections_metrics(sections):
+    return [build_section_metrics(section, sections) for section in sections]
+
+def build_section_metrics(section, all_sections):
     return {
         'section': section,
         'num_students': len(get_students_ids(section)),

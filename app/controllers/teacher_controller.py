@@ -1,5 +1,5 @@
 from app import db
-from app.models.teacher import Teacher
+from app.models import Teacher, CourseSection, Schedule
 
 def get_all_teachers():
     teachers = Teacher.query.all()
@@ -38,4 +38,25 @@ def delete_teacher(teacher):
     db.session.delete(teacher)
     db.session.commit()
     return True
-    
+
+def is_teacher_available_for_timeslot(section, block):
+    teacher_id = section['section'].teacher_id
+    timeslot_ids = [slot.id for slot in block]
+
+    has_conflict = (
+        Schedule.query
+        .join(CourseSection)
+        .filter(
+            CourseSection.teacher_id == teacher_id,
+            Schedule.time_slot_id.in_(timeslot_ids)
+        )
+        .first()
+    )
+
+    # Estos prints son puro para debugging, se borra cuando este todo listo
+    if has_conflict:
+        print(f"[DEBUG] Profesor ya tienen sección en {has_conflict.time_slot}")
+    else:
+        print(f"[INFO] Profesor disponible")
+
+    return has_conflict is None

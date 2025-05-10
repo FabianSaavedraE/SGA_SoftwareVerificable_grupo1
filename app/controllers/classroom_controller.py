@@ -1,4 +1,4 @@
-from app.models import Classroom
+from app.models import Classroom, Schedule
 from app import db
 
 def get_all_classrooms():
@@ -37,3 +37,46 @@ def delete_classroom(classroom):
     db.session.delete(classroom)
     db.session.commit()
     return True
+
+def get_available_classrooms_for_block(block, num_students):
+    print("\nBLOCK IN CLASSROOM FUNCTION:", block)
+
+    timeslot_ids = [timeslot.id for timeslot in block]
+
+    all_classrooms = get_all_classrooms()
+
+    occupied_classroom_ids = (
+        Schedule.query
+        .filter(Schedule.time_slot_id.in_(timeslot_ids))
+        .with_entities(Schedule.classroom_id)
+        .distinct()
+        .all()
+    )
+
+    occupied_classroom_ids = [cid for (cid,) in occupied_classroom_ids]
+
+    # Esto es puro para debugging, se borra y se ocupa el código comentado de 
+    # abajo cuando este todo listo.
+    available_classrooms = []
+    for classroom in all_classrooms:
+        if classroom.id in occupied_classroom_ids:
+            print(f"Sala ocupada: {classroom.name} (ID {classroom.id})")
+            continue
+
+        if classroom.capacity < num_students:
+            print(f"Sala sin capacidad suficiente: {classroom.name} (ID {classroom.id})")
+            continue
+
+        print(f"Sala disponible: {classroom.name} (ID {classroom.id})")
+        available_classrooms.append(classroom)
+
+
+
+
+    # available_classrooms = [
+    #     classroom for classroom in all_classrooms
+    #     if classroom.id not in occupied_classroom_ids
+    #     and classroom.capacity >= num_students
+    # ]
+
+    return available_classrooms

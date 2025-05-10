@@ -1,7 +1,7 @@
 from datetime import datetime, date
 
 from app import db
-from app.models.student import Student
+from app.models import Student, StudentCourses, CourseSection, Schedule
 
 def get_all_students():
     students = Student.query.all()
@@ -60,3 +60,48 @@ def delete_student(student):
     db.session.delete(student)
     db.session.commit()
     return True
+
+def are_students_available_for_timeslot(section, block):
+    timeslot_ids = [timeslot.id for timeslot in block]
+
+    students = section['section'].students
+
+    if not students:
+        return True
+    
+    student_ids = [student.id for student in students]
+    
+    conflicting_schedules = (
+        Schedule.query
+        .join(CourseSection)
+        .join(CourseSection.student_courses)
+        .filter(
+            Schedule.time_slot_id.in_(timeslot_ids),
+            StudentCourses.student_id.in_(student_ids),
+            CourseSection.id != section['section'].id
+        )
+        .all()
+    )
+
+    
+    # Esto es puro para debugging, se borra y se ocupa (return len(conflicting_schedules) == 0)
+    # cuando esté todo listo
+    if conflicting_schedules:
+        print(f"[DEBUG] Conflictos encontrados para sección {section['section'].id}:")
+        for conflict in conflicting_schedules:
+            conflict_student_ids = [
+                sc.student_id
+                for sc in conflict.section.student_courses
+                if sc.student_id in student_ids
+            ]
+            for student_id in conflict_student_ids:
+                print(
+                    f"  - Estudiante {student_id} tiene clase en "
+                    f"{conflict.time_slot} (sección {conflict.section.id})"
+                )
+        return False
+
+    return True
+
+    # return len(conflicting_schedules) == 0
+
