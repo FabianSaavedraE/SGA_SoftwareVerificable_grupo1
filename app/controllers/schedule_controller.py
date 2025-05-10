@@ -37,6 +37,15 @@ def generate_schedule():
     # Cuando este listo, la idea es que el parametro de YEAR y SEMESTER se obtengan 
     # desde el front, con el usuario eligiendo estos valores
     ranked_sections = get_sections_ranking(year=YEAR, semester=SEMESTER)
+
+    if not ranked_sections:
+        print(f"[DEBUG] No se puede generar un horario por problemas de créditos en las secciones.")
+        return
+
+
+
+
+
     create_timeslots(year=YEAR, semester=SEMESTER)
 
     timeslots = get_timeslots_by_parameters(YEAR, SEMESTER)

@@ -5,9 +5,16 @@ from app.controllers.course_section_controller import (
 SHARED_SECTIONS_WEIGHT = 0.5
 CREDITS_WEIGHT = 0.3
 STUDENTS_WEIGHT = 0.2
+MAX_CREDITS = 4
 
 def get_sections_ranking(year, semester):
     course_sections = get_course_sections_by_parameters(year, semester)
+
+    for section in course_sections:
+        if section.course_instance.course.credits > MAX_CREDITS:
+            print(f"[DEBUG] Section {section.nrc} tiene más de 4 créditos ({section.course_instance.course.credits})")
+            return None
+
     sections_with_metrics = get_all_sections_metrics(course_sections)
 
     weights = {
