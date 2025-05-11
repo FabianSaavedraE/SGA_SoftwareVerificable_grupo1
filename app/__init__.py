@@ -2,13 +2,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Config
-from sqlalchemy import event
-from sqlalchemy.engine import Engine
-import sqlite3
 
 db = SQLAlchemy()
 migrate = Migrate()
 
+"""
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import sqlite3
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
@@ -16,7 +17,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
-
+"""
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
