@@ -71,3 +71,20 @@ def validate_teacher_data(data):
         )
 
     return errors
+
+def create_teachers_from_json(data):
+    teachers = data.get('profesores', [])
+    for teacher in teachers:
+        name = teacher.get('nombre', '')
+        name_parts = name.strip().split()
+        first_name = name_parts[0]
+        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+
+        new_teacher = Teacher(
+            first_name=first_name,
+            last_name=last_name,
+            email=teacher.get('correo'),
+        )
+        db.session.add(new_teacher)
+
+    db.session.commit()

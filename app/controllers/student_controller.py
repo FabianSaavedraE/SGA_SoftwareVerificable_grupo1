@@ -63,19 +63,19 @@ def delete_student(student):
     return True
 
 def create_students_from_json(data):
-    alumnos = data.get('alumnos', [])
-    for alumno in alumnos:
-        name = alumno.get('nombre', '')
+    students = data.get('alumnos', [])
+    for student in students:
+        name = student.get('nombre', '')
         name_parts = name.strip().split()
         first_name = name_parts[0]
         last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
         
-        entry_year = int(alumno.get('anio_ingreso'))
+        entry_year = int(student.get('anio_ingreso'))
 
         new_student = Student(
             first_name=first_name,
             last_name=last_name,
-            email=alumno.get('correo'),
+            email=student.get('correo'),
             entry_year=entry_year
         )
         db.session.add(new_student)

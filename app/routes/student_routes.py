@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.student_controller import (
     get_all_students, get_student, create_student,
-    update_student, delete_student
+    update_student, delete_student, create_students_from_json
 )
 
 student_bp = Blueprint('students', __name__, url_prefix='/students')
@@ -60,8 +60,7 @@ def upload_students_json():
     except Exception as e:
         print("Error leyendo JSON:", e)
         return redirect(url_for('students.get_students_view'))
-
-    from app.controllers.student_controller import create_students_from_json
+    
     create_students_from_json(data)
 
     return redirect(url_for('students.get_students_view'))
