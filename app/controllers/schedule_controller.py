@@ -1,26 +1,22 @@
+import pandas as pd
+
+from app import db
+from app.models import Schedule
 from app.controllers.section_ranking_controller import get_sections_ranking
 from app.controllers.timeslot_controller import (
     create_timeslots, find_consecutive_timeslot_blocks, 
-    get_timeslots_by_parameters
+    get_timeslots_by_parameters, is_timeslot_block_suitable
 )
 from app.controllers.classroom_controller import (
-    get_available_classrooms_for_block
+    get_available_classrooms_for_block, get_all_classrooms
 )
 
-from app.controllers.teacher_controller import (
-    is_teacher_available_for_timeslot
-)
-
-from app.controllers.student_controller import (
-    are_students_available_for_timeslot
-)
-
-from app.models import Schedule, CourseSection, TimeSlot, StudentCourses
-
-from app import db
+from app.controllers.teacher_controller import is_teacher_available_for_timeslot
+from app.controllers.student_controller import are_students_available_for_timeslot
 
 YEAR = 2025
 SEMESTER = 1
+SCHEDULE_PATH = "horario.xlsx"
 
 def generate_schedule():
     # BORRAR TODOS LOS HORARIOS EXISTENTES, HAGO ESTO PARA PODER PROBAR ETERNAMENTE
@@ -38,8 +34,19 @@ def generate_schedule():
     # desde el front, con el usuario eligiendo estos valores
     ranked_sections = get_sections_ranking(year=YEAR, semester=SEMESTER)
 
+
+    # si una de las secciones tiene más de 4 créditos, no se puede generar el horario
     if not ranked_sections:
         print(f"[DEBUG] No se puede generar un horario por problemas de créditos en las secciones.")
+        return
+    
+    # si una sección no tiene estudiantes, no se puede generar el horario
+    if not all_sections_have_students(ranked_sections):
+        print(f"[DEBUG] No se puede generar un horario porque hay secciones sin estudiantes.")
+        return
+    
+    if not can_all_sections_fit_in_classrooms(ranked_sections):
+        print(f"[DEBUG] No se puede generar un horario por problema de Classrooms.")
         return
 
 
@@ -50,13 +57,6 @@ def generate_schedule():
 
     timeslots = get_timeslots_by_parameters(YEAR, SEMESTER)
 
-    # for t in timeslots:
-    #     print(t)
-
-    # PARA MOSTRAR EL RANKING DE LAS SECCIONES, todavía me falta mejorar esta parte
-    # para que se exluyan las secciones que no tienen estudiantes, o que el código
-    # de generacion de horario simplemente termine si es que ocurre el caso de 
-    # que hay secciones sin estudiantes
     print("\nRANKING:")
     for section in ranked_sections:
         print(section)
@@ -103,17 +103,54 @@ def generate_schedule():
 
     db.session.commit()
 
+    export_schedule_to_excel()
 
+def all_sections_have_students(sections):
+    for section_data in sections:
+        if not section_data['section'].students:
+            print(f"[DEBUG] La secction {section_data['section'].nrc} no tiene estudiantes asignados.")
+            return False
+        
+    return True
 
+def can_all_sections_fit_in_classrooms(sections):
+    classrooms = get_all_classrooms()
 
-    """
-    consecutive_block es una lista de listas, donde cada sublista es el bloque
-    completo que requiere la seccion. 
+    if not classrooms:
+        print("[ERROR] No hay salas registradas en el sistema.")
+        return False
+    
+    max_classroom_capacity = max(classroom.capacity for classroom in classrooms)
 
-    Ejemplo:    
-        Si una sección tiene 4 créditos, las sublistas van a estar compuestas de 
-        4 bloques (equivalentes a 4 horas).
+    for section_data in sections:
+        if section_data['num_students'] > max_classroom_capacity:
+            print(f"[ERROR] Max capacidad de Classrooms ({max_classroom_capacity}) "
+                  f"es más chica que la máx cantidad de estudiantes. ({section_data['num_students']} en seccion {section_data['section'].nrc})")
+            
+            return False
+        
+    return True
 
-        Un bloque se ve así:
-        [Monday 09:00-10:00, Monday 10:00-11:00, Monday 11:00-12:00, Monday 12:00-13:00]
-    """
+def get_all_schedules():
+    return Schedule.query.all()
+
+def export_schedule_to_excel(filename=SCHEDULE_PATH):
+    schedules = get_all_schedules()
+
+    if not schedules:
+        print("[INFO] No hay horarios generados.")
+        return
+    
+    data = []
+    for schedule in schedules:
+        data.append({
+            "NRC": schedule.section.nrc,
+            "Day": schedule.time_slot.day,
+            "TimeSlot": f"{schedule.time_slot.start_time.strftime('%H:%M')}-{schedule.time_slot.end_time.strftime('%H:%M')}",
+            "Classroom": schedule.classroom.name
+        })
+
+    df = pd.DataFrame(data)
+    df.to_excel(filename, index=False)
+    print(f"[INFO] Horario exportado exitosamente a {filename}")
+    
