@@ -18,11 +18,11 @@ with app.app_context():
         print(f"- {curso.id}: {curso.name}") 
 
     #Query for all existing students:
-        
+
     print("\nEstudiantes existentes:")
     estudiantes = Student.query.all()
     for est in estudiantes:
-        print(f"- {est.id}: {est.first_name}, {est.last_name}")  
+        print(est) 
 
 
     #Query for all prerequisite pairings: (Im debugging this rn, love, vicente acevedo.)

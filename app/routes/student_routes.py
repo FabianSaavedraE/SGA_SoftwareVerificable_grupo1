@@ -47,3 +47,21 @@ def delete_student_view(student_id):
         return redirect(url_for('students.get_students_view'))
 
     return redirect(url_for('students.get_students_view'))
+
+@student_bp.route('/upload-json', methods=['POST'])
+def upload_students_json():
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('students.get_students_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('students.get_students_view'))
+
+    from app.controllers.student_controller import create_students_from_json
+    create_students_from_json(data)
+
+    return redirect(url_for('students.get_students_view'))
