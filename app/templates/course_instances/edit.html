@@ -1,122 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Editar Instancia de Curso</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: sans-serif;
-        }
-
-        body {
-            display: flex;
-        }
-
-        .sidebar {
-            width: 60px;
-            background-color: #2f3943;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 10px;
-        }
-
-        .main {
-            flex-grow: 1;
-            height: 100vh;
-            box-sizing: border-box;
-            padding: 20px;
-            background-color: white;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .title {
-            font-weight: bold;
-            font-size: 22px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-container {
-            border: 2px solid red;
-            padding: 20px;
-            max-width: 500px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: darkred;
-        }
-
-        .btn-back {
-            margin-top: 10px;
-            display: inline-block;
-            background-color: #2f3943;
-            color: white;
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-        }
-
-        .btn-back:hover {
-            background-color: #1c2229;
-        }
-
-    </style>
+    <title>Editar Instancia de Curso {{ course_instance.course.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
+
 <body>
+{% include 'navbar.html' %}
 
-    <div class="sidebar">
-        <!-- Sidebar vacía por ahora -->
-    </div>
+<div class="main">
+    <h1 class="title">Editar Instancia: {{ course_instance.year }} - {{ course_instance.semester }} de {{ course_instance.course.name }}</h1>
 
-    <div class="main">
-        <div class="title">Editar Instancia {{ course_instance.year}}-{{course_instance.semester}} del curso: {{ course_instance.course.name }}</div>
+    {% if error %}
+    <div class="error-msg">{{ error }}</div>
+    {% endif %}
 
-        <div class="form-container">
-            <form action="{{ url_for('course_instances.update_course_instance_view', course_instance_id=course_instance.id) }}" method="POST">
-                <label for="year">Año:</label>
-                <input type="text" id="year" name="year" value="{{ course_instance.year }}" required>
-
-                <label for="semester">Semestre</label>
-                <input type="text" id="semester" name="semester" value="{{ course_instance.semester }}" required>
-
-                <button type="submit">Actualizar Instancia</button>
-            </form>
+    <form action="{{ url_for('course_instances.update_course_instance_view', course_instance_id=course_instance.id) }}" method="POST">
+        <div>
+            <label for="year">Año:</label>
+            <input type="text" id="year" name="year" value="{{ course_instance.year }}" required>
         </div>
-    </div>
 
+        <div>
+            <label for="semester">Semestre:</label>
+            <select id="semester" name="semester" required>
+                <option value="1" {% if course_instance.semester == 1 %}selected{% endif %}>1</option>
+                <option value="2" {% if course_instance.semester == 2 %}selected{% endif %}>2</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-back">Actualizar Instancia</button>
+    </form>
+
+    <a href="{{ url_for('courses.show_course_view', course_id=course_instance.course.id) }}" class="btn-back">Volver al Curso</a>
+</div>
 </body>
-</html>
 
+</html>

@@ -1,7 +1,11 @@
 from app import db
+from sqlalchemy import UniqueConstraint
 
 class CourseInstance(db.Model):
     __tablename__ = 'course_instances'
+    __table_args__ = (
+        UniqueConstraint('course_id', 'year', 'semester', name='uq_course_year_semester'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer, nullable=False)

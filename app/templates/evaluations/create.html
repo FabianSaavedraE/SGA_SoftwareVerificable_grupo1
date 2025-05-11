@@ -21,7 +21,7 @@
     </h2>
     <h2>NRC: {{ evaluation_type.course_section.nrc }}</h2>
 
-    <form action="{{ url_for('evaluations.createEvaluationView', evaluation_type_id=evaluation_type.id) }}" method="POST">
+    <form action="{{ url_for('evaluations.create_evaluation_view', evaluation_type_id=evaluation_type.id) }}" method="POST">
         <div>
             <label for="name">Nombre:</label>
             <input type="text" id="name" name="name" required>
@@ -40,7 +40,7 @@
         <button type="submit">Crear Evaluación</button>
     </form>
 
-    <a href="{{ url_for('course_sections.showSectionView', course_section_id=evaluation_type.course_section.id) }}" class="btn-back">Volver a la sección</a>
+    <a href="{{ url_for('course_sections.show_section_view', course_section_id=evaluation_type.course_section.id) }}" class="btn-back">Volver a la sección</a>
 </div>
 </body>
 

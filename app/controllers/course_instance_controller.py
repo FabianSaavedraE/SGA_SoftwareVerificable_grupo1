@@ -10,6 +10,14 @@ def get_course_instance(course_instance_id):
     return course_instance
 
 def create_course_instance(data):
+    exists = CourseInstance.query.filter_by(
+        course_id=data['course_id'],
+        year=data['year'],
+        semester=data['semester']
+    ).first()
+    if exists:
+        return None
+    
     new_course_instance = CourseInstance(
         year = data.get('year'),
         semester = data.get('semester'),
@@ -23,9 +31,19 @@ def create_course_instance(data):
 def update_course_instance(course_instance, data):
     if not course_instance:
         return None
+    
+    new_year = int(data.get('year', course_instance.year))
+    new_semester = int(data.get('semester', course_instance.semester))
+    exists = CourseInstance.query.filter_by(
+        course_id=course_instance.course_id,
+        year=new_year,
+        semester=new_semester
+    ).filter(CourseInstance.id != course_instance.id).first()
+    if exists:
+        return None
 
-    course_instance.year = data.get('year', course_instance.year)
-    course_instance.semester = data.get('semester', course_instance.semester)
+    course_instance.year = new_year
+    course_instance.semester = new_semester
 
     db.session.commit()
     return course_instance

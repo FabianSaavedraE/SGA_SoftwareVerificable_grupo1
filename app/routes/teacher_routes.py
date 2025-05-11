@@ -15,8 +15,15 @@ def get_teachers_view():
 @teacher_bp.route('/create', methods=['GET', 'POST'])
 def create_teacher_view():
     if request.method == 'POST':
-        data = request.form
-        create_teacher(data)
+        teacher, errors = create_teacher(request.form)
+
+        if errors:
+            return render_template(
+                'teachers/create.html',
+                errors=errors,
+                form=request.form
+            )
+
         return redirect(url_for('teachers.get_teachers_view'))
 
     return render_template('teachers/create.html')
