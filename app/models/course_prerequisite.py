@@ -5,12 +5,12 @@ class CoursePrerequisite(db.Model):
 
     course_id = db.Column(
         db.Integer,
-        db.ForeignKey('courses.id', ondelete='CASCADE'),
+        db.ForeignKey('courses.id', ondelete='CASCADE', onupdate='CASCADE'),
         primary_key=True
     )
     prerequisite_id = db.Column(
         db.Integer,
-        db.ForeignKey('courses.id', ondelete='CASCADE'),
+        db.ForeignKey('courses.id', ondelete='CASCADE', onupdate='CASCADE'),
         primary_key=True
     )
 

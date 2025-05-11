@@ -13,7 +13,7 @@ class CourseInstance(db.Model):
 
     course_id = db.Column(
         db.Integer,
-        db.ForeignKey('courses.id', ondelete='CASCADE'),
+        db.ForeignKey('courses.id', ondelete='CASCADE', onupdate='CASCADE'),
         nullable=False
     )
     sections = db.relationship(
