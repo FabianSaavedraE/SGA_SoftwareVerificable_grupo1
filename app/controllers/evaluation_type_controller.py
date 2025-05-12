@@ -2,7 +2,7 @@ from app import db
 from app.models.evaluation_type import EvaluationType
 
 def get_evaluation_types_by_course(course_id):
-    evaluation_types = EvaluationType.query.find_by(course_id=course_id).all()
+    evaluation_types = EvaluationType.query.filter_by(course_id=course_id).all()
     return evaluation_types
 
 def get_evaluation_type(evaluation_type_id):

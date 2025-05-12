@@ -1,7 +1,7 @@
-from datetime import datetime, date
+from datetime import date
 
 from app import db
-from app.models.student import Student
+from app.models import Student, StudentCourses, CourseSection, Schedule
 
 def get_all_students():
     students = Student.query.all()
@@ -9,7 +9,6 @@ def get_all_students():
 
 def get_student(student_id):
     student = Student.query.get(student_id)
-    print(student)
     return student
 
 def create_student(data):
@@ -61,3 +60,27 @@ def delete_student(student):
     db.session.delete(student)
     db.session.commit()
     return True
+
+def are_students_available_for_timeslot(section, block):
+    timeslot_ids = [timeslot.id for timeslot in block]
+
+    students = section['section'].students
+
+    if not students:
+        return True
+    
+    student_ids = [student.id for student in students]
+    
+    conflicting_schedules = (
+        Schedule.query
+        .join(CourseSection)
+        .join(CourseSection.student_courses)
+        .filter(
+            Schedule.time_slot_id.in_(timeslot_ids),
+            StudentCourses.student_id.in_(student_ids),
+            CourseSection.id != section['section'].id
+        )
+        .all()
+    )
+
+    return len(conflicting_schedules) == 0

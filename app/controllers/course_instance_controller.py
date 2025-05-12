@@ -9,6 +9,13 @@ def get_course_instance(course_instance_id):
     course_instance = CourseInstance.query.get(course_instance_id)
     return course_instance
 
+def get_course_instance_by_parameters(year, semester):
+    course_instances = CourseInstance.query.filter_by(
+        year=year, semester=semester
+    ).all()
+
+    return course_instances
+
 def create_course_instance(data):
     exists = CourseInstance.query.filter_by(
         course_id=data['course_id'],

@@ -1,5 +1,7 @@
+from collections import defaultdict
+
 from app import db
-from app.models.teacher import Teacher
+from app.models import Teacher, CourseSection, Schedule
 
 MAX_LENGTH_FIRST_NAME = 50
 MAX_LENGTH_LAST_NAME = 50
@@ -71,3 +73,36 @@ def validate_teacher_data(data):
         )
 
     return errors
+def is_teacher_available_for_timeslot(section, block):
+    teacher_id = section['section'].teacher_id
+    timeslot_ids = [slot.id for slot in block]
+
+    has_conflict = (
+        Schedule.query
+        .join(CourseSection)
+        .filter(
+            CourseSection.teacher_id == teacher_id,
+            Schedule.time_slot_id.in_(timeslot_ids)
+        )
+        .first()
+    )
+
+    return has_conflict is None
+
+def validate_teacher_overload(ranked_sections, timeslots):
+    teacher_load = defaultdict(int)
+
+    for section_data in ranked_sections:
+        teacher_id = section_data['section'].teacher_id
+        credits = section_data['num_credits']
+        teacher_load[teacher_id] += credits
+
+    total_slots = len(set(
+        (slot.day, slot.start_time) for slot in timeslots
+    ))
+
+    for teacher_id, total_credits in teacher_load.items():
+        if total_credits > total_slots:
+            return False, f"El profesor con ID {teacher_id} tiene {total_credits} horas asignadas, pero solo hay {total_slots} bloques disponibles."
+        
+    return True, ""

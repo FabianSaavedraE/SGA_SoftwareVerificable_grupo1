@@ -42,6 +42,13 @@ class CourseSection(db.Model):
         passive_deletes=True
     )
 
+    schedules = db.relationship(
+        'Schedule',
+        back_populates='section',
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
+
     @property
     def students(self):
         return [
