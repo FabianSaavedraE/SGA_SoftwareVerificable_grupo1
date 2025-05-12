@@ -34,7 +34,6 @@ def update_course_prerequisite(course_id, prerequisite_id, data):
 
 def delete_course_prerequisite(course_id, prerequisite_id):
     prerequisite = get_course_prerequisite(course_id, prerequisite_id)
-    print(prerequisite)
     if prerequisite:
         db.session.delete(prerequisite)
         db.session.commit()
