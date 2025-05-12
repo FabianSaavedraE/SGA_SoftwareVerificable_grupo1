@@ -1,16 +1,29 @@
 from app import db
 from app.models.course_section import CourseSection
+from app.controllers.course_instance_controller import (
+    get_course_instance_by_parameters
+)
 
 def get_all_sections():
     sections = CourseSection.query.all()
     return sections
 
 def get_all_course_sections(course_instance_id):
-    sections = CourseSection.query.find_by(
+    sections = CourseSection.query.filter_by(
         course_instance_id=course_instance_id
     ).all()
     return sections
 
+def get_course_sections_by_parameters(year, semester):
+    course_instances = get_course_instance_by_parameters(year, semester)
+    sections = []
+
+    for course in course_instances:
+        course_sections = get_all_course_sections(course.id)
+        sections.extend(course_sections)
+
+    return sections
+        
 def get_section(course_section_id):
     course_section = CourseSection.query.get(course_section_id)
     return course_section
@@ -20,7 +33,8 @@ def create_section(data):
         nrc = data.get('nrc'),
         overall_ponderation_type = data.get('overall_ponderation_type'),
         course_instance_id = data.get('course_instance_id'),
-        teacher_id = data.get('teacher_id') or None
+        teacher_id = data.get('teacher_id') or None,
+        state = data.get('state', 'Open')
     )
     db.session.add(new_section)
     db.session.commit()
@@ -40,6 +54,7 @@ def update_section(course_section, data):
         'teacher_id',
         course_section.teacher_id
     ) or None
+    course_section.state = data.get('state', course_section.state)
 
     db.session.commit()
     return course_section

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Sala {{classroom.name}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
+</head>
+
+<body>
+{% include 'navbar.html' %}
+<div class="main">
+
+    <h1>Editar Sala {{classroom.name}}</h1>
+
+    <form action="{{url_for('classrooms.update_classroom_view', classroom_id=classroom.id)}}" method="POST">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" value="{{classroom.name}}" required>
+
+        <label for="capacity">Capacidad:</label>
+        <input type="number" id="capacity" name="capacity" value="{{classroom.capacity}}" required>
+
+        <button type="submit">Actualizar Sala</button>
+    </form>
+
+    <a href="{{ url_for('classrooms.get_classrooms_view') }}" class="btn-back">Volver</a>
+
+</div>
+</body>
+
+</html>

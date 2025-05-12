@@ -19,10 +19,33 @@ def create_evaluation_view(evaluation_type_id):
             'course_sections.show_section_view',
             course_section_id=evaluation_type.course_section_id
         ))
-
+    
     if request.method == 'POST':
-        data = build_evaluation_data(request.form, evaluation_type_id)
-        create_evaluation(data)
+        """
+        ESTE ES UN COMENTARIO PARA EL FUTURO, CUANDO EMPECEMOS A VER LO DE LOS JSONS
+        PARA LA CARGA DE EVALUACIONES.
+
+        DATA que se manda al controlador para crear la(s) evaluacion(es) es una lista con la siguiente estructura:
+        
+        DATA: [
+            {
+                'name': 'Prueba 2', 
+                'ponderation': '40', 
+                'optional': True, 
+                'evaluation_type_id': 37
+            }, 
+            {
+                'name': 'Prueba 1', 
+                'ponderation': '40', 
+                'optional': True, 
+                'evaluation_type_id': 37}
+        ]
+
+        """
+        evaluations = build_evaluation_data(request.form, evaluation_type_id)
+
+        for data in evaluations:
+            create_evaluation(data)
 
         return redirect(url_for(
             'course_sections.show_section_view',
@@ -94,17 +117,29 @@ def delete_evaluation_view(evaluation_id, course_section_id):
         course_section_id=course_section_id
     ))
 
-def build_evaluation_data(form_data, evaluation_type_id=None):
-    data = form_data.to_dict()
-    data['optional'] = form_data.get('optional') == 'on'
-
-    if evaluation_type_id:
-        data['evaluation_type_id'] = evaluation_type_id
-    
-    return data
-
 def build_grades_dict(evaluation):
     return {
         student_evaluation.student_id: student_evaluation.grade
         for student_evaluation in evaluation.student_evaluations
     }
+
+def build_evaluation_data(form_data, evaluation_type_id):
+    evaluations = []
+
+    for key in form_data:
+        if key.startswith('name_'):
+            index = key.split('_')[1]
+            name = form_data.get(f'name_{index}')
+            ponderation = form_data.get(f'ponderation_{index}')
+            optional = form_data.get(f'optional_{index}') == 'on'
+
+            data = {
+                'name': name,
+                'ponderation': ponderation if ponderation else None,
+                'optional': optional,
+                'evaluation_type_id': evaluation_type_id
+            }
+
+            evaluations.append(data)
+
+    return evaluations

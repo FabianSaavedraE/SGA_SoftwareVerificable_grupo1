@@ -19,6 +19,7 @@
                 <th>NRC</th>
                 <th>Curso</th>
                 <th>Profesor</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -35,6 +36,7 @@
                             Sin Profesor
                         {% endif %}
                     </td>
+                    <td>{% if section.state == 'Open' %}Abierta{% else %}Cerrada{% endif %}</td>
                     <td>
                         <a href="{{ url_for('course_sections.show_section_view', course_section_id=section.id) }}" class="btn-action">Ver</a>
                         <a href="{{ url_for('course_sections.update_section_view', course_section_id=section.id) }}" class="btn-action">Editar</a>

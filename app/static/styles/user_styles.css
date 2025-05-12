@@ -146,6 +146,12 @@ button:hover,
     max-width: fit-content;  
     margin-top: 20px;    
 }
+
+.disabled {
+  color: #999;
+  font-style: italic;
+  pointer-events: none;
+}
 /* Action buttons inside .box */
 
 .box a,

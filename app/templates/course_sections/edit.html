@@ -37,6 +37,13 @@
         </select>
         <br>
 
+        <label for="state">Estado:</label>
+        <select id="state" name="state" required>
+            <option value="Open"  {% if course_section.state == 'Open'  %}selected{% endif %}>Abierta</option>
+            <option value="Closed" {% if course_section.state == 'Closed' %}selected{% endif %}>Cerrada</option>
+        </select>
+        <br>
+
         <button type="submit">Actualizar Sección</button>
     </form>
 </div>

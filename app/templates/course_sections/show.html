@@ -16,6 +16,9 @@
     <p>Curso: {{course_section.course_instance.course.name}} {{course_section.course_instance.year}}-{{course_section.course_instance.semester}}</p>
     <p>NRC: {{course_section.nrc}}</p>
     <p>Profesor: {{course_section.teacher}}</p>
+    <p>Estado:
+        {% if course_section.state == 'Open' %}Abierta{% else %}Cerrada{% endif %}
+    </p>
 
     <h1>Tipos de Evaluación:</h1>
     <a href="{{url_for('evaluation_types.create_evaluation_type_view', course_section_id=course_section.id)}}">Agregar Tipo de Evaluación</a>
@@ -106,7 +109,11 @@
     {% endif %}
 
     <h1>Estudiantes:</h1>
-    <a href="{{url_for('student_courses.create_student_course_view', course_section_id=course_section.id)}}">Agregar Estudiante</a>
+    {% if course_section.state == 'Open' %}
+        <a href="{{url_for('student_courses.create_student_course_view', course_section_id=course_section.id)}}">Agregar Estudiante</a>
+    {% else %}
+        <span class="disabled">Sección cerrada</span>
+    {% endif %}
 
     {% if course_section.student_courses %}
         <table>
