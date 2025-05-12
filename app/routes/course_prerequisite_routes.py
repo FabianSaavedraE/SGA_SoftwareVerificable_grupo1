@@ -6,7 +6,7 @@ from app import db
 from app.models.course import Course
 from app.models.course_prerequisite import CoursePrerequisite
 from app.controllers.course_prerequisites_controllers import (
-    get_course_prerequisite, delete_course_prerequisite
+    get_course_prerequisite, delete_course_prerequisite, is_direct_cycle
 )
 
 course_prerequisite_bp = Blueprint(
@@ -45,7 +45,16 @@ def create_course_prerequisite_view():
         prerequisite_ids = request.form.getlist('prerequisite_ids')  
 
         for prereq_id in prerequisite_ids:
-            if prereq_id != course_id:  
+            if prereq_id != course_id:
+                if is_direct_cycle(int(course_id), int(prereq_id)):
+                    error = "Relación de prerequisito inválida entre estos cursos."
+                    courses = Course.query.all()
+                    return render_template(
+                        'course_prerequisites/create.html',
+                        courses=courses,
+                        error=error
+                    )
+                
                 new_pair = CoursePrerequisite(
                     course_id=course_id,
                     prerequisite_id=prereq_id
@@ -94,6 +103,18 @@ def update_course_prerequisite_view(course_id):
         new_prereq_ids = request.form.getlist('new_prerequisite[]')
         for new_id in new_prereq_ids:
             if new_id and new_id != str(course_id):
+                if is_direct_cycle(course_id, int(new_id)):
+                    error = "Relación de prerequisito inválida entre estos cursos."
+                    prerequisites = CoursePrerequisite.query.filter_by(course_id=course_id).all()
+                    available_prereqs = Course.query.all()
+                    return render_template(
+                        'course_prerequisites/edit.html',
+                        course=course,
+                        prerequisites=prerequisites,
+                        available_prereqs=available_prereqs,
+                        error=error
+                    )
+                
                 existing = CoursePrerequisite.query.get(
                     (course_id, int(new_id))
                 )

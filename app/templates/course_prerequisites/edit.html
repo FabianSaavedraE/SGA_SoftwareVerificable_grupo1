@@ -30,6 +30,9 @@
     {% include 'navbar.html' %}
 
 <div class="main">
+    {% if error %}
+        <div class="error-msg">{{error}}</div>
+    {% endif %}
 
     <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
 
