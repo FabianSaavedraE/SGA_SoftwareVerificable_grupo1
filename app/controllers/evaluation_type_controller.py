@@ -10,12 +10,17 @@ def get_evaluation_type(evaluation_type_id):
     return evaluation_type
 
 def create_evaluation_type(data):
+    evaluation_instance_id = data.get('evaluation_instance_id')
+
     new_evaluation_type = EvaluationType(
         topic = data.get('topic'),
         ponderation_type = data.get('ponderation_type'),
         overall_ponderation = data.get('overall_ponderation'),
         course_section_id = data.get('course_section_id')
     )
+
+    if evaluation_instance_id is not None:
+        new_evaluation_type.id = evaluation_instance_id
 
     db.session.add(new_evaluation_type)
     db.session.commit()

@@ -104,11 +104,11 @@ def upload_course_sections_json():
         data = json.load(file)
     except Exception as e:
         print("Error leyendo JSON:", e)
-        return redirect(url_for('courses.get_courses_view'))
+        return redirect(url_for('course_sections.get_sections_view'))
     
     create_course_sections_from_json(data)
 
-    return redirect(url_for('courses.get_courses_view'))
+    return redirect(url_for('course_sections.get_sections_view'))
 
 def delete_section_view_from_show(course_section_id, course_instance_id):
     course_section = get_section(course_section_id)
