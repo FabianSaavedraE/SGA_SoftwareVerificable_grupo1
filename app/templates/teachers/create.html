@@ -13,23 +13,24 @@
 
     <h1>Crear Profesor</h1>
 
-    {% if errors %}
-        <ul class="error-msg">
-            {% for error in errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
     <form action="{{url_for('teachers.create_teacher_view')}}" method="POST">
         <label for="first_name">Nombre:</label>
-        <input type="text" id="first_name" name="first_name" required>
+        <input type="text" id="first_name" name="first_name" >
+        {% if errors and errors.first_name %}
+            <p class="form-error">{{errors.first_name}}</p>
+        {% endif %}
 
         <label for="last_name">Apellido:</label>
-        <input type="text" id="last_name" name="last_name" required>
+        <input type="text" id="last_name" name="last_name" >
+        {% if errors and errors.last_name %}
+            <p class="form-error">{{errors.last_name}}</p>
+        {% endif %}
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" >
+        {% if errors and errors.email %}
+            <p class="form-error">{{errors.email}}</p>
+        {% endif %}
 
         <button type="submit">Crear Profesor</button>
     </form>

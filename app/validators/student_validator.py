@@ -1,7 +1,7 @@
 from app.models import Student
 
-MAX_FIRST_NAME_LENGTH = 50
-MAX_LAST_NAME_LENGTH = 50
+MAX_LENGTH_FIRST_NAME = 50
+MAX_LENGTH_LAST_NAME = 50
 MAX_EMAIL_LENGTH = 50
 MIN_ENTRY_YEAR = 1980
 MAX_ENTRY_YEAR = 2025
@@ -16,15 +16,15 @@ def validate_student_data(data, student_id=None):
 
     if not first_name:
         errors['first_name'] = "El nombre es obligatorio."
-    elif len(first_name) > MAX_FIRST_NAME_LENGTH:
+    elif len(first_name) > MAX_LENGTH_FIRST_NAME:
         errors['first_name'] = (f"El nombre no puede superar los "
-                                f"{MAX_FIRST_NAME_LENGTH} caracteres.")
+                                f"{MAX_LENGTH_FIRST_NAME} caracteres.")
 
     if not last_name:
         errors['last_name'] = "El apellido es obligatorio."  
-    elif len(last_name) > MAX_LAST_NAME_LENGTH:
+    elif len(last_name) > MAX_LENGTH_LAST_NAME:
         errors['last_name'] = (f"El apellido no puede superar los "
-                               f"{MAX_LAST_NAME_LENGTH} caracteres.") 
+                               f"{MAX_LENGTH_LAST_NAME} caracteres.") 
 
     if not email:
         errors['email'] = "El email es obligatorio."
