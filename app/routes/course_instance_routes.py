@@ -3,8 +3,8 @@ from flask import (
 )
 
 from app.controllers.course_instance_controller import (
-    get_course_instance, create_course_instance,
-    update_course_instance, delete_course_instance
+    get_course_instance, create_course_instance, update_course_instance, 
+    delete_course_instance, is_valid_year
 )
 from app.controllers.course_controller import get_course
 
@@ -37,8 +37,14 @@ def create_course_instance_view(course_id):
     if request.method == 'POST':
         data = build_course_instance_data(request.form, course_id)
         course_instance = create_course_instance(data)
+
         if course_instance is None:
-            error = "Ya existe una instancia de este curso para ese año y semestre."
+            year = int(data['year'])
+            if not is_valid_year(year):
+                error = "El año ingresado no es válido."
+            else:
+                error = "Ya existe una instancia de este curso para ese " \
+                "año y semestre."
         else:
             return redirect(url_for(
                 'courses.show_course_view',
@@ -63,7 +69,13 @@ def update_course_instance_view(course_instance_id):
         data = request.form
         course_instance_updated = update_course_instance(course_instance, data)
         if course_instance_updated is None:
-            error = "Ya existe otra instancia de este curso en ese año y semestre."
+            year = int(data.get('year', course_instance.year))
+            if not is_valid_year(year):
+                error = "El año ingresado no es válido"
+
+            else:
+                error = "Ya existe otra instancia de este curso en ese " \
+                "año y semestre."
         else:
             return redirect(url_for(
                 'courses.show_course_view',

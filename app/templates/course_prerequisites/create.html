@@ -28,6 +28,10 @@
 {% include 'navbar.html' %}
 
 <div class="main">
+    {% if error %}
+        <div class="error-msg">{{error}}</div>
+    {% endif %}
+
     <div class="title">Crear Prerrequisitos</div>
 
     <div class="box">

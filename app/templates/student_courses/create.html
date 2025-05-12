@@ -12,6 +12,10 @@
 
 <div class="main">
 
+    {% if error %}
+        <div class="error-msg">{{error}}</div>
+    {% endif %}
+
     <h1>Agregar estudiante a esta sección</h1>
     <h2>Curso: {{section.course_instance.course.name}} {{section.course_instance.year}}-{{section.course_instance.semester}}</h2>
     <h2>Sección: {{ section.nrc }}</h2>

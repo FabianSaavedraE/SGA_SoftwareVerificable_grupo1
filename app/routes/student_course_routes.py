@@ -7,6 +7,7 @@ from app.controllers.student_course_controller import (
     update_student_course, delete_student_course
 )
 from app.controllers.course_section_controller import get_section
+from app.validators.student_course_validator import has_met_prerequisites
 from app.models.student import Student
 
 student_course_bp = Blueprint(
@@ -24,26 +25,42 @@ def create_student_course_view(course_section_id):
             'course_sections.show_section_view',
             course_section_id=course_section_id
         ))
+    
+    query = request.args.get('q') or request.form.get('q')
+    students = get_students_by_query(query) if query else []
+    error = None
 
     if request.method == 'POST':
         data = build_student_course_data(request.form, course_section_id)
+        student_id = data.get('student_id')
+
+        has_passed_requisites, error_message = has_met_prerequisites(
+            student_id, section
+        )
+        if not has_passed_requisites:
+            return render_template(
+                'student_courses/create.html',
+                section=section,
+                students=students,
+                error=error_message,
+                q=query
+            )
 
         create_student_course(data)
+
         # Preservamos el valor del query de búsqueda
-        q = request.form.get('q', '')
         return redirect(url_for(
             'student_courses.create_student_course_view',
             course_section_id=course_section_id,
-            q=q
+            q=query
         ))
-
-    query = request.args.get('q')
-    students = get_students_by_query(query) if query else []
 
     return render_template(
         'student_courses/create.html',
         section=section,
-        students=students
+        students=students,
+        error=error,
+        q=query
     )
 
 @student_course_bp.route(

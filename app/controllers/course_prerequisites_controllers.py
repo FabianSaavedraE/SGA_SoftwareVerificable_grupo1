@@ -34,7 +34,14 @@ def update_course_prerequisite(course_id, prerequisite_id, data):
 
 def delete_course_prerequisite(course_id, prerequisite_id):
     prerequisite = get_course_prerequisite(course_id, prerequisite_id)
-    print(prerequisite)
     if prerequisite:
         db.session.delete(prerequisite)
         db.session.commit()
+
+def is_direct_cycle(course_id, prerequisite_id):
+    reversed_pair = CoursePrerequisite.query.filter_by(
+        course_id=prerequisite_id,
+        prerequisite_id=course_id
+    ).first()
+
+    return reversed_pair is not None

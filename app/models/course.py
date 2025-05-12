@@ -4,9 +4,9 @@ class Course(db.Model):
     __tablename__ = 'courses'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(100), nullable=False)
-    code = db.Column(db.String(50), nullable=False, unique=True)
+    code = db.Column(db.String(10), nullable=False, unique=True)
     credits = db.Column(db.Integer, nullable=False, default=0)
 
     instances = db.relationship(
