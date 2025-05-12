@@ -4,7 +4,7 @@ from app.controllers.section_ranking_controller import get_sections_ranking
 from app.controllers.timeslot_controller import (
     create_timeslots, get_timeslots_by_parameters
 )
-from app.controllers.schedule_validator import is_schedule_feasible
+from app.validators.schedule_validator import is_schedule_feasible
 from app.controllers.schedule_assigner import assign_sections
 from app.controllers.schedule_exporter import export_schedule_to_excel
 
