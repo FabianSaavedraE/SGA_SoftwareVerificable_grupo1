@@ -46,7 +46,9 @@ def update_student(student, data):
     entry_year = data.get('entry_year')
     if entry_year:
         try:
-            student.entry_year = max(1900, min(date.today().year, int(entry_year)))
+            student.entry_year = max(
+                1900, min(date.today().year,int(entry_year))
+            )
         except ValueError:
             pass
 
