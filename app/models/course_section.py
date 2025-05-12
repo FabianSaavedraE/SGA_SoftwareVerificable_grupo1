@@ -9,6 +9,12 @@ class CourseSection(db.Model):
         db.Enum('Porcentaje', 'Peso', name='ponderation_type_enum'),
         nullable=False
     )
+    
+    state = db.Column(
+        db.Enum('Open', 'Closed', name='section_state_enum'),
+        nullable=False,
+        default='Open'
+    )
 
     course_instance_id = db.Column(
         db.Integer,

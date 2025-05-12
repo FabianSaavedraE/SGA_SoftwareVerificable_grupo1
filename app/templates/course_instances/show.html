@@ -21,6 +21,7 @@
                     <th>NRC</th>
                     <th>Profesor</th>
                     <th>Tipo de ponderación de las Evaluaciones</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@
                                 No está definido el tipo de ponderación.
                             {% endif %}
                         </td>
+                        <td>{% if section.state == 'Open' %}Abierta{% else %}Cerrada{% endif %}</td>
                         <td>
                             <a href="{{ url_for('course_sections.show_section_view', course_section_id=section.id) }}" class="button">Ver</a>
                         </td>
