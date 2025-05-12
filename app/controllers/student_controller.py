@@ -80,6 +80,7 @@ def create_students_from_json(data):
         db.session.add(new_student)
 
     db.session.commit()
+    
 def are_students_available_for_timeslot(section, block):
     timeslot_ids = [timeslot.id for timeslot in block]
 

@@ -54,7 +54,6 @@ def delete_course_view(course_id):
 
 @course_bp.route('/upload-json', methods=['POST'])
 def upload_courses_json():
-    print("Calling upload courses")
     file = request.files.get('jsonFile')
     if not file:
         return redirect(url_for('courses.get_courses_view'))

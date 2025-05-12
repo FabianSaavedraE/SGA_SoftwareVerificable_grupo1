@@ -4,6 +4,7 @@ from app import create_app, db
 from app.models.course import Course
 from app.models.student import Student
 from app.models.course_prerequisite import CoursePrerequisite
+from app.models.teacher import Teacher
 
 #The app needs to be created for consultations
 app = create_app()
@@ -16,6 +17,12 @@ with app.app_context():
     cursos = Course.query.all()
     for curso in cursos:
         print(f"- {curso.id}: {curso.name}") 
+    
+    print("Profesores existentes:")
+    profesores = Teacher.query.all()
+    for profesor in profesores:
+        print(f"- {profesor.id}: {profesor.first_name} {profesor.last_name}") 
+
 
     #Query for all existing students:
 

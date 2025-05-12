@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.course_section_controller import (
     get_all_sections, get_section, create_section,
-    update_section, delete_section
+    update_section, delete_section, create_course_sections_from_json
 )
 from app.controllers.course_instance_controller import get_course_instance
 from app.controllers.teacher_controller import get_all_teachers
@@ -92,6 +92,24 @@ def delete_section_view(course_section_id, course_instance_id):
     '/delete/<int:course_section_id>/<int:course_instance_id>',
     methods=['POST']
 )
+
+@course_section_bp.route('/upload-json', methods=['POST'])
+def upload_course_sections_json():
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('courses.get_courses_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('courses.get_courses_view'))
+    
+    create_course_sections_from_json(data)
+
+    return redirect(url_for('courses.get_courses_view'))
+
 def delete_section_view_from_show(course_section_id, course_instance_id):
     course_section = get_section(course_section_id)
     if course_section:
@@ -110,3 +128,4 @@ def build_section_data(form_data, course_instance_id):
     data = form_data.to_dict()
     data['course_instance_id'] = course_instance_id
     return data
+
