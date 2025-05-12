@@ -6,7 +6,6 @@ def export_schedule_to_excel(path):
     schedules = Schedule.query.all()
 
     if not schedules:
-        print("[INFO] No hay horarios para exportar.")
         return
     
     data = [{
@@ -18,4 +17,3 @@ def export_schedule_to_excel(path):
     } for schedule in schedules]
 
     pd.DataFrame(data).to_excel(path, index=False)
-    print(f"[INFO] Horario exportado a {path}")

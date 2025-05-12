@@ -18,25 +18,30 @@ def generate_schedule(year, semester, export_path=SCHEDULE_PATH):
         print(f"Horario inviable: {message}")
         return False
     
+    for r in ranked_sections:
+        print(r)
+
     create_timeslots(year, semester)
     timeslots = get_timeslots_by_parameters(year, semester)
 
-    if not is_schedule_feasible(ranked_sections, timeslots):
-        print("Horario inviable según validaciones previas.")
+    success_previous_validations, message = is_schedule_feasible(
+        ranked_sections, timeslots
+    )
+
+    if not success_previous_validations:
+        print(f"Horario inviable según validaciones previas: {message}")
         return False
     
     if assign_sections(ranked_sections, timeslots):
         export_schedule_to_excel(export_path)
-        print("[SUCCESS] Horario generado correctamente.")
+        print(f"[SUCCESS] Horario generado correctamente.")
         return True
     
-    print("No se pudo generar un horario válido.")
     return False
 
 def clear_previous_schedule():
     Schedule.query.delete()
     db.session.commit()
-    print("[INFO] Horarios anteriores eliminados")
 
 def get_all_schedules():
     return Schedule.query.all()
