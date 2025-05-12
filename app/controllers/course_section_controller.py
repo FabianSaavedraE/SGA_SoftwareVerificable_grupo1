@@ -76,7 +76,6 @@ def delete_section(course_section):
     db.session.commit()
     return True
 
-
 def create_course_sections_from_json(data):   
     course_sections = data.get('secciones', [])
     for course_section in course_sections:
@@ -109,14 +108,13 @@ def create_course_sections_from_json(data):
  
     db.session.commit()
 
-
 def check_if_course_section_with_id_exists(id):
     course_section = CourseSection.query.filter_by(id=id).first()
     if course_section:
         return True
     else:
         return False
-    
+
 def handle_course_section_with_existing_id(id):
     course_section = CourseSection.query.filter_by(id=id).first()
     max_id = db.session.query(func.max(CourseSection.id)).scalar() or 0
@@ -155,5 +153,3 @@ def add_evaluation_topics_and_evaluations_to_section(id, evaluation_instances, e
                                                       }
             create_evaluation(processable_data_format_for_evaluation)
         pass
-    
-
