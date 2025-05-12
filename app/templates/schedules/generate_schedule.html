@@ -1,19 +1,43 @@
-<!-- templates/schedules/generate_schedule.html -->
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Generar Horario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
 </head>
-<body>
 
+<body>
+{% include 'navbar.html' %}
+
+<div class="main">
     <h1>Generar Horario</h1>
 
+    {% if message %}
+        <div>
+            {{ message }}
+        </div>
+    {% endif %}
+
     <form action="{{ url_for('schedules.generate_schedule_view') }}" method="POST">
+        <label for="year">Año:</label>
+        <input type="number" name="year" id="year" value="2025" required><br><br>
+
+        <label for="semester">Semestre:</label>
+        <select name="semester" id="semester" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select><br><br>
+
         <button type="submit">Generar Horario</button>
     </form>
 
-    <a href="{{ url_for('landing_page') }}">Volver a inicio</a>
+    {% if file_link %}
+        <a href="{{ file_link }}" class="btn-download">Descargar el horario</a>
+    {% endif %}
 
+    <a href="{{ url_for('landing_page') }}" class="btn-back">Volver a Inicio</a>
+</div>
 </body>
+
 </html>

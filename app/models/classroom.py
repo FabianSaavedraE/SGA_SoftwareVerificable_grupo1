@@ -7,5 +7,12 @@ class Classroom(db.Model):
     name = db.Column(db.String(100), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
 
+    schedules = db.relationship(
+        'Schedule',
+        back_populates='classroom',
+        cascade='all, delete-orphan',
+        passive_deletes=True
+    )
+
     def __repr__(self):
         return f"{self.name}"

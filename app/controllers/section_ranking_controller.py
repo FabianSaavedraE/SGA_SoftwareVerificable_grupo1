@@ -2,18 +2,24 @@ from app.controllers.course_section_controller import (
     get_course_sections_by_parameters
 )
 
-SHARED_SECTIONS_WEIGHT = 0.5
-CREDITS_WEIGHT = 0.3
+SHARED_SECTIONS_WEIGHT = 0.3
+CREDITS_WEIGHT = 0.5
 STUDENTS_WEIGHT = 0.2
 MAX_CREDITS = 4
 
 def get_sections_ranking(year, semester):
     course_sections = get_course_sections_by_parameters(year, semester)
 
+    if not course_sections:
+        message = f"No hay secciones para el periodo {year}-{semester}"
+        return None, message
+
     for section in course_sections:
         if section.course_instance.course.credits > MAX_CREDITS:
             print(f"[DEBUG] Section {section.nrc} tiene más de 4 créditos ({section.course_instance.course.credits})")
-            return None
+            
+            message = f"Section {section.nrc} tiene más créditos de lo posible ({section.course_instance.course.credits})"
+            return None, message
 
     sections_with_metrics = get_all_sections_metrics(course_sections)
 
@@ -25,7 +31,7 @@ def get_sections_ranking(year, semester):
 
     ranking = rank_sections(sections_with_metrics, weights)
 
-    return ranking
+    return ranking, None
 
 def rank_sections(sections, weights=None):
     scored_sections = calculate_scores(sections, weights)

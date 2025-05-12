@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import date
 
 from app import db
 from app.models import Student, StudentCourses, CourseSection, Schedule
@@ -83,25 +83,4 @@ def are_students_available_for_timeslot(section, block):
         .all()
     )
 
-    
-    # Esto es puro para debugging, se borra y se ocupa (return len(conflicting_schedules) == 0)
-    # cuando esté todo listo
-    if conflicting_schedules:
-        print(f"[DEBUG] Conflictos encontrados para sección {section['section'].id}:")
-        for conflict in conflicting_schedules:
-            conflict_student_ids = [
-                sc.student_id
-                for sc in conflict.section.student_courses
-                if sc.student_id in student_ids
-            ]
-            for student_id in conflict_student_ids:
-                print(
-                    f"  - Estudiante {student_id} tiene clase en "
-                    f"{conflict.time_slot} (sección {conflict.section.id})"
-                )
-        return False
-
-    return True
-
-    # return len(conflicting_schedules) == 0
-
+    return len(conflicting_schedules) == 0
