@@ -27,7 +27,9 @@ def create_course_view():
         errors = validate_course_data(data)
 
         if errors:
-            return render_template('courses/create.html', errors=errors, data=data)
+            return render_template(
+                'courses/create.html', errors=errors, data=data
+            )
 
         create_course(data)
         return redirect(url_for('courses.get_courses_view'))
@@ -42,10 +44,12 @@ def update_course_view(course_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_course_data(data, course_id=course.id)
+        errors = validate_course_data(data, course_id=course_id)
 
         if errors:
-            return render_template('courses/edit.html', course=course, errors=errors, data=data)
+            return render_template(
+                'courses/edit.html', course=course, errors=errors, data=data
+            )
 
         update_course(course, data)
         return redirect(url_for('courses.get_courses_view'))
