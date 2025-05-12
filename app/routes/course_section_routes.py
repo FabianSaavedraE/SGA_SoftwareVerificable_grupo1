@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.course_section_controller import (
     get_all_sections, get_section, create_section,
-    update_section, delete_section
+    update_section, delete_section, data_validation
 )
 from app.controllers.course_instance_controller import get_course_instance
 from app.controllers.teacher_controller import get_all_teachers
@@ -42,6 +42,16 @@ def create_section_view(course_instance_id):
 
     if request.method == 'POST':
         data = build_section_data(request.form, course_instance_id)
+        errors = data_validation(data)
+
+        if errors:
+            return render_template(
+                'course_sections/create.html',
+                course_instance=course_instance,
+                teacher=teachers,
+                errors=errors
+            )
+
         create_section(data)
         return redirect(url_for(
             'course_instances.show_course_instance_view',
@@ -66,6 +76,16 @@ def update_section_view(course_section_id):
 
     if request.method == 'POST':
         data = request.form
+        errors = data_validation(data)
+
+        if errors:
+            return render_template(
+                'course_sections/edit.html',
+                course_section=course_section,
+                teachers=teachers,
+                errors=errors
+            )
+        
         update_section(course_section, data)
 
         return redirect(url_for('course_sections.get_sections_view'))

@@ -4,6 +4,8 @@ from app.controllers.course_instance_controller import (
     get_course_instance_by_parameters
 )
 
+NRC_LENGTH = 4
+
 def get_all_sections():
     sections = CourseSection.query.all()
     return sections
@@ -29,8 +31,11 @@ def get_section(course_section_id):
     return course_section
 
 def create_section(data):
+    raw_nrc = data.get('nrc', '').zfill(4)
+    nrc = f"NRC-{raw_nrc}"
+
     new_section = CourseSection(
-        nrc = data.get('nrc'),
+        nrc = nrc,
         overall_ponderation_type = data.get('overall_ponderation_type'),
         course_instance_id = data.get('course_instance_id'),
         teacher_id = data.get('teacher_id') or None,
@@ -44,8 +49,11 @@ def create_section(data):
 def update_section(course_section, data):
     if not course_section:
         return None
+    
+    raw_nrc = data.get('nrc', str(course_section.nrc)[4:])
+    full_nrc = f"NRC-{raw_nrc.zfill(4)}"
 
-    course_section.nrc = data.get('nrc', course_section.nrc)
+    course_section.nrc = full_nrc
     course_section.overall_ponderation_type = data.get(
         'overall_ponderation_type',
         course_section.overall_ponderation_type
@@ -66,3 +74,25 @@ def delete_section(course_section):
     db.session.delete(course_section)
     db.session.commit()
     return True
+
+def data_validation(data, course_section_id=None):
+    errors = {}
+
+    nrc = (data.get('nrc') or '').strip()
+
+    if not nrc:
+        errors['nrc'] = "El NRC es obligatorio."
+    elif len(nrc) != NRC_LENGTH:
+        errors['nrc'] = (f"El NRC debe ser un número de {NRC_LENGTH} dígitos.")
+    else:
+        existing_section = CourseSection.query.filter_by(
+            nrc=f"NRC-{nrc}"
+        ).first()
+        
+        if existing_section and (
+            course_section_id is None or
+            existing_section.id != course_section_id
+        ):
+            errors['nrc'] = f"El NRC ({nrc}) ya está en uso por otra sección."
+
+    return 

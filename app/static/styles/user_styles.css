@@ -258,3 +258,13 @@ a.btn-action:hover {
     margin-bottom: 15px;
     border-radius: 4px;
 }
+
+.form-error {
+    color: #b00020;               
+    background-color: #fce4ec;    
+    border-left: 4px solid #b00020;
+    padding: 8px 12px;
+    margin-top: 6px;
+    font-size: 14px;
+    border-radius: 4px;
+}

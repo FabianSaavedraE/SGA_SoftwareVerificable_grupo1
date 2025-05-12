@@ -16,11 +16,14 @@
 
     <form action="{{url_for('course_sections.create_section_view', course_instance_id=course_instance.id)}}" method="POST">
         <label for="nrc">NRC:</label>
-        <input type="text" id="nrc" name="nrc" required>
+        <input type="number" id="nrc" name="nrc">
         <br>
+        {% if errors and errors.nrc %}
+            <p class="form-error">{{errors.nrc}}</p>
+        {% endif %}
 
         <label for="overall_ponderation_type">Tipo de Ponderación para la nota final:</label>
-        <select name="overall_ponderation_type" id="overall_ponderation_type" required>
+        <select name="overall_ponderation_type" id="overall_ponderation_type" >
             <option value="Porcentaje">Porcentaje</option>
             <option value="Peso">Peso</option>
         </select>

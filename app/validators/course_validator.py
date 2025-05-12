@@ -2,7 +2,8 @@ from app.models import Course
 
 MAX_NAME_LENGTH = 50
 MAX_DESCRIPTION_LENGTH = 100
-MAX_CODE_LENGTH = 10
+CODE_LENGTH = 4
+MAX_CREDITS_VALUE = 30
 
 def validate_course_data(data, course_id=None):
     errors = {}
@@ -26,18 +27,21 @@ def validate_course_data(data, course_id=None):
 
     if not code:
         errors['code'] = "El código es obligatorio."
-    elif len(code) > MAX_CODE_LENGTH:
-        errors['code'] = (f"El código no puede superar los {MAX_CODE_LENGTH} "
-                          f"caracteres")
+    elif len(code) != CODE_LENGTH:
+        errors['code'] = (f"El código debe ser un número de {CODE_LENGTH} "
+                          f"dígitos")
     else:
         existing_course = Course.query.filter_by(code=code).first()
-        if existing_course and (course_id is None or existing_course.id != course_id):
+        if existing_course and (
+            course_id is None or existing_course.id != course_id
+        ):
             errors['code'] = "El código ya está en uso por otro curso."
 
     try:
         credits = int(credits)
-        if credits < 0:
-            errors['credits'] = "Los créditos no pueden ser negativos."
+        if credits < 0 or credits > {MAX_CREDITS_VALUE}:
+            errors['credits'] = (f"El valor de los créditos debe ser entre "
+                                 f"0-{MAX_CREDITS_VALUE}")
     except ValueError:
         errors['credits'] = "Los créditos deber ser un número entero."
 
