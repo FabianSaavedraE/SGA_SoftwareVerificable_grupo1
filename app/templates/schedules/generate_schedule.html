@@ -13,10 +13,10 @@
 <div class="main">
     <h1>Generar Horario</h1>
 
-    {% if message %}
-        <div>
-            {{ message }}
-        </div>
+    {% if error %}
+        <div class="error-msg">{{message}}</div>
+    {% else %}
+        <div class="success-msg">{{message}}</div>
     {% endif %}
 
     <form action="{{ url_for('schedules.generate_schedule_view') }}" method="POST">

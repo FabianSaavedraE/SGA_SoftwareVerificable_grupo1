@@ -11,11 +11,11 @@ body {
 
 .main {
     flex-grow: 1;
-    height: 100vh;
+    min-height: 100vh;
     box-sizing: border-box;
     padding: 20px;
     background-color: white;
-    overflow: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
@@ -40,6 +40,7 @@ body {
     padding: 10px;
     box-sizing: border-box;
     overflow-y: auto;
+    margin-bottom: 10px;
 }
 
 .box h3 {

@@ -13,31 +13,26 @@ SCHEDULE_PATH = "app/static/horario.xlsx"
 def generate_schedule(year, semester, export_path=SCHEDULE_PATH):
     clear_previous_schedule()
 
-    ranked_sections, message = get_sections_ranking(year, semester)
+    ranked_sections, error_message = get_sections_ranking(year, semester)
     if not ranked_sections:
-        print(f"Horario inviable: {message}")
-        return False
-    
-    for r in ranked_sections:
-        print(r)
+        return False, error_message
 
     create_timeslots(year, semester)
     timeslots = get_timeslots_by_parameters(year, semester)
 
-    success_previous_validations, message = is_schedule_feasible(
+    success_previous_validations, error_message = is_schedule_feasible(
         ranked_sections, timeslots
     )
 
     if not success_previous_validations:
-        print(f"Horario inviable según validaciones previas: {message}")
-        return False
+        return False, error_message
     
     if assign_sections(ranked_sections, timeslots):
         export_schedule_to_excel(export_path)
-        print(f"[SUCCESS] Horario generado correctamente.")
-        return True
+        message = "Horario generado exitosamente."
+        return True, message
     
-    return False
+    return False, "No se pudo generar un horario."
 
 def clear_previous_schedule():
     Schedule.query.delete()

@@ -100,7 +100,7 @@ def validate_classroom_capacity_with_blocks(sections, timeslots):
     if total_demanded_block > total_available_block:
         message = (
             f"La demanda de horarios supera la oferta disponible. "
-            f"No hay suficientes salas"
+            f"No hay suficientes salas."
         )
         return False, message
     
