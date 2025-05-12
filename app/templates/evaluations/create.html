@@ -21,27 +21,69 @@
     </h2>
     <h2>NRC: {{ evaluation_type.course_section.nrc }}</h2>
 
-    <form action="{{ url_for('evaluations.create_evaluation_view', evaluation_type_id=evaluation_type.id) }}" method="POST">
-        <div>
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" name="name" required>
+    <button type="button" id="add-eval-btn">Agregar Evaluación</button>
+
+    <form id="evaluations-form" action="{{ url_for('evaluations.create_evaluation_view', evaluation_type_id=evaluation_type.id) }}" method="POST">
+        <div id="form-container">
+            
         </div>
 
-        <div>
-            <label for="ponderation">Ponderación (opcional, se asigna automáticamente si se deja vacío):</label>
-            <input type="number" step="any" id="ponderation" name="ponderation">
-        </div>
-
-        <div>
-            <label for="optional">Obligatoria:</label>
-            <input type="checkbox" id="optional" name="optional">
-        </div>
-
-        <button type="submit">Crear Evaluación</button>
+        <button type="submit">Crear Evaluaciones</button>
     </form>
 
     <a href="{{ url_for('course_sections.show_section_view', course_section_id=evaluation_type.course_section.id) }}" class="btn-back">Volver a la sección</a>
 </div>
+<script>
+    const formContainer = document.getElementById('form-container');
+    const addEvalBtn = document.getElementById('add-eval-btn');
+    let evalIndex = 0;
+
+    function createEvaluationForm(index) {
+        const fieldset = document.createElement('fieldset');
+        fieldset.style.marginBottom = '1rem';
+        fieldset.style.padding = '1rem';
+        fieldset.style.border = '1px solid #ccc';
+        fieldset.setAttribute('data-eval-index', index); 
+
+        fieldset.innerHTML = `
+            <legend>Nueva Evaluación</legend>
+
+            <div>
+                <label for="name_${index}">Nombre:</label>
+                <input type="text" id="name_${index}" name="name_${index}" required>
+            </div>
+
+            <div>
+                <label for="ponderation_${index}">Ponderación (opcional):</label>
+                <input type="number" step="any" id="ponderation_${index}" name="ponderation_${index}">
+            </div>
+
+            <div>
+                <label for="optional_${index}">¿Es opcional?</label>
+                <input type="checkbox" id="optional_${index}" name="optional_${index}">
+            </div>
+
+            <button type="button" class="remove-eval-btn">Eliminar evaluación</button>
+        `;
+
+        fieldset.querySelector('.remove-eval-btn').addEventListener('click', () => {
+            formContainer.removeChild(fieldset);
+        });
+
+        formContainer.appendChild(fieldset);
+    }
+
+    addEvalBtn.addEventListener('click', () => {
+        createEvaluationForm(evalIndex);
+        evalIndex++;
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        createEvaluationForm(evalIndex);
+        evalIndex++;
+    });
+</script>
+
 </body>
 
 </html>

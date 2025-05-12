@@ -38,12 +38,13 @@ def create_evaluation_type_view(course_section_id):
 
     if request.method == 'POST':
         data = build_evaluation_type_data(request.form, course_section_id)
-        create_evaluation_type(data)
-        return redirect(url_for(
-            'course_sections.show_section_view',
-            course_section_id=course_section_id
-        ))
+        new_evaluation_type = create_evaluation_type(data)
 
+        return redirect(url_for(
+            'evaluations.create_evaluation_view',
+            evaluation_type_id=new_evaluation_type.id
+        ))
+    
     return render_template(
         'evaluation_types/create.html',
         course_section=course_section
