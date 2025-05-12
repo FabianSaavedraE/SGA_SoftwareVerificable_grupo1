@@ -13,13 +13,14 @@
 <div class="main">
 
     <div class="title">Listado de Cursos</div>
-         
-    <form action="{{ url_for('courses.upload_courses_json') }}" method="POST" enctype="multipart/form-data">
-        <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>
-        <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
-    </form>
-
+     
     <div class="box">
+
+        <form action="{{ url_for('courses.upload_courses_json') }}" method="POST" enctype="multipart/form-data">
+            <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>
+            <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+        </form>
+
         <div class="top-buttons">
             <a href="{{ url_for('courses.create_course_view') }}" class="add-btn">Agregar Curso</a>
         </div>

@@ -4,13 +4,21 @@ from flask import (
 
 from app.controllers.course_instance_controller import (
     get_course_instance, create_course_instance,
-    update_course_instance, delete_course_instance
+    update_course_instance, delete_course_instance,
+    get_all_course_instances, create_course_instances_from_json
 )
 from app.controllers.course_controller import get_course
 
 course_instance_bp = Blueprint(
     'course_instances', __name__, url_prefix='/course_instances'
 )
+
+@course_instance_bp.route('/', methods=['GET'])
+def get_course_instances_view():
+    course_instances = get_all_course_instances()
+    for course_instance in course_instances:
+        print(course_instance)
+    return render_template('course_instances/index.html', course_instances=course_instances)
 
 @course_instance_bp.route('/<int:course_instance_id>/show', methods=['GET'])
 def show_course_instance_view(course_instance_id):
@@ -80,6 +88,25 @@ def update_course_instance_view(course_instance_id):
         '/delete/<int:course_instance_id>/<int:course_id>',
         methods=['POST']
 )
+
+@course_instance_bp.route('/upload-json', methods=['POST'])
+def upload_course_instances_json():
+    print("Calling upload course_instances")
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('courses.get_course_instances_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('courses.get_course_instances_view'))
+    
+    create_course_instances_from_json(data)
+
+    return redirect(url_for('courses.get_courses_view'))
+
 def delete_course_instance_view(course_instance_id, course_id):
     course_instance = get_course_instance(course_instance_id)
     if course_instance:
@@ -97,3 +124,4 @@ def build_course_instance_data(form_data, course_id):
     data = form_data.to_dict()
     data['course_id'] = course_id
     return data
+

@@ -6,11 +6,11 @@ from app.config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 
-"""
+
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 import sqlite3
-
+"""
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
     if isinstance(dbapi_connection, sqlite3.Connection):

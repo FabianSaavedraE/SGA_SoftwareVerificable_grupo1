@@ -1,5 +1,6 @@
 from app import db
 from app.models.course_instance import CourseInstance
+from sqlalchemy import func
 
 def get_all_course_instances():
     course_instances = CourseInstance.query.all()
@@ -55,3 +56,41 @@ def delete_course_instance(course_instance):
     db.session.delete(course_instance)
     db.session.commit()
     return True
+
+def create_course_instances_from_json(data):
+    year = data.get('año')
+    semester = data.get('semestre')
+    instances = data.get('instancias', [])
+
+    for instance in instances:
+        instance_id = instance.get('id')
+        course_id = instance.get('curso_id')
+        
+        if check_if_course_instancewith_id_exists(instance_id):
+            handle_course_instance_with_existing_id(instance_id)
+        
+        new_instance = CourseInstance(
+            id=instance_id,
+            year=year,
+            semester=semester,
+            course_id=course_id
+        )
+        db.session.add(new_instance)
+
+    db.session.commit()
+
+
+def check_if_course_instancewith_id_exists(id):
+    course_instance = CourseInstance.query.filter_by(id=id).first()
+    if course_instance:
+        return True
+    else:
+        return False
+    
+def handle_course_instance_with_existing_id(id):
+    course_instance = CourseInstance.query.filter_by(id=id).first()
+    max_id = db.session.query(func.max(CourseInstance.id)).scalar() or 0
+    new_id = max_id + 1
+
+    course_instance.id = new_id
+    db.session.commit()
