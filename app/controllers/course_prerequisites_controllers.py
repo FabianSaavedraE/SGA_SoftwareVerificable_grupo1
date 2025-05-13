@@ -11,6 +11,14 @@ def get_course_prerequisite(course_id, prerequisite_id):
         prerequisite_id=prerequisite_id
     ).first()
 
+def create_course_prerequisite(course_id, prerequisite_id):
+    new_prerequisite = CoursePrerequisite(
+        course_id=course_id,
+        prerequisite_id=prerequisite_id
+    )
+    db.session.add(new_prerequisite)
+    db.session.commit()
+
 def create_course_prerequisites(course_id, prerequisite_ids):
     for prereq_id in prerequisite_ids:
         new_prerequisite = CoursePrerequisite(

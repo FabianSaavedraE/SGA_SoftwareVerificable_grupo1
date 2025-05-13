@@ -2,7 +2,8 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.validators.course_validator import validate_course_data
 from app.controllers.course_controller import (
-    get_all_courses, get_course, create_course, update_course, delete_course
+    get_all_courses, get_course, create_course, update_course, delete_course,
+    create_courses_from_json
 )
 
 course_bp = Blueprint('courses', __name__, url_prefix='/courses')
@@ -62,5 +63,22 @@ def delete_course_view(course_id):
     if course:
         delete_course(course)
         return redirect(url_for('courses.get_courses_view'))
+
+    return redirect(url_for('courses.get_courses_view'))
+
+@course_bp.route('/upload-json', methods=['POST'])
+def upload_courses_json():
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('courses.get_courses_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('courses.get_courses_view'))
+    
+    create_courses_from_json(data)
 
     return redirect(url_for('courses.get_courses_view'))

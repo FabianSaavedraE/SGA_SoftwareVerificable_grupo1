@@ -58,11 +58,7 @@ with app.app_context():
 
     # ---------- Cursos ----------
     cursos_nombres = [
-        "Matemáticas I", "Matemáticas II", "Programación", "Estructuras de Datos", "Bases de Datos",
-        "Sistemas Operativos", "Algoritmos", "Redes de Computadores", "Inteligencia Artificial",
-        "Machine Learning", "Cálculo Numérico", "Probabilidades", "Física", "Compiladores",
-        "Ingeniería de Software", "Desarrollo Web", "Sistemas Distribuidos", "Arquitectura de Computadores",
-        "Criptografía", "Robótica"
+        "Matemáticas I", "Matemáticas II"
     ]
 
     cursos = []
@@ -78,7 +74,7 @@ with app.app_context():
 
     db.session.add_all(cursos)
     db.session.commit()
-    print("20 cursos creados.")
+    print(f"{len(cursos_nombres)} cursos creados.")
 
     # ---------- Course Instances y Secciones ----------
     profesores = Teacher.query.all()
@@ -110,16 +106,7 @@ with app.app_context():
 
     # ---------- Prerequisitos ----------
     relaciones = [
-        ("Matemáticas II", "Matemáticas I"),
-        ("Estructuras de Datos", "Programación"),
-        ("Algoritmos", "Estructuras de Datos"),
-        ("Machine Learning", "Inteligencia Artificial"),
-        ("Sistemas Operativos", "Estructuras de Datos"),
-        ("Sistemas Distribuidos", "Sistemas Operativos"),
-        ("Criptografía", "Probabilidades"),
-        ("Desarrollo Web", "Ingeniería de Software"),
-        ("Compiladores", "Algoritmos"),
-        ("Robótica", "Sistemas Distribuidos")
+        ("Matemáticas II", "Matemáticas I")
     ]
 
     curso_dict = {c.name: c.id for c in cursos}
@@ -135,4 +122,23 @@ with app.app_context():
 
     db.session.add_all(prerequisitos)
     db.session.commit()
-    print("10 prerequisitos agregados.")
+    print(f"{len(relaciones)} prerequisitos agregados.")
+
+"""("Estructuras de Datos", "Programación"),
+        ("Algoritmos", "Estructuras de Datos"),
+        ("Machine Learning", "Inteligencia Artificial"),
+        ("Sistemas Operativos", "Estructuras de Datos"),
+        ("Sistemas Distribuidos", "Sistemas Operativos"),
+        ("Criptografía", "Probabilidades"),
+        ("Desarrollo Web", "Ingeniería de Software"),
+        ("Compiladores", "Algoritmos"),
+        ("Robótica", "Sistemas Distribuidos")
+
+        , "Programación", "Estructuras de Datos", "Bases de Datos",
+        "Sistemas Operativos", "Algoritmos", "Redes de Computadores", "Inteligencia Artificial",
+        "Machine Learning", "Cálculo Numérico", "Probabilidades", "Física", "Compiladores",
+        "Ingeniería de Software", "Desarrollo Web", "Sistemas Distribuidos", "Arquitectura de Computadores",
+        "Criptografía"
+
+
+"""

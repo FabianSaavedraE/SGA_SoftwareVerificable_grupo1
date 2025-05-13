@@ -11,6 +11,11 @@
 {% include 'navbar.html' %}
 <div class="main">
 
+    <form action="{{ url_for('course_sections.upload_course_sections_json') }}" method="POST" enctype="multipart/form-data">
+        <label for="jsonFile" class="top-button">Cargar secciones de cursos desde JSON</label>
+        <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+    </form>
+
     <h1>Secciones</h1>
 
     <table>

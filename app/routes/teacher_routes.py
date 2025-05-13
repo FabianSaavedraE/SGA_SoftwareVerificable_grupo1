@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.teacher_controller import (
     get_all_teachers, get_teacher, create_teacher,
-    update_teacher, delete_teacher
+    update_teacher, delete_teacher, create_teachers_from_json
 )
 from app.validators.teacher_validator import validate_teacher_data
 
@@ -54,5 +54,22 @@ def delete_teacher_view(teacher_id):
     if teacher:
         delete_teacher(teacher)
         return redirect(url_for('teachers.get_teachers_view'))
+
+    return redirect(url_for('teachers.get_teachers_view'))
+
+@teacher_bp.route('/upload-json', methods=['POST'])
+def upload_teachers_json():
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('teachers.get_teachers_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('teachers.get_teachers_view'))
+
+    create_teachers_from_json(data)
 
     return redirect(url_for('teachers.get_teachers_view'))

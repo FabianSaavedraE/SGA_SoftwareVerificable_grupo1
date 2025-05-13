@@ -18,7 +18,7 @@ class CourseSection(db.Model):
 
     course_instance_id = db.Column(
         db.Integer,
-        db.ForeignKey('course_instances.id', ondelete='CASCADE'),
+        db.ForeignKey('course_instances.id', ondelete='CASCADE', onupdate='CASCADE'),
         nullable=False
     )
     teacher_id = db.Column(

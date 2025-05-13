@@ -1,4 +1,11 @@
+from app import create_app
 from flask import render_template
+from app.models.course import Course
+from app.models.student import Student
+from app.models.course_section import CourseSection
+from app.models.teacher import Teacher
+from app.models.course_prerequisite import CoursePrerequisite
+from app.models.course_instance import CourseInstance
 
 from app import create_app
 from app.models import (
@@ -19,6 +26,7 @@ def landing_page():
     teachers= Teacher.query.all()
     course_prerequisites = CoursePrerequisite.query.all()
     classrooms = Classroom.query.all()
+    course_instances = CourseInstance.query.all()
 
     return render_template(
         'main.html',
@@ -27,6 +35,7 @@ def landing_page():
         course_sections=course_sections,
         teachers=teachers,
         course_prerequisites=course_prerequisites,
+        course_instances=course_instances,
         classrooms=classrooms
     ) 
 

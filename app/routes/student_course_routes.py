@@ -4,7 +4,8 @@ from sqlalchemy import or_
 
 from app.controllers.student_course_controller import (
     create_student_course, get_student_course,
-    update_student_course, delete_student_course
+    update_student_course, delete_student_course,
+    create_student_courses_from_json
 )
 from app.controllers.course_section_controller import get_section
 from app.validators.student_course_validator import has_met_prerequisites
@@ -93,6 +94,25 @@ def update_student_course_view(student_id, course_section_id):
     '/delete/<int:student_id>/<int:course_section_id>',
     methods=['POST']
 )
+
+@student_course_bp.route('/upload-json', methods=['POST'])
+def upload_student_courses_json():
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('course_sections.get_sections_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('course_sections.get_sections_view'))
+    
+    create_student_courses_from_json(data)
+
+    return redirect(url_for('course_sections.get_sections_view'))
+
+@student_course_bp.route('/<int:student_id>/<int:course_section_id>/delete', methods=['POST'])
 def delete_student_course_view(student_id, course_section_id):
     student_course = get_student_course(student_id, course_section_id)
     if student_course:

@@ -24,12 +24,17 @@ def create_evaluation_type(data):
         if current_total_ponderation_value + evaluation_type_ponderation > 100:
             return None, current_total_ponderation_value 
         
+    evaluation_instance_id = data.get('evaluation_instance_id')
+
     new_evaluation_type = EvaluationType(
         topic = data.get('topic'),
         ponderation_type = data.get('ponderation_type'),
         overall_ponderation = evaluation_type_ponderation,
         course_section_id = section_id
     )
+
+    if evaluation_instance_id is not None:
+        new_evaluation_type.id = evaluation_instance_id
 
     db.session.add(new_evaluation_type)
     db.session.commit()

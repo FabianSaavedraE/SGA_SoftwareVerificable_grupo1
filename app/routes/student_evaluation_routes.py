@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.student_evaluation_controller import (
     create_student_evaluation, get_student_evaluation,
-    update_student_evaluation
+    update_student_evaluation, create_student_evaluation_json
 )
 from app.controllers.evaluation_controller import get_evaluation
 from app.controllers.student_controller import get_student
@@ -44,6 +44,26 @@ def create_student_evaluation_view(student_id, evaluation_id):
     '/update/<int:student_id>/<int:evaluation_id>',
     methods=['GET', 'POST']
 )
+
+@student_evaluation_bp.route('/upload-json', methods=['POST'])
+def upload_student_evaluation_json():
+    print("Calling student_evaluation route for json creations")
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('course_sections.get_sections_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('course_sections.get_sections_view'))
+    
+    create_student_evaluation_json(data)
+
+    return redirect(url_for('course_sections.get_sections_view'))
+
+@student_evaluation_bp.route('/<int:evaluation_id>/students/<int:student_id>/edit', methods=['GET', 'POST'])
 def update_student_evaluation_view(student_id, evaluation_id):
     student_evaluation = get_student_evaluation(student_id, evaluation_id)
     evaluation = get_evaluation(evaluation_id)

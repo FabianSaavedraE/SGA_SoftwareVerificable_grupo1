@@ -1,27 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <title>Cursos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user_styles.css') }}">
+</head>
 
-<h1>Instancias de cursos</h1>
+<body>
+{% include 'navbar.html' %}
 
-<table>
-    <thead>
-        <tr>
-            <th>year</th>
-            <th>semester</th>
-            <th>Curso</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for instance in course_instances %}
-            <tr>
-                <td>{{ instance.year }}</td>
-                <td>{{ instance.semester }}</td>
-                <td>{{ instanse.course.name }}</td>
-                <td>
-                  
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="main">
 
-<a href="/" class="btn btn-primary">Go Back</a>
+    <div class="title">Instancias de cursos</div>
+     
+    <div class="box">
+
+        <form action="{{ url_for('course_instances.upload_course_instances_json') }}" method="POST" enctype="multipart/form-data">
+            <label for="jsonFile" class="top-button">Cargar instancias de cursos desde JSON</label>
+            <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Año</th>
+                    <th>Semestre</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for course_instance in course_instances %}
+                    <tr>
+                        <td>{{ course_instance.course.name }}</td> 
+                        <td>{{ course_instance.year }}</td> 
+                        <td>{{ course_instance.semester }}</td> 
+                    </tr>
+                {% else %}
+                    <tr><td colspan="2">No hay instancias de cursos disponibles</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/" class="go-back">Volver al inicio</a>
+
+    </div>
+
+</div>
+</body>
+
+</html>

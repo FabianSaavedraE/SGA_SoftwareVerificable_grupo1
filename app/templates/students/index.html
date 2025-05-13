@@ -14,6 +14,12 @@
         <div class="title">Lista de Estudiantes</div>
 
         <div class="box">
+            
+            <form action="{{ url_for('students.upload_students_json') }}" method="POST" enctype="multipart/form-data">
+                <label for="jsonFile" class="top-button">Cargar estudiantes desde JSON</label>
+                <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+            </form>
+            
             <a href="{{ url_for('students.create_student_view') }}" class="top-button">Agregar Estudiante</a>
 
             <table>

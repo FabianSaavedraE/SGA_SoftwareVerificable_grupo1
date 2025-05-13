@@ -36,4 +36,5 @@ class Student(db.Model):
         ]
 
     def __repr__(self):
-        return f"{self.first_name} {self.last_name}"
+        return (f"ID: {self.id}, Nombre: {self.first_name}, Apellido: {self.last_name}, "
+                f"Email: {self.email}, Año de Ingreso: {self.entry_year}")

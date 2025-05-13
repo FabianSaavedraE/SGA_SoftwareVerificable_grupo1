@@ -7,7 +7,7 @@ class Schedule(db.Model):
     
     section_id = db.Column(
         db.Integer,
-        db.ForeignKey('course_sections.id', ondelete='CASCADE'),
+        db.ForeignKey('course_sections.id', ondelete='CASCADE', onupdate='CASCADE'),
         nullable=False
     )
     classroom_id = db.Column(
