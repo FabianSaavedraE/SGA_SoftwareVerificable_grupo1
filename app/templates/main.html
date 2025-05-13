@@ -86,8 +86,21 @@
                 </ul>
             </div>
 
-        </div>
+            <!-- Salas -->
+            <div class="box">
+                <a href="{{ url_for('classrooms.get_classrooms_view') }}">
+                    <button>Ver Salas</button>
+                </a>
+                <ul>
+                    {% for classroom in classrooms %}
+                        <li>{{ classroom.name }}</li>
+                    {% else %}
+                        <li>No hay salas</li>
+                    {% endfor %}
+                </ul>
+            </div>
 
+        </div>
     </div>
 </body>
 

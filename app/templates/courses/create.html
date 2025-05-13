@@ -27,7 +27,7 @@
                 <p class="form-error">{{errors.description}}</p>
             {% endif %}
 
-            <label for="code">Código:</label>
+            <label for="code">Código:</label><span class="hint">Ingrese un número de 4 dígitos.</span>
             <input type="number" id="code" name="code" >
             {% if errors and errors.code %}
                 <p class="form-error">{{errors.code}}</p>
