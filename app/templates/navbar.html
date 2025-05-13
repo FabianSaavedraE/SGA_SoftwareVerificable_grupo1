@@ -4,13 +4,13 @@
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
         </a>
     </div>
-    <div class="logo-container">
-        <a href="/schedules">
-            <img src="{{ url_for('static', filename='calendar.png') }}" alt="Logo" class="logo">
-        </a>
-    </div>
     <div class="user-section">
         <img src="{{ url_for('static', filename='user_icon.png') }}" alt="User Icon" class="user-icon">
+    </div>
+    <div class="user-section">
+        <a href="/schedules">
+            <img src="{{ url_for('static', filename='calendar.png') }}" alt="Logo" class="calendar-icon">
+        </a>
     </div>
 </div>
 
@@ -55,6 +55,12 @@
 .user-section img.user-icon {
     width: 90%;
     height: 90%;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+.calendar-icon {
+    width: 95%;
+    height: 80%;
     border-radius: 50%;
     margin-bottom: 10px;
 }
