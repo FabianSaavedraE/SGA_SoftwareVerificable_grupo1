@@ -122,7 +122,7 @@ def create_course_sections_from_json(data):
         evaluation_instances_topics = evaluations.get('topicos')
         overall_ponderation_type = capitalize_first_character(evaluations.get('tipo')) #It's required to have the name of the
         #ponderation type capitalized as part of the format implemented by ourselves.
-        state = "Open" #As default, since isn't given in JSON files.
+        state = "Open" #As default, since isn't given in JSON files and assumed to be Open.
         teacher_id = course_section.get('profesor_id')
     
         if check_if_course_section_with_id_exists(id): 

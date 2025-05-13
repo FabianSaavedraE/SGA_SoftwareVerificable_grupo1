@@ -62,26 +62,6 @@ def delete_student(student):
     db.session.delete(student)
     db.session.commit()
     return True
-
-def create_students_from_json(data):
-    students = data.get('alumnos', [])
-    for student in students:
-        name = student.get('nombre', '')
-        name_parts = name.strip().split()
-        first_name = name_parts[0]
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-        
-        entry_year = int(student.get('anio_ingreso'))
-
-        new_student = Student(
-            first_name=first_name,
-            last_name=last_name,
-            email=student.get('correo'),
-            entry_year=entry_year
-        )
-        db.session.add(new_student)
-
-    db.session.commit()
     
 def are_students_available_for_timeslot(section, block):
     timeslot_ids = [timeslot.id for timeslot in block]
@@ -110,19 +90,17 @@ def are_students_available_for_timeslot(section, block):
 def create_students_from_json(data):
     students = data.get('alumnos', [])
     for student in students:
-        name = student.get('nombre', '')
-        name_parts = name.strip().split()
-        first_name = name_parts[0]
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-        
-        entry_year = int(student.get('anio_ingreso'))
+        student_data = transform_json_entry_into_processable_student_format(student)
+        create_student(student_data)
 
-        new_student = Student(
-            first_name=first_name,
-            last_name=last_name,
-            email=student.get('correo'),
-            entry_year=entry_year
-        )
-        db.session.add(new_student)
 
-    db.session.commit()
+def transform_json_entry_into_processable_student_format(student):
+    name = student.get('nombre', '')
+    name_parts = name.strip().split()
+    data = {
+            'first_name' : name_parts[0],
+            'last_name' : ' '.join(name_parts[1:]) if len(name_parts) > 1 else '',
+            'email' : student.get('correo'),
+            'entry_year' : int(student.get('anio_ingreso'))
+    }
+    return data
