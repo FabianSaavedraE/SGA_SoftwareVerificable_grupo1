@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.classroom_controller import (
     get_all_classrooms, get_classroom, create_classroom,
-    update_classroom, delete_classroom
+    update_classroom, delete_classroom, create_classroom_from_json
 )
 
 classroom_bp = Blueprint('classrooms', __name__, url_prefix='/classrooms')
@@ -47,3 +47,20 @@ def delete_classroom_view(classroom_id):
         return redirect(url_for('classrooms.get_classrooms_view'))
 
     return redirect(url_for('classrooms.get_clasrooms_view'))
+
+@classroom_bp.route('/upload-json', methods=['POST'])
+def upload_classrooms_json():
+    file = request.files.get('jsonFile')
+    if not file:
+        return redirect(url_for('classrooms.get_classrooms_view'))
+
+    import json
+    try:
+        data = json.load(file)
+    except Exception as e:
+        print("Error leyendo JSON:", e)
+        return redirect(url_for('classrooms.get_classrooms_view'))
+    
+    create_classroom_from_json(data)
+
+    return redirect(url_for('classrooms.get_classrooms_view'))
