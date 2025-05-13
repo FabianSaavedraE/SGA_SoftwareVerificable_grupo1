@@ -1,8 +1,8 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.classroom_controller import (
-    get_all_classrooms, get_classroom, create_classroom,
-    update_classroom, delete_classroom, create_classroom_from_json
+    get_all_classrooms, get_classroom, create_classroom, update_classroom,
+    delete_classroom, create_classroom_from_json, validate_classroom_data
 )
 
 classroom_bp = Blueprint('classrooms', __name__, url_prefix='/classrooms')
@@ -16,6 +16,11 @@ def get_classrooms_view():
 def create_classroom_view():
     if request.method == 'POST':
         data = request.form
+        errors = validate_classroom_data(data)
+
+        if errors:
+            return render_template('classrooms/create.html', errors=errors)
+        
         create_classroom(data)
         return redirect(url_for('classrooms.get_classrooms_view'))
 
@@ -33,8 +38,14 @@ def update_classroom_view(classroom_id):
 
     if request.method == 'POST':
         data = request.form
-        update_classroom(classroom, data)
+        errors = validate_classroom_data(data, classroom_id)
 
+        if errors:
+            return render_template(
+                'classrooms/edit.html', classroom=classroom, errors=errors
+            )
+        
+        update_classroom(classroom, data)
         return redirect(url_for('classrooms.get_classrooms_view'))
 
     return render_template('classrooms/edit.html', classroom=classroom)
