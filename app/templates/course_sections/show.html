@@ -73,9 +73,9 @@
 
     <h1>Evaluaciones:</h1>
 
-    <form action="{{ url_for('student_courses.upload_student_courses_json') }}" method="POST" enctype="multipart/form-data">
-        <label for="uploadStudentsFile" class="top-button">Cargar alumnos a sección por JSON</label>
-        <input type="file" id="uploadStudentsFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+    <form action="{{ url_for('student_evaluations.upload_student_evaluation_json') }}" method="POST" enctype="multipart/form-data">
+        <label for="uploadEvaluationsFile" class="top-button">Cargar notas a alumnos con JSON</label>
+        <input type="file" id="uploadEvaluationsFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
     </form>
 
     {% if course_section.evaluation_types %}
@@ -132,13 +132,13 @@
 
     <h1>Estudiantes:</h1>
 
+    <form action="{{ url_for('student_courses.upload_student_courses_json') }}" method="POST" enctype="multipart/form-data">
+        <label for="uploadStudentsFile" class="top-button">Cargar alumnos con JSON</label>
+        <input type="file" id="uploadStudentsFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+    </form>
+
     {% if course_section.state == 'Open' %}
         <a href="{{url_for('student_courses.create_student_course_view', course_section_id=course_section.id)}}">Agregar Estudiante</a>
-    
-        <form action="{{ url_for('student_evaluations.upload_student_evaluation_json') }}" method="POST" enctype="multipart/form-data">
-            <label for="uploadEvaluationsFile" class="top-button">Cargar notas a alumnos</label>
-            <input type="file" id="uploadEvaluationsFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
-        </form>
     
         {% else %}
         <span class="disabled">Sección cerrada</span>
