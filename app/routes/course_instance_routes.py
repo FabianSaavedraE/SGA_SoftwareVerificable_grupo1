@@ -95,21 +95,20 @@ def update_course_instance_view(course_instance_id):
 
 @course_instance_bp.route('/upload-json', methods=['POST'])
 def upload_course_instances_json():
-    print("Calling upload course_instances")
     file = request.files.get('jsonFile')
     if not file:
-        return redirect(url_for('courses.get_course_instances_view'))
+        return redirect(url_for('course_instances.get_course_instances_view'))
 
     import json
     try:
         data = json.load(file)
     except Exception as e:
         print("Error leyendo JSON:", e)
-        return redirect(url_for('courses.get_course_instances_view'))
+        return redirect(url_for('course_instances.get_course_instances_view'))
     
     create_course_instances_from_json(data)
 
-    return redirect(url_for('courses.get_courses_view'))
+    return redirect(url_for('course_instances.get_course_instances_view'))
 
 @course_instance_bp.route(
     '/delete/<int:course_instance_id>/<int:course_id>', methods=['POST']
