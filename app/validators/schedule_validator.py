@@ -38,8 +38,10 @@ def all_sections_have_students(sections):
     for section_data in sections:
         section = section_data['section']
         if not section.students:
-            message = (f"Sección {section_data['section'].nrc} no tiene "
-                       f"estudiantes asignados.")
+            message = (
+                f"Sección {section_data['section'].nrc} no tiene "
+                f"estudiantes asignados."
+            )
             return False, message
         
     return True, None
@@ -58,8 +60,10 @@ def validate_max_credits_per_section(sections):
         section = section_data['section']
 
         if section.course_instance.course.credits > MAX_CREDITS:
-            message = (f"No se le puede asignar un bloque consecutivo de "
-                       f"horario a la sección {section.nrc}")
+            message = (
+                f"No se le puede asignar un bloque consecutivo de "
+                f"horario a la sección {section.nrc}."
+            )
             
             return False, message
         
@@ -78,8 +82,10 @@ def validate_classroom_capacity(sections):
     )
 
     if max_classroom_capacity < max_section_size:
-        message = (f"La sala con mayor capacidad no puede acomodar a la "
-                   f"sección más grande")
+        message = (
+            f"La sala con mayor capacidad no puede acomodar a la "
+            f"sección más grande."
+        )
         return False, message
 
     return True, None

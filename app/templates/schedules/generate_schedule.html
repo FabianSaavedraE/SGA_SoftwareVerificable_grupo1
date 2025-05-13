@@ -14,8 +14,8 @@
     <h1>Generar Horario</h1>
 
     {% if error %}
-        <div class="error-msg">{{message}}</div>
-    {% else %}
+        <div class="error-msg">Hoario inviable: {{message}}</div>
+    {% elif message %}
         <div class="success-msg">{{message}}</div>
     {% endif %}
 
@@ -33,7 +33,11 @@
     </form>
 
     {% if file_link %}
-        <a href="{{ file_link }}" class="btn-download">Descargar el horario</a>
+        <div class="download-container">
+            <a href="{{ file_link }}" class="btn-download" download>
+                Decargar horario generado
+            </a>
+        </div>
     {% endif %}
 
     <a href="{{ url_for('landing_page') }}" class="btn-back">Volver a Inicio</a>

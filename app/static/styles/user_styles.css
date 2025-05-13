@@ -49,6 +49,11 @@ a:hover {
     gap: 10px;
 }
 
+.download-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
 /* ===== TYPOGRAPHY ===== */
 h1 {
     color: #2f3943;
@@ -193,6 +198,24 @@ button:hover,
     margin: 0;
 }
 
+.btn-download {
+    display: inline-block;
+    background-color: #198754;
+    color: white;
+    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-download:hover {
+    background-color: #157347;
+    transform: translateY(-2px);
+}
+
 /* ===== FORMS ===== */
 form {
     background-color: #fafafa;
@@ -276,11 +299,18 @@ a.btn-action:hover {
     font-size: 14px;
     border-radius: 4px;
 }
+
 .success-msg {
-    background-color: rgb(10, 153, 0);
-    color: rgb(255, 255, 255);
-    border: 1px solid rgb(255, 255, 255);
-    padding: 8px;
-    margin-bottom: 15px;
-    border-radius: 4px;
+    background-color: #d1e7dd; 
+    color: #0f5132;            
+    border: 1px solid #badbcc;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: all 0.3s ease-in-out;
 }
+
