@@ -32,7 +32,7 @@ def validate_course_data(data, course_id=None):
                           f"dígitos")
     else:
         existing_course = Course.query.filter_by(
-            code=f"ICC-{code}"
+            code=f"ICC{code}"
         ).first()
         if existing_course and (
             course_id is None or existing_course.id != course_id
@@ -41,7 +41,6 @@ def validate_course_data(data, course_id=None):
 
     try:
         credits = int(credits)
-        print("CREDITS:", credits)
         if credits < 0 or credits > MAX_CREDITS_VALUE:
             errors['credits'] = (f"El valor de los créditos debe ser entre "
                                  f"0-{MAX_CREDITS_VALUE}")

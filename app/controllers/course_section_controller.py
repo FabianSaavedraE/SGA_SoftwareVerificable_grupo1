@@ -40,8 +40,8 @@ def get_section(course_section_id):
     return course_section
 
 def create_section(data):
-    raw_nrc = data.get('nrc', '').zfill(4)
-    nrc = f"NRC-{raw_nrc}"
+    raw_nrc = data.get('nrc', '').zfill(NRC_LENGTH)
+    nrc = f"NRC{raw_nrc}"
 
     new_section = CourseSection(
         nrc = nrc,
@@ -59,8 +59,13 @@ def update_section(course_section, data):
     if not course_section:
         return None
     
-    raw_nrc = data.get('nrc', str(course_section.nrc)[4:])
-    full_nrc = f"NRC-{raw_nrc.zfill(4)}"
+    
+    raw_nrc = data.get('nrc', str(course_section.nrc)[NRC_LENGTH:])
+    print("RAW NRC:", raw_nrc)
+
+
+
+    full_nrc = f"NRC{raw_nrc.zfill(NRC_LENGTH)}"
 
     course_section.nrc = full_nrc
     course_section.overall_ponderation_type = data.get(
@@ -95,7 +100,7 @@ def data_validation(data, course_section_id=None):
         errors['nrc'] = (f"El NRC debe ser un número de {NRC_LENGTH} dígitos.")
     else:
         existing_section = CourseSection.query.filter_by(
-            nrc=f"NRC-{nrc}"
+            nrc=f"NRC{nrc}"
         ).first()
 
         if existing_section and (
@@ -111,7 +116,7 @@ def create_course_sections_from_json(data):
     for course_section in course_sections:
         id = course_section.get('id')
         course_instance_id = course_section.get('instancia_curso')
-        nrc = "ICC" + str(id)
+        nrc = f"NRC{str(id).zfill(NRC_LENGTH)}"
         evaluations = course_section.get('evaluacion')
         evaluation_instances = evaluations.get('combinacion_topicos')
         evaluation_instances_topics = evaluations.get('topicos')

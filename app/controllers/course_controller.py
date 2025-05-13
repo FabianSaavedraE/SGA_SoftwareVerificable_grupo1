@@ -3,6 +3,8 @@ from app.models.course import Course
 from sqlalchemy import func
 from app.controllers.course_prerequisites_controllers import create_course_prerequisite
 
+CODE_LENGTH = 4
+
 def get_all_courses():
     courses = Course.query.all()
     return courses
@@ -30,8 +32,8 @@ def update_course(course, data):
     if not course:
         return None
 
-    raw_code = data.get('code', str(course.code)[4:])
-    full_code = f"ICC-{raw_code.zfill(4)}"
+    raw_code = data.get('code', str(course.code)[CODE_LENGTH:])
+    full_code = f"ICC{raw_code.zfill(CODE_LENGTH)}"
 
     course.name = data.get('name', course.name)
     course.description = data.get('description', course.description)
@@ -50,8 +52,8 @@ def delete_course(course):
     return True
 
 def transform_code_to_valid_format(data):
-    raw_code = data.get('code', '').zfill(4)
-    return f"ICC-{raw_code}"
+    raw_code = data.get('code', '').zfill(CODE_LENGTH)
+    return f"ICC{raw_code}"
 
 def create_courses_from_json(data):   
     courses = data.get('cursos', [])

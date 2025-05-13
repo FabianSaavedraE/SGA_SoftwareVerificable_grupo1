@@ -26,7 +26,7 @@
             {% endif %}
 
             <label for="code">Código</label><span class="hint">Ingrese un número de 4 dígitos.</span>
-            <input type="number" id="code" name="code" value="{{ course.code[4:] }}" >
+            <input type="number" id="code" name="code" value="{{ course.code[3:] }}" >
             {% if errors and errors.code %}
                 <p class="form-error">{{errors.code}}</p>
             {% endif %}
