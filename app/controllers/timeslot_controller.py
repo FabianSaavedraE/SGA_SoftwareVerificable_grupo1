@@ -60,18 +60,15 @@ def generate_valid_block(section_data, timeslots):
 
     for block in candidate_blocks:
         if not is_teacher_available_for_timeslot(section_data, block):
-            # print("\nTEACHER NOT AVAILABLE")
             continue
 
         if not are_students_available_for_timeslot(section_data, block):
-            # print("\nSTUDENTS NOT AVAILABLE")
             continue
 
         available_classrooms = get_available_classrooms_for_block(
             block, num_students
         )
         if not available_classrooms:
-            # print("\nClassroom not available")
             continue
 
         valid_options.append((block, available_classrooms[0]))

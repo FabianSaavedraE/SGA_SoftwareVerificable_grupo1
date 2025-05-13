@@ -1,9 +1,10 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.classroom_controller import (
-    get_all_classrooms, get_classroom, create_classroom, update_classroom,
-    delete_classroom, create_classroom_from_json, validate_classroom_data
+    get_all_classrooms, get_classroom, create_classroom,
+    update_classroom, delete_classroom, create_classroom_from_json
 )
+from app.validators.classroom_validator import validate_classroom_data
 
 classroom_bp = Blueprint('classrooms', __name__, url_prefix='/classrooms')
 

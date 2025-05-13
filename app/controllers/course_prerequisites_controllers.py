@@ -1,9 +1,8 @@
 from app import db
-from app.models.course_prerequisite import CoursePrerequisite
+from app.models import CoursePrerequisite
 
 def get_all_course_prerequisites():
     return CoursePrerequisite.query.all()
-
 
 def get_course_prerequisite(course_id, prerequisite_id):
     return CoursePrerequisite.query.filter_by(

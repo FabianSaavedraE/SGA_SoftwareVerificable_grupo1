@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from app import db
-from app.models.course_instance import CourseInstance
 from sqlalchemy import func
+
+from app import db
+from app.models import CourseInstance
 
 MIN_YEAR = 1980
 
