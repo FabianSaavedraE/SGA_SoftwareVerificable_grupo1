@@ -1,10 +1,13 @@
+from sqlalchemy import func
+
 from app import db
 from app.models.evaluation_type import EvaluationType
 from app.models.course_section import CourseSection
-from sqlalchemy import func
 
 def get_evaluation_types_by_course(course_id):
-    evaluation_types = EvaluationType.query.filter_by(course_id=course_id).all()
+    evaluation_types = EvaluationType.query.filter_by(
+        course_id=course_id
+    ).all()
     return evaluation_types
 
 def get_evaluation_type(evaluation_type_id):
@@ -45,7 +48,9 @@ def update_evaluation_type(evaluation_type, data):
     if not evaluation_type:
         return None
     
-    new_evaluation_type_ponderation = float(data.get('overall_ponderation', evaluation_type.overall_ponderation))
+    new_evaluation_type_ponderation = float(
+        data.get('overall_ponderation', evaluation_type.overall_ponderation)
+    )
     section_id = evaluation_type.course_section_id
     
     section = CourseSection.query.get(section_id)

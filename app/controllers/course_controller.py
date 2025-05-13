@@ -1,7 +1,10 @@
-from app import db
-from app.models.course import Course
 from sqlalchemy import func
-from app.controllers.course_prerequisites_controllers import create_course_prerequisite
+
+from app import db
+from app.models import Course
+from app.controllers.course_prerequisites_controllers import (
+    create_course_prerequisite
+)
 
 CODE_LENGTH = 4
 
@@ -60,8 +63,12 @@ def create_courses_from_json(data):
     for course in courses:
         id = course.get('id')
         name = course.get('descripcion')
-        description = name #This it's defined in our model, but doesn't seem to be necessary according to the JSON.
-        #So I will keep it as a duplicate, since it would be usefull to have anyways
+
+        # This it's defined in our model, but doesn't seem to be necessary 
+        # according to the JSON. So I will keep it as a duplicate, since it 
+        # would be usefull to have anyways
+        description = name 
+        
         code = course.get('codigo')
         credits = int(course.get('creditos'))
         prerequisites = course.get('requisitos')
@@ -102,5 +109,4 @@ def generate_prerequisites(id, prerequisites):
     for prerequisite in prerequisites:
         course = Course.query.filter_by(code = prerequisite).first()
         prerequisite_id = course.id
-        #processable_data = {'course_id' : id, 'prerequisite_id' : prerequisite_id}
         create_course_prerequisite(id, prerequisite_id)

@@ -1,6 +1,5 @@
 from app import db
-from app.models.student_evaluation import StudentEvaluations
-from app.models.evaluation import Evaluation
+from app.models import StudentEvaluations, Evaluation
 
 def get_student_evaluation(student_id, evaluation_id):
     student_evaluation = StudentEvaluations.query.get(
@@ -35,7 +34,9 @@ def create_student_evaluation_json(data):
         evaluation_type_id = student_evaluation.get('topico_id')
         instance = student_evaluation.get('instancia')
         grade = student_evaluation.get('nota')
-        evaluation_id = get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance)
+        evaluation_id = get_evaluation_id_by_topic_and_instance(
+            evaluation_type_id, instance
+        )
         
         new_student_evaluation = StudentEvaluations(
           student_id = student_id,
@@ -46,6 +47,8 @@ def create_student_evaluation_json(data):
     db.session.commit()
 
 def get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance):
-    evaluations = Evaluation.query.filter_by(evaluation_type_id=evaluation_type_id).order_by(Evaluation.id).all()
+    evaluations = Evaluation.query.filter_by(
+        evaluation_type_id=evaluation_type_id
+    ).order_by(Evaluation.id).all()
     selected_evaluation_id = evaluations[instance - 1].id
     return selected_evaluation_id

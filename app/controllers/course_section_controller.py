@@ -1,17 +1,12 @@
+from sqlalchemy import func
+
 from app import db
-from app.models.course_section import CourseSection
-from app.models.teacher import Teacher
+from app.models import CourseSection
+from app.controllers.evaluation_type_controller import create_evaluation_type
+from app.controllers.evaluation_controller import create_evaluation
 from app.controllers.course_instance_controller import (
     get_course_instance_by_parameters
 )
-from app.controllers.evaluation_type_controller import (
-    create_evaluation_type
-)
-from app.controllers.evaluation_controller import(
-    create_evaluation
-)
-
-from sqlalchemy import func
 
 NRC_LENGTH = 4
 
@@ -59,12 +54,7 @@ def update_section(course_section, data):
     if not course_section:
         return None
     
-    
     raw_nrc = data.get('nrc', str(course_section.nrc)[NRC_LENGTH:])
-    print("RAW NRC:", raw_nrc)
-
-
-
     full_nrc = f"NRC{raw_nrc.zfill(NRC_LENGTH)}"
 
     course_section.nrc = full_nrc
@@ -120,8 +110,13 @@ def create_course_sections_from_json(data):
         evaluations = course_section.get('evaluacion')
         evaluation_instances = evaluations.get('combinacion_topicos')
         evaluation_instances_topics = evaluations.get('topicos')
-        overall_ponderation_type = capitalize_first_character(evaluations.get('tipo')) #It's required to have the name of the
-        #ponderation type capitalized as part of the format implemented by ourselves.
+
+        #It's required to have the name of the ponderation type capitalized as 
+        # part of the format implemented by ourselves.
+        overall_ponderation_type = capitalize_first_character(
+            evaluations.get('tipo')
+        ) 
+
         state = "Open" #As default, since isn't given in JSON files.
         teacher_id = course_section.get('profesor_id')
     
@@ -139,7 +134,9 @@ def create_course_sections_from_json(data):
 
         db.session.add(new_section)
 
-        add_evaluation_topics_and_evaluations_to_section(id, evaluation_instances, evaluation_instances_topics)
+        add_evaluation_topics_and_evaluations_to_section(
+            id, evaluation_instances, evaluation_instances_topics
+        )
  
     db.session.commit()
 
@@ -163,28 +160,38 @@ def capitalize_first_character(text):
         return text
     return text[0].upper() + text[1:]
 
-def add_evaluation_topics_and_evaluations_to_section(id, evaluation_instances, evaluation_instances_topics):
+def add_evaluation_topics_and_evaluations_to_section(
+    id, evaluation_instances, evaluation_instances_topics
+):
     for evaluation_instance in evaluation_instances:
         evaluation_instance_id = evaluation_instance.get('id')
         evaluation_instance_name = evaluation_instance.get('nombre')
         evaluation_ponderation = evaluation_instance.get('valor')
+
         topic = evaluation_instances_topics.get(str(evaluation_instance_id))
-        processable_data_format_for_evaluation_type = {'ponderation_type' : capitalize_first_character(topic.get('tipo')),
-                                   'topic' : evaluation_instance_name,
-                                   'overall_ponderation' : evaluation_ponderation,
-                                   'course_section_id' : id,
-                                   'evaluation_instance_id' : evaluation_instance_id}
+
+        processable_data_format_for_evaluation_type = {
+            'ponderation_type' : capitalize_first_character(topic.get('tipo')),
+            'topic' : evaluation_instance_name,
+            'overall_ponderation' : evaluation_ponderation,
+            'course_section_id' : id,
+            'evaluation_instance_id' : evaluation_instance_id
+        }
         
         create_evaluation_type(processable_data_format_for_evaluation_type)
+
         evaluation_values = topic.get('valores')
         evaluation_id = topic.get('id')
         is_evaluation_required_list = topic.get('obligatorias')
-        for valor, is_evaluation_required in zip(evaluation_values, is_evaluation_required_list):
-            processable_data_format_for_evaluation = {'evaluation_id' : evaluation_id,
-                                                      'evaluation_type_id' : evaluation_instance_id,
-                                                      'name' : 'placeholder',
-                                                      'ponderation' : valor,
-                                                      'optional' : bool(is_evaluation_required)
-                                                      }
+
+        for valor, is_evaluation_required in zip(
+            evaluation_values, is_evaluation_required_list
+        ):
+            processable_data_format_for_evaluation = {
+                'evaluation_id' : evaluation_id,
+                'evaluation_type_id' : evaluation_instance_id,
+                'name' : 'placeholder',
+                'ponderation' : valor,
+                'optional' : bool(is_evaluation_required)
+            }
             create_evaluation(processable_data_format_for_evaluation)
-        pass

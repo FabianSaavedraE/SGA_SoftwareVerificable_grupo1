@@ -1,7 +1,8 @@
+from sqlalchemy import func
+
 from app import db
 from app.models.evaluation import Evaluation
 from app.models.evaluation_type import EvaluationType
-from sqlalchemy import func
 
 def get_all_evaluations():
     evaluations = Evaluation.query.all()
@@ -49,7 +50,9 @@ def update_evaluation(evaluation, data):
     if not evaluation:
         return None
     
-    new_evaluation_ponderation = float(data.get('ponderation', evaluation.ponderation))
+    new_evaluation_ponderation = float(
+        data.get('ponderation', evaluation.ponderation)
+    )
     evaluation_type = evaluation.evaluation_type
 
     if evaluation_type.ponderation_type == 'Porcentaje':
