@@ -21,10 +21,39 @@ def show_section_view(course_section_id):
     course_section = get_section(course_section_id)
     if not course_section:
         return redirect(url_for('courses.get_courses_view'))
+    
+    warning_evaluation_types = None
+    if course_section.overall_ponderation_type == 'Porcentaje':
+        total_ponderation_of_evaluation_types = (
+            sum(evaluation_type.overall_ponderation 
+                for evaluation_type in course_section.evaluation_types
+            )
+        )
+        if total_ponderation_of_evaluation_types < 100:
+            warning_evaluation_types = (
+                f"Suma actual de ponderaciones de tipos: "
+                f"{total_ponderation_of_evaluation_types}%. "
+                "Falta completar hasta 100%."
+            )
+            
+    warning_evaluations = {}
+    for evaluation_type in course_section.evaluation_types:
+        if evaluation_type.ponderation_type == 'Porcentaje':
+            total_ponderation_of_evaluations = sum(
+                (evaluation.ponderation or 0) 
+                for evaluation in evaluation_type.evaluations
+            )
+            if total_ponderation_of_evaluations < 100:
+                warning_evaluations[evaluation_type.id] = (
+                    f"Falta ponderar instancias de '{evaluation_type.topic}': "
+                    f"{total_ponderation_of_evaluations}% (meta 100%)."
+                )
 
     return render_template(
         'course_sections/show.html',
-        course_section=course_section
+        course_section=course_section,
+        warning_evaluation_types=warning_evaluation_types,
+        warning_evaluations=warning_evaluations
     )
 
 @course_section_bp.route(

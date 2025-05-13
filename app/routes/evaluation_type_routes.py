@@ -30,6 +30,7 @@ def show_evaluation_type(evaluation_type_id):
 )
 def create_evaluation_type_view(course_section_id):
     course_section = get_section(course_section_id)
+    error = None
     if not course_section:
         return redirect(url_for(
             'course_sections.show_section_view',
@@ -38,21 +39,29 @@ def create_evaluation_type_view(course_section_id):
 
     if request.method == 'POST':
         data = build_evaluation_type_data(request.form, course_section_id)
-        new_evaluation_type = create_evaluation_type(data)
-
-        return redirect(url_for(
-            'evaluations.create_evaluation_view',
-            evaluation_type_id=new_evaluation_type.id
-        ))
+        new_evaluation_type, current_sum = create_evaluation_type(data)
+        
+        if new_evaluation_type is None:
+            error = (
+                f"Suma actual de porcentajes: {current_sum}%. "
+                "No puede exceder 100% al agregar este tipo."
+            )
+        else:
+            return redirect(url_for(
+                'evaluations.create_evaluation_view',
+                evaluation_type_id=new_evaluation_type.id
+            ))
     
     return render_template(
         'evaluation_types/create.html',
-        course_section=course_section
+        course_section=course_section,
+        error=error
     )
 
 @evaluation_type_bp.route('/<int:evaluation_type_id>', methods=['GET', 'POST'])
 def update_evaluation_type_view(evaluation_type_id):
     evaluation_type = get_evaluation_type(evaluation_type_id)
+    error = None
     if not evaluation_type:
         return redirect(url_for(
             'course_sections.show_section_view',
@@ -61,16 +70,23 @@ def update_evaluation_type_view(evaluation_type_id):
 
     if request.method == 'POST':
         data = request.form
-        update_evaluation_type(evaluation_type, data)
-
-        return redirect(url_for(
-            'course_sections.show_section_view',
-            course_section_id=evaluation_type.course_section_id
-        ))
+        updated_evaluation_type, current_sum = update_evaluation_type(evaluation_type, data)
+        
+        if updated_evaluation_type is None:
+            error = (
+                f"Suma actual de porcentajes sin este tipo: {current_sum}%. "
+                "No puede exceder 100% al actualizar."
+            )
+        else:
+            return redirect(url_for(
+                'course_sections.show_section_view',
+                course_section_id=evaluation_type.course_section_id
+            ))
 
     return render_template(
         'evaluation_types/edit.html',
-        evaluation_type=evaluation_type
+        evaluation_type=evaluation_type,
+        error=error
     )
 
 @evaluation_type_bp.route(

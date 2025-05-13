@@ -13,6 +13,11 @@
 <div class="main">
 
     <h1>Editar Tipo de Evaluación: {{ evaluation_type.topic }}</h1>
+
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
     <p><strong>Curso:</strong> 
         {{ evaluation_type.course_section.course_instance.course.name }} 
         {{ evaluation_type.course_section.course_instance.year}}-
@@ -37,7 +42,7 @@
             type="number" 
             id="overall_ponderation" 
             name="overall_ponderation" 
-            step="0.01"
+            step="1"
             min="0"
             max="100"
             value="{{evaluation_type.overall_ponderation}}"
