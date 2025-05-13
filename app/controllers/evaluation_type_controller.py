@@ -23,7 +23,6 @@ def create_evaluation_type(data):
         ).filter_by(course_section_id=section_id).scalar()
         if current_total_ponderation_value + evaluation_type_ponderation > 100:
             return None, current_total_ponderation_value 
-            #current_total_ponderation_value is returned for error showing purposes
         
     new_evaluation_type = EvaluationType(
         topic = data.get('topic'),
@@ -47,7 +46,6 @@ def update_evaluation_type(evaluation_type, data):
     section = CourseSection.query.get(section_id)
     
     if section.overall_ponderation_type == 'Porcentaje':
-        # We add up all of them except the current one, plus the new value
         total = db.session.query(
             func.coalesce(func.sum(EvaluationType.overall_ponderation), 0)
         ).filter(

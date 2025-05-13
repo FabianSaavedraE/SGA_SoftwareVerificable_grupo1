@@ -63,6 +63,7 @@ def update_evaluation_view(evaluation_id):
 
     if request.method == 'POST':
         data = request.form.to_dict()
+        data['optional'] = 'optional' in request.form
 
         updated_evaluation, current_sum = update_evaluation(evaluation, data)
         
