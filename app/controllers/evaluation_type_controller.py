@@ -21,8 +21,9 @@ def create_evaluation_type(data):
         current_total_ponderation_value = db.session.query(
             func.coalesce(func.sum(EvaluationType.overall_ponderation), 0)
         ).filter_by(course_section_id=section_id).scalar()
+        current_total_ponderation_value = round(current_total_ponderation_value or 0, 2)
         if current_total_ponderation_value + evaluation_type_ponderation > 100:
-            return None, current_total_ponderation_value 
+            return None, round(current_total_ponderation_value, 2)
         
     evaluation_instance_id = data.get('evaluation_instance_id')
 
@@ -57,8 +58,9 @@ def update_evaluation_type(evaluation_type, data):
             EvaluationType.course_section_id==section_id,
             EvaluationType.id!=evaluation_type.id
         ).scalar()
+        total = round(total or 0, 2)
         if total + new_evaluation_type_ponderation > 100:
-            return None, total
+            return None, round(total, 2)
 
     evaluation_type.topic = data.get('topic', evaluation_type.topic)
     evaluation_type.ponderation_type = data.get(
