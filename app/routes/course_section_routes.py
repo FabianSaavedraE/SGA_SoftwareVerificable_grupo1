@@ -78,7 +78,7 @@ def create_section_view(course_instance_id):
             return render_template(
                 'course_sections/create.html',
                 course_instance=course_instance,
-                teacher=teachers,
+                teachers=teachers,
                 errors=errors
             )
 
@@ -138,11 +138,6 @@ def delete_section_view(course_section_id, course_instance_id):
 
     return render_template('course_sections.get_sections_view')
 
-@course_section_bp.route(
-    '/delete/<int:course_section_id>/<int:course_instance_id>',
-    methods=['POST']
-)
-
 @course_section_bp.route('/upload-json', methods=['POST'])
 def upload_course_sections_json():
     file = request.files.get('jsonFile')
@@ -160,6 +155,10 @@ def upload_course_sections_json():
 
     return redirect(url_for('course_sections.get_sections_view'))
 
+@course_section_bp.route(
+    '/delete/<int:course_section_id>/<int:course_instance_id>',
+    methods=['POST']
+)
 def delete_section_view_from_show(course_section_id, course_instance_id):
     course_section = get_section(course_section_id)
     if course_section:

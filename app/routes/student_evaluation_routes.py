@@ -40,11 +40,6 @@ def create_student_evaluation_view(student_id, evaluation_id):
         student_evaluation=student_evaluation
     )
 
-@student_evaluation_bp.route(
-    '/update/<int:student_id>/<int:evaluation_id>',
-    methods=['GET', 'POST']
-)
-
 @student_evaluation_bp.route('/upload-json', methods=['POST'])
 def upload_student_evaluation_json():
     print("Calling student_evaluation route for json creations")

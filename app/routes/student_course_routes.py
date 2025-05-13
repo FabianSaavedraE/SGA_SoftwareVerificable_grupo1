@@ -90,11 +90,6 @@ def update_student_course_view(student_id, course_section_id):
         student_course=student_course
     )
 
-@student_course_bp.route(
-    '/delete/<int:student_id>/<int:course_section_id>',
-    methods=['POST']
-)
-
 @student_course_bp.route('/upload-json', methods=['POST'])
 def upload_student_courses_json():
     file = request.files.get('jsonFile')
@@ -112,7 +107,9 @@ def upload_student_courses_json():
 
     return redirect(url_for('course_sections.get_sections_view'))
 
-@student_course_bp.route('/<int:student_id>/<int:course_section_id>/delete', methods=['POST'])
+@student_course_bp.route(
+    '/delete/<int:student_id>/<int:course_section_id>', methods=['POST']
+)
 def delete_student_course_view(student_id, course_section_id):
     student_course = get_student_course(student_id, course_section_id)
     if student_course:

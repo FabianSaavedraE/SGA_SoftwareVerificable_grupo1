@@ -30,6 +30,20 @@
                 </ul>
             </div>
 
+            <!-- Profesores -->
+            <div class="box">
+                <a href="{{ url_for('teachers.get_teachers_view') }}">
+                    <button>Ver profesores</button>
+                </a>
+                <ul>
+                    {% for teacher in teachers %}
+                        <li>{{ teacher.first_name }} {{ teacher.last_name }}</li>
+                    {% else %}
+                        <li>No hay profesores</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
             <!-- Cursos -->
             <div class="box">
                 <a href="{{ url_for('courses.get_courses_view') }}">
@@ -40,6 +54,20 @@
                         <li>{{ course.name }}</li>
                     {% else %}
                         <li>No hay cursos</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Instancias de cursos -->
+             <div class="box">
+                <a href="{{ url_for('course_instances.get_course_instances_view') }}">
+                    <button>Ver instancias de cursos</button>
+                </a>
+                <ul>
+                    {% for course_instance in course_instances %}
+                        <li>{{ course_instance.course.name }}</li>
+                    {% else %}
+                        <li>No hay instancias</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -58,44 +86,16 @@
                 </ul>
             </div>
 
-            <!-- Profesores -->
+            <!-- Salas -->
             <div class="box">
-                <a href="{{ url_for('teachers.get_teachers_view') }}">
-                    <button>Ver profesores</button>
+                <a href="{{ url_for('classrooms.get_classrooms_view') }}">
+                    <button>Ver Salas</button>
                 </a>
                 <ul>
-                    {% for teacher in teachers %}
-                        <li>{{ teacher.first_name }} {{ teacher.last_name }}</li>
+                    {% for classroom in classrooms %}
+                        <li>{{ classroom.name }}</li>
                     {% else %}
-                        <li>No hay profesores</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-             <!-- Instancias de cursos -->
-             <div class="box">
-                <a href="{{ url_for('course_instances.get_course_instances_view') }}">
-                    <button>Ver instancias de cursos</button>
-                </a>
-                <ul>
-                    {% for course_instance in course_instances %}
-                        <li>{{ course_instance.course.name }}</li>
-                    {% else %}
-                        <li>No hay instancias</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-             <!-- Profesores -->
-             <div class="box">
-                <a href="{{ url_for('teachers.get_teachers_view') }}">
-                    <button>Ver profesores</button>
-                </a>
-                <ul>
-                    {% for teacher in teachers %}
-                        <li>{{ teacher.first_name }} {{ teacher.last_name }}</li>
-                    {% else %}
-                        <li>No hay profesores</li>
+                        <li>No hay salas</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -110,20 +110,6 @@
                         <li>Se requiere aprobar {{ pairing.prerequisite }} para avanzar al curso {{ pairing.course }}</li>
                     {% else %}
                         <li>No hay prerequisitos establecidos de antemano</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- Salas -->
-            <div class="box">
-                <a href="{{ url_for('classrooms.get_classrooms_view') }}">
-                    <button>Ver Salas</button>
-                </a>
-                <ul>
-                    {% for classroom in classrooms %}
-                        <li>{{ classroom.name }}</li>
-                    {% else %}
-                        <li>No hay salas</li>
                     {% endfor %}
                 </ul>
             </div>

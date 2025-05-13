@@ -93,11 +93,6 @@ def update_course_instance_view(course_instance_id):
         course_instance=course_instance
     )
 
-@course_instance_bp.route(
-        '/delete/<int:course_instance_id>/<int:course_id>',
-        methods=['POST']
-)
-
 @course_instance_bp.route('/upload-json', methods=['POST'])
 def upload_course_instances_json():
     print("Calling upload course_instances")
@@ -116,6 +111,9 @@ def upload_course_instances_json():
 
     return redirect(url_for('courses.get_courses_view'))
 
+@course_instance_bp.route(
+    '/delete/<int:course_instance_id>/<int:course_id>', methods=['POST']
+)
 def delete_course_instance_view(course_instance_id, course_id):
     course_instance = get_course_instance(course_instance_id)
     if course_instance:
