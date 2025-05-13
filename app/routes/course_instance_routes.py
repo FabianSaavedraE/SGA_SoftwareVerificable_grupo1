@@ -4,7 +4,7 @@ from flask import (
 
 from app.controllers.course_instance_controller import (
     get_course_instance, create_course_instance, update_course_instance, 
-    delete_course_instance, is_valid_year
+    delete_course_instance, validate_course_instance
 )
 from app.controllers.course_controller import get_course
 
@@ -36,20 +36,17 @@ def create_course_instance_view(course_id):
     error = None
     if request.method == 'POST':
         data = build_course_instance_data(request.form, course_id)
-        course_instance = create_course_instance(data)
+        errors = validate_course_instance(data)
 
-        if course_instance is None:
-            year = int(data['year'])
-            if not is_valid_year(year):
-                error = "El año ingresado no es válido."
-            else:
-                error = "Ya existe una instancia de este curso para ese " \
-                "año y semestre."
-        else:
-            return redirect(url_for(
-                'courses.show_course_view',
-                course_id=course_id
-            ))
+        if errors:
+            return render_template(
+                'course_instances/create.html', course=course, errors=errors
+            )
+
+        create_course_instance(data)
+        return redirect(url_for(
+            'courses.show_course_view', course_id=course_id
+        ))
 
     return render_template(
         'course_instances/create.html', course=course, error=error
@@ -64,28 +61,26 @@ def update_course_instance_view(course_instance_id):
             course_id=course_instance.course.id
         ))
 
-    error = None
     if request.method == 'POST':
         data = request.form
-        course_instance_updated = update_course_instance(course_instance, data)
-        if course_instance_updated is None:
-            year = int(data.get('year', course_instance.year))
-            if not is_valid_year(year):
-                error = "El año ingresado no es válido"
+        errors = validate_course_instance(data, course_instance_id)
 
-            else:
-                error = "Ya existe otra instancia de este curso en ese " \
-                "año y semestre."
-        else:
-            return redirect(url_for(
-                'courses.show_course_view',
-                course_id=course_instance.course.id
-            ))
+        if errors:
+            return render_template(
+                'course_instances/edit.html',
+                course_instance=course_instance,
+                errors=errors
+            )
+
+        update_course_instance(course_instance, data)
+        return redirect(url_for(
+            'courses.show_course_view',
+            course_id=course_instance.course.id
+        ))
 
     return render_template(
         'course_instances/edit.html',
-        course_instance=course_instance,
-        error=error
+        course_instance=course_instance
     )
 
 @course_instance_bp.route(

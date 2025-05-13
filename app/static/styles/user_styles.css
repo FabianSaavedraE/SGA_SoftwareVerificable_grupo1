@@ -74,6 +74,13 @@ p {
     text-align: center;
 }
 
+.hint {
+    color: #6c757d; 
+    font-size: 0.85em;
+    margin-top: 2px;
+    display: block;
+}
+
 /* ===== TABLES ===== */
 table {
     border-collapse: collapse;
