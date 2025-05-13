@@ -16,6 +16,7 @@ def get_course(course_id):
 def create_course(data):
     credits = int(data.get('credits', 0))
     code = transform_code_to_valid_format(data)
+    course_id = data.get('course_id')
 
     new_course = Course(
         name = data.get('name'),
@@ -23,6 +24,10 @@ def create_course(data):
         code = code,
         credits=credits
     )
+
+    if course_id is not None:
+        new_course.id = course_id
+
     db.session.add(new_course)
     db.session.commit()
 
@@ -52,36 +57,39 @@ def delete_course(course):
     return True
 
 def transform_code_to_valid_format(data):
-    raw_code = data.get('code', '').zfill(CODE_LENGTH)
+    raw_code = data.get('code', '')
+    if raw_code.startswith('ICC'):
+        return raw_code
+    raw_code = raw_code.zfill(CODE_LENGTH)
     return f"ICC{raw_code}"
 
 def create_courses_from_json(data):   
     courses = data.get('cursos', [])
     for course in courses:
         id = course.get('id')
-        name = course.get('descripcion')
-        description = name #This it's defined in our model, but doesn't seem to be necessary according to the JSON.
-        #So I will keep it as a duplicate, since it would be usefull to have anyways
-        code = course.get('codigo')
-        credits = int(course.get('creditos'))
         prerequisites = course.get('requisitos')
+        
+        course_data = transform_json_entry_into_processable_course_format(course)
        
         if check_if_course_with_id_exists(id): 
             handle_course_with_existing_id(id)
         
-        new_course = Course(
-            id = id,
-            name=name,
-            description=description,
-            code=code,
-            credits=credits
-        )
-        db.session.add(new_course)
+        create_course(course_data)
 
-        generate_prerequisites(id, prerequisites)
+        if prerequisites != []:
+            generate_prerequisites(id, prerequisites)
 
     db.session.commit()
 
+def transform_json_entry_into_processable_course_format(course):
+    data = {
+            'name' : course.get('descripcion'),
+            'description' : course.get('descripcion'),#Simply a duplication, not required technically but added in our model.
+            'code' : course.get('codigo'),
+            'credits' : course.get('creditos'),
+            'course_id' : course.get('id')
+    }
+    return data
 
 def check_if_course_with_id_exists(id):
     course = Course.query.filter_by(id=id).first()
@@ -102,5 +110,4 @@ def generate_prerequisites(id, prerequisites):
     for prerequisite in prerequisites:
         course = Course.query.filter_by(code = prerequisite).first()
         prerequisite_id = course.id
-        #processable_data = {'course_id' : id, 'prerequisite_id' : prerequisite_id}
         create_course_prerequisite(id, prerequisite_id)
