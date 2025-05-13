@@ -105,7 +105,7 @@ def update_section_view(course_section_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = data_validation(data)
+        errors = data_validation(data, course_section_id)
 
         if errors:
             return render_template(

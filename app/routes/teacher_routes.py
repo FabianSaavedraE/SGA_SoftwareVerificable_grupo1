@@ -4,6 +4,7 @@ from app.controllers.teacher_controller import (
     get_all_teachers, get_teacher, create_teacher,
     update_teacher, delete_teacher
 )
+from app.validators.teacher_validator import validate_teacher_data
 
 teacher_bp = Blueprint('teachers', __name__, url_prefix='/teachers')
 
@@ -15,14 +16,13 @@ def get_teachers_view():
 @teacher_bp.route('/create', methods=['GET', 'POST'])
 def create_teacher_view():
     if request.method == 'POST':
-        teacher, errors = create_teacher(request.form)
-
+        data = request.form
+        errors = validate_teacher_data(data)
+        
         if errors:
-            return render_template(
-                'teachers/create.html',
-                errors=errors,
-                form=request.form
-            )
+            return render_template('teachers/create.html', errors=errors)
+        
+        create_teacher(request.form)
 
         return redirect(url_for('teachers.get_teachers_view'))
 
@@ -36,8 +36,14 @@ def update_teacher_view(teacher_id):
 
     if request.method == 'POST':
         data = request.form
-        update_teacher(teacher, data)
+        errors = validate_teacher_data(data, teacher_id)
 
+        if errors:
+            return render_template(
+                'teachers/edit.html', teacher=teacher, errors=errors
+            )
+        
+        update_teacher(teacher, data)
         return redirect(url_for('teachers.get_teachers_view'))
 
     return render_template('teachers/edit.html', teacher=teacher)

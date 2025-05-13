@@ -15,7 +15,7 @@
     <h1>Crear Sección para el curso {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
 
     <form action="{{url_for('course_sections.create_section_view', course_instance_id=course_instance.id)}}" method="POST">
-        <label for="nrc">NRC:</label>
+        <label for="nrc">NRC:</label><span class="hint">Ingrese un número de 4 dígitos.</span>
         <input type="number" id="nrc" name="nrc">
         <br>
         {% if errors and errors.nrc %}

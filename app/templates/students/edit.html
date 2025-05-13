@@ -20,24 +20,36 @@
         <form action="{{ url_for('students.update_student_view', student_id=student.id) }}" method="POST">
             <div>
                 <label for="first_name">Nombre:</label>
-                <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" required>
+                <input type="text" id="first_name" name="first_name" value="{{ student.first_name }}" >
             </div>
+            {% if errors and errors.first_name %}
+                <p class="form-error">{{errors.first_name}}</p>
+            {% endif %}
 
             <div>
                 <label for="last_name">Apellido:</label>
-                <input type="text" id="last_name" name="last_name" value="{{ student.last_name }}" required>
+                <input type="text" id="last_name" name="last_name" value="{{ student.last_name }}" >
             </div>
+            {% if errors and errors.last_name %}
+                <p class="form-error">{{errors.last_name}}</p>
+            {% endif %}
 
             <div>
                 <label for="email">Email:</label>
-                <input type="text" id="email" name="email" value="{{ student.email }}" required>
+                <input type="text" id="email" name="email" value="{{ student.email }}" >
             </div>
+            {% if errors and errors.email %}
+                <p class="form-error">{{errors.email}}</p>
+            {% endif %}
 
             <div>
                 <label for="entry_year">Año de ingreso (opcional):</label>
                 <input type="number" id="entry_year" name="entry_year"
-                       min="1900" max="{{ current_year }}" value="{{ student.entry_year if student else '' }}" required>
+                       min="1900" max="{{ current_year }}" value="{{ student.entry_year if student else '' }}" >
             </div>
+            {% if errors and errors.entry_year %}
+                <p class="form-error">{{errors.entry_year}}</p>
+            {% endif %}   
 
             <button type="submit">Actualizar Estudiante</button>
         </form>

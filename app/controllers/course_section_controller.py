@@ -88,11 +88,11 @@ def data_validation(data, course_section_id=None):
         existing_section = CourseSection.query.filter_by(
             nrc=f"NRC-{nrc}"
         ).first()
-        
+
         if existing_section and (
             course_section_id is None or
             existing_section.id != course_section_id
         ):
             errors['nrc'] = f"El NRC ({nrc}) ya está en uso por otra sección."
 
-    return 
+    return errors

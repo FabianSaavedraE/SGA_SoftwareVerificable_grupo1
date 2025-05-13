@@ -36,6 +36,7 @@ a:hover {
     box-sizing: border-box;
     margin: 0 auto;
     max-width: 800px;
+    min-width: 500px;
     padding: 20px;
     overflow-y: auto;
 }
@@ -71,6 +72,13 @@ p {
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
+}
+
+.hint {
+    color: #6c757d; 
+    font-size: 0.85em;
+    margin-top: 2px;
+    display: block;
 }
 
 /* ===== TABLES ===== */
