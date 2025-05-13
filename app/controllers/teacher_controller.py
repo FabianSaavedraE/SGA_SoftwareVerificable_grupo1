@@ -98,16 +98,15 @@ def validate_teacher_overload(ranked_sections, timeslots):
 def create_teachers_from_json(data):
     teachers = data.get('profesores', [])
     for teacher in teachers:
-        name = teacher.get('nombre', '')
-        name_parts = name.strip().split()
-        first_name = name_parts[0]
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+        teacher_data = transform_json_entry_into_processable_teacher_format(teacher)
+        create_teacher(teacher_data)
 
-        new_teacher = Teacher(
-            first_name=first_name,
-            last_name=last_name,
-            email=teacher.get('correo'),
-        )
-        db.session.add(new_teacher)
-
-    db.session.commit()
+def transform_json_entry_into_processable_teacher_format(teacher):
+    name = teacher.get('nombre', '')
+    name_parts = name.strip().split()
+    data = {
+        'first_name' : name_parts[0],
+        'last_name' :' '.join(name_parts[1:]) if len(name_parts) > 1 else '',
+        'email' : teacher.get('correo')
+    }
+    return data
