@@ -41,3 +41,19 @@ def delete_student_course(student_id, course_section_id):
         db.session.commit()
         return True
     return False
+
+def create_student_courses_from_json(data):
+    student_courses = data.get('alumnos_seccion', [])
+    for student_course in student_courses:
+        course_section_id = student_course.get('seccion_id')
+        student_id = student_course.get('alumno_id')
+
+        new_student = StudentCourses(
+          student_id = student_id,
+          course_section_id = course_section_id,
+          state = "Inscrito"
+        )
+        db.session.add(new_student)
+
+    db.session.commit()
+    

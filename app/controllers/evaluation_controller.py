@@ -22,7 +22,7 @@ def create_evaluation(data):
     evaluation_type = EvaluationType.query.get(evaluation_type_id)
 
     if not evaluation_type:
-        return None  # Fallback defensivo
+        return None  # Defensive fallback
 
     existing_evaluations = Evaluation.query.filter_by(
         evaluation_type_id=evaluation_type_id

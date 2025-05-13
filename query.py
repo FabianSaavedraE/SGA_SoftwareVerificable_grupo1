@@ -47,3 +47,5 @@ with app.app_context():
         teacher_name = f"{teacher.first_name} {teacher.last_name}" if teacher else "Sin profesor asignado"
         print(f"- ID: {seccion.id}, NRC: {seccion.nrc}, Tipo de ponderación: {seccion.overall_ponderation_type}, "
               f"Estado: {seccion.state}, ID instancia curso: {seccion.course_instance_id}, Profesor: {teacher_name}")
+        
+    
