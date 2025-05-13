@@ -25,10 +25,10 @@ def show_section_view(course_section_id):
     
     warning_evaluation_types = None
     if course_section.overall_ponderation_type == 'Porcentaje':
-        total_ponderation_of_evaluation_types = (
+        total_ponderation_of_evaluation_types = (round(
             sum(evaluation_type.overall_ponderation 
                 for evaluation_type in course_section.evaluation_types
-            )
+            ), 2)
         )
         if total_ponderation_of_evaluation_types < 100:
             warning_evaluation_types = (
@@ -40,10 +40,10 @@ def show_section_view(course_section_id):
     warning_evaluations = {}
     for evaluation_type in course_section.evaluation_types:
         if evaluation_type.ponderation_type == 'Porcentaje':
-            total_ponderation_of_evaluations = sum(
-                (evaluation.ponderation or 0) 
-                for evaluation in evaluation_type.evaluations
-            )
+            total_ponderation_of_evaluations = round(
+                sum((evaluation.ponderation or 0) 
+                for evaluation in evaluation_type.evaluations)
+            , 2)
             if total_ponderation_of_evaluations < 100:
                 warning_evaluations[evaluation_type.id] = (
                     f"Falta ponderar instancias de '{evaluation_type.topic}': "

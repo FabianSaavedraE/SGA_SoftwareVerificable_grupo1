@@ -30,8 +30,9 @@ def create_evaluation(data):
         total = db.session.query(
             func.coalesce(func.sum(Evaluation.ponderation), 0)
         ).filter_by(evaluation_type_id=evaluation_type_id).scalar()
+        total = round(total or 0, 2)
         if total + evaluation_ponderation > 100:
-            return None, total
+            return None, round(total, 2)
 
     new_evaluation = Evaluation(
         name = data.get('name'),
@@ -59,8 +60,9 @@ def update_evaluation(evaluation, data):
             Evaluation.evaluation_type_id == evaluation_type.id,
             Evaluation.id != evaluation.id
         ).scalar()
+        total = round(total or 0, 2)
         if total + new_evaluation_ponderation > 100:
-            return None, total
+            return None, round(total, 2)
     
     evaluation.name = data.get('name', evaluation.name)
     evaluation.ponderation = new_evaluation_ponderation

@@ -25,7 +25,16 @@
         <input type="text" id="name" name="name" value="{{evaluation.name}}" required>
         
         <label for="ponderation">Ponderación:</label>
-        <input type="number" id="ponderation" name="ponderation" value="{{evaluation.ponderation}}" required>
+        <input 
+            type="number" 
+            id="ponderation" 
+            name="ponderation" 
+            step="0.01"
+            min="0"
+            max="100" 
+            value="{{evaluation.ponderation}}" 
+            required
+        >
 
         <label for="optional">Opcional:</label>
         <input type="checkbox" id="optional" name="optional" {% if evaluation.optional %}checked{% endif %}>
