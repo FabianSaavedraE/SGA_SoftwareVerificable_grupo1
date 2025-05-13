@@ -20,32 +20,25 @@ def create_evaluation_view(evaluation_type_id):
             course_section_id=evaluation_type.course_section_id
         ))
     
+    error = None
     if request.method == 'POST':
-        """
-        ESTE ES UN COMENTARIO PARA EL FUTURO, CUANDO EMPECEMOS A VER LO DE LOS JSONS
-        PARA LA CARGA DE EVALUACIONES.
-
-        DATA que se manda al controlador para crear la(s) evaluacion(es) es una lista con la siguiente estructura:
-        
-        DATA: [
-            {
-                'name': 'Prueba 2', 
-                'ponderation': '40', 
-                'optional': True, 
-                'evaluation_type_id': 37
-            }, 
-            {
-                'name': 'Prueba 1', 
-                'ponderation': '40', 
-                'optional': True, 
-                'evaluation_type_id': 37}
-        ]
-
-        """
         evaluations = build_evaluation_data(request.form, evaluation_type_id)
 
         for data in evaluations:
-            create_evaluation(data)
+            evaluation, current_sum = create_evaluation(data)
+            if evaluation is None:
+                error = (
+                    f"Suma actual de ponderaciones: {current_sum}%. "
+                    "No puede exceder 100% al agregar esta evaluación."
+                )
+                break
+            
+        if error:
+            return render_template(
+                'evaluations/create.html',
+                evaluation_type=evaluation_type,
+                error=error
+            )
 
         return redirect(url_for(
             'course_sections.show_section_view',
@@ -54,11 +47,13 @@ def create_evaluation_view(evaluation_type_id):
 
     return render_template(
         'evaluations/create.html',
-        evaluation_type=evaluation_type
+        evaluation_type=evaluation_type,
+        error=error
     )
 
 @evaluation_bp.route('/<int:evaluation_id>', methods=['GET', 'POST'])
 def update_evaluation_view(evaluation_id):
+    error = None
     evaluation = get_evaluation(evaluation_id)
     if not evaluation:
         return redirect(url_for(
@@ -67,16 +62,23 @@ def update_evaluation_view(evaluation_id):
         ))
 
     if request.method == 'POST':
-        data = build_evaluation_data(request.form)
+        data = request.form.to_dict()
+        data['optional'] = 'optional' in request.form
 
-        update_evaluation(evaluation, data)
+        updated_evaluation, current_sum = update_evaluation(evaluation, data)
+        
+        if updated_evaluation is None:
+            error = (
+                f"Suma actual sin esta evaluación: {current_sum}%. "
+                "No puede exceder 100% al actualizar."
+            )
+        else:
+            return redirect(url_for(
+                'course_sections.show_section_view',
+                course_section_id=evaluation.evaluation_type.course_section_id
+            ))
 
-        return redirect(url_for(
-            'course_sections.show_section_view',
-            course_section_id=evaluation.evaluation_type.course_section_id
-        ))
-
-    return render_template('evaluations/edit.html', evaluation=evaluation)
+    return render_template('evaluations/edit.html', evaluation=evaluation, error=error)
 
 @evaluation_bp.route('/<int:evaluation_id>/show', methods=['GET'])
 def show_evaluation_view(evaluation_id):

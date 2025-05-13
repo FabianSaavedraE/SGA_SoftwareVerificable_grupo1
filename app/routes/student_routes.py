@@ -4,6 +4,7 @@ from app.controllers.student_controller import (
     get_all_students, get_student, create_student,
     update_student, delete_student, create_students_from_json
 )
+from app.validators.student_validator import validate_student_data
 
 student_bp = Blueprint('students', __name__, url_prefix='/students')
 
@@ -16,6 +17,11 @@ def get_students_view():
 def create_student_view():
     if request.method == 'POST':
         data = request.form
+
+        errors = validate_student_data(data)
+        if errors:
+            return render_template('students/create.html', errors=errors)
+
         create_student(data)
         return redirect(url_for('students.get_students_view'))
 
@@ -33,6 +39,13 @@ def update_student_view(student_id):
 
     if request.method == 'POST':
         data = request.form
+
+        errors = validate_student_data(data, student_id)
+        if errors:
+            return render_template(
+                'students/edit.html', student=student, errors=errors
+            )
+        
         update_student(student, data)
 
         return redirect(url_for('students.get_students_view'))

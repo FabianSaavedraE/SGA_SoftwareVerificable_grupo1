@@ -15,9 +15,12 @@
     <h1>Editar Sección {{course_section.nrc}}</h1>
 
     <form action="{{url_for('course_sections.update_section_view', course_section_id=course_section.id)}}" method="POST">
-        <label for="nrc">Nrc:</label>
-        <input type="text" id="nrc" name="nrc" value="{{course_section.nrc}}" required>
+        <label for="nrc">NRC:</label><span class="hint">Ingrese un número de 4 dígitos.</span>
+        <input type="number" id="nrc" name="nrc" value="{{course_section.nrc[4:]}}" >
         <br>
+        {% if errors and errors.nrc %}
+            <p class="form-error">{{errors.nrc}}</p>
+        {% endif %}
 
         <label for="overall_ponderation_type">Tipo de Ponderación de las Evaluaciones para la nota final:</label>
         <select name="overall_ponderation_type" id="overall_ponderation_type" required>

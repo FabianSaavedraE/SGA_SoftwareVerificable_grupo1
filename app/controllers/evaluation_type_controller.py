@@ -51,3 +51,4 @@ def delete_evaluation_type(evaluation_type):
     db.session.delete(evaluation_type)
     db.session.commit()
     return True
+

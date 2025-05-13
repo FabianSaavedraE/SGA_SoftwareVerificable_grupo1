@@ -13,6 +13,11 @@
 <div class="main">
 
     <h1>Editar Evaluación: {{evaluation.name}}</h1>
+
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
     <p><strong>Sección:</strong> {{evaluation.evaluation_type.course_section.course}} {{evaluation.evaluation_type.course_section.nrc}}</p>
 
     <form action="{{url_for('evaluations.update_evaluation_view', evaluation_id=evaluation.id)}}" method="POST">
@@ -22,7 +27,7 @@
         <label for="ponderation">Ponderación:</label>
         <input type="number" id="ponderation" name="ponderation" value="{{evaluation.ponderation}}" required>
 
-        <label for="optional">Obligatoria:</label>
+        <label for="optional">Opcional:</label>
         <input type="checkbox" id="optional" name="optional" {% if evaluation.optional %}checked{% endif %}>
 
         <button type="submit">Actualizar Evaluación</button>

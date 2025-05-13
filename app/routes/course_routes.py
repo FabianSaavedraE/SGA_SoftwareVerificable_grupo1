@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 
+from app.validators.course_validator import validate_course_data
 from app.controllers.course_controller import (
     get_all_courses, get_course, create_course, update_course, delete_course,
     create_courses_from_json
@@ -24,6 +25,13 @@ def show_course_view(course_id):
 def create_course_view():
     if request.method == 'POST':
         data = request.form
+        errors = validate_course_data(data)
+
+        if errors:
+            return render_template(
+                'courses/create.html', errors=errors, data=data
+            )
+
         create_course(data)
         return redirect(url_for('courses.get_courses_view'))
 
@@ -37,8 +45,14 @@ def update_course_view(course_id):
 
     if request.method == 'POST':
         data = request.form
-        update_course(course, data)
+        errors = validate_course_data(data, course_id=course_id)
 
+        if errors:
+            return render_template(
+                'courses/edit.html', course=course, errors=errors, data=data
+            )
+
+        update_course(course, data)
         return redirect(url_for('courses.get_courses_view'))
 
     return render_template('courses/edit.html', course=course)

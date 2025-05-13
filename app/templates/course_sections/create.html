@@ -15,12 +15,15 @@
     <h1>Crear Sección para el curso {{course_instance.course.name}} {{course_instance.year}}-{{course_instance.semester}}</h1>
 
     <form action="{{url_for('course_sections.create_section_view', course_instance_id=course_instance.id)}}" method="POST">
-        <label for="nrc">NRC:</label>
-        <input type="text" id="nrc" name="nrc" required>
+        <label for="nrc">NRC:</label><span class="hint">Ingrese un número de 4 dígitos.</span>
+        <input type="number" id="nrc" name="nrc">
         <br>
+        {% if errors and errors.nrc %}
+            <p class="form-error">{{errors.nrc}}</p>
+        {% endif %}
 
         <label for="overall_ponderation_type">Tipo de Ponderación para la nota final:</label>
-        <select name="overall_ponderation_type" id="overall_ponderation_type" required>
+        <select name="overall_ponderation_type" id="overall_ponderation_type" >
             <option value="Porcentaje">Porcentaje</option>
             <option value="Peso">Peso</option>
         </select>

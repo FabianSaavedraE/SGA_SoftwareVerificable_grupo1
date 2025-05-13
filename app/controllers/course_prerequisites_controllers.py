@@ -11,15 +11,14 @@ def get_course_prerequisite(course_id, prerequisite_id):
         prerequisite_id=prerequisite_id
     ).first()
 
-def create_course_prerequisite(data):
-    course_id = data.get('course_id')
-    prerequisite_id = data.get('prerequisite_id')
+def create_course_prerequisites(course_id, prerequisite_ids):
+    for prereq_id in prerequisite_ids:
+        new_prerequisite = CoursePrerequisite(
+            course_id=course_id,
+            prerequisite_id=prereq_id
+        )
+        db.session.add(new_prerequisite)
 
-    new_prerequisite = CoursePrerequisite(
-        course_id=course_id,
-        prerequisite_id=prerequisite_id
-    )
-    db.session.add(new_prerequisite)
     db.session.commit()
 
 def update_course_prerequisite(course_id, prerequisite_id, data):
@@ -34,7 +33,6 @@ def update_course_prerequisite(course_id, prerequisite_id, data):
 
 def delete_course_prerequisite(course_id, prerequisite_id):
     prerequisite = get_course_prerequisite(course_id, prerequisite_id)
-    print(prerequisite)
     if prerequisite:
         db.session.delete(prerequisite)
         db.session.commit()

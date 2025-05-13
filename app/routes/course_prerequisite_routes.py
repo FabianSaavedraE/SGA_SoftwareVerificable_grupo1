@@ -3,10 +3,14 @@ from flask import (
 )
 
 from app import db
-from app.models.course import Course
 from app.models.course_prerequisite import CoursePrerequisite
 from app.controllers.course_prerequisites_controllers import (
-    get_course_prerequisite, delete_course_prerequisite
+    get_course_prerequisite, delete_course_prerequisite,
+    create_course_prerequisites
+)
+from app.controllers.course_controller import get_all_courses, get_course
+from app.validators.course_prerequisites_validator import (
+    validate_prerequisites
 )
 
 course_prerequisite_bp = Blueprint(
@@ -15,60 +19,43 @@ course_prerequisite_bp = Blueprint(
 
 @course_prerequisite_bp.route('/', methods=['GET'])
 def get_course_prerequisites():
-    course_prerequisites = CoursePrerequisite.query.all()
-    grouped_prerequisites = {}
-
-    for pair in course_prerequisites:
-        course = pair.course
-        prereq = pair.prerequisite
-
-        if course.id not in grouped_prerequisites:
-            grouped_prerequisites[course.id] = {
-                "name": course.name,
-                "prerequisites": []
-            }
-
-        grouped_prerequisites[course.id]["prerequisites"].append({
-            "id": prereq.id,
-            "name": prereq.name
-        })
+    all_prerequisites = get_all_prerequisites()
+    grouped = group_course_prerequisites(all_prerequisites)
 
     return render_template(
         'course_prerequisites/index.html',
-        grouped_prerequisites=grouped_prerequisites
+        grouped_prerequisites=grouped
     )
 
 @course_prerequisite_bp.route('/create', methods=['GET', 'POST'])
 def create_course_prerequisite_view():
+    courses = get_all_courses()
     if request.method == 'POST':
-        course_id = request.form.get('course_id')
-        prerequisite_ids = request.form.getlist('prerequisite_ids')  
+        data = request.form
+        course_id = data.get('course_id')
+        prerequisite_ids = data.getlist('prerequisite_ids')  
+        errors = validate_prerequisites(course_id, prerequisite_ids)
+        
+        if errors:
+            return render_template(
+                'course_prerequisites/create.html',
+                courses=courses,
+                errors=errors
+            )
 
-        for prereq_id in prerequisite_ids:
-            if prereq_id != course_id:  
-                new_pair = CoursePrerequisite(
-                    course_id=course_id,
-                    prerequisite_id=prereq_id
-                )
-                db.session.add(new_pair)
-
-        db.session.commit()
+        create_course_prerequisites(course_id, prerequisite_ids)
         return redirect(url_for(
             'course_prerequisites.get_course_prerequisites'
         ))
 
-    courses = Course.query.all()
-    return render_template(
-        'course_prerequisites/create.html',
-        courses=courses
-    )
+    return render_template('course_prerequisites/create.html', courses=courses)
 
 @course_prerequisite_bp.route(
     '/update/<int:course_id>',
     methods=['GET', 'POST']
 )
 def update_course_prerequisite_view(course_id):
-    course = Course.query.get(course_id)
+    course = get_course(course_id)
 
     if not course:
         return jsonify({'message': 'Course not found'}), 404
@@ -76,10 +63,8 @@ def update_course_prerequisite_view(course_id):
     if request.method == 'POST':
         if 'delete_prerequisite_id' in request.form:
             to_delete = request.form['delete_prerequisite_id']
-            pair = CoursePrerequisite.query.get((course_id, int(to_delete)))
-            if pair:
-                db.session.delete(pair)
-            db.session.commit()
+            delete_course_prerequisite(course_id, int(to_delete))
+
             return redirect(url_for(
                 'course_prerequisites.update_course_prerequisite_view',
                 course_id=course_id
@@ -87,34 +72,30 @@ def update_course_prerequisite_view(course_id):
 
         ids_to_delete = request.form.getlist('prerequisite_ids')
         for prereq_id in ids_to_delete:
-            pair = CoursePrerequisite.query.get((course_id, int(prereq_id)))
-            if pair:
-                db.session.delete(pair)
+            delete_course_prerequisite(course_id, prereq_id)
 
         new_prereq_ids = request.form.getlist('new_prerequisite[]')
-        for new_id in new_prereq_ids:
-            if new_id and new_id != str(course_id):
-                existing = CoursePrerequisite.query.get(
-                    (course_id, int(new_id))
-                )
-                if not existing:
-                    new_pair = CoursePrerequisite(
-                        course_id=course_id,
-                        prerequisite_id=int(new_id)
-                    )
-                    db.session.add(new_pair)
+        errors = validate_prerequisites(course_id, new_prereq_ids)
 
-        db.session.commit()
+        if errors:
+            return render_template(
+                'course_prerequisites/edit.html',
+                course=course,
+                prerequisites=filter_prerequisites(course_id),
+                available_prereqs=get_all_courses(),
+                errors=errors
+            )
+    
+        create_course_prerequisites(course_id, new_prereq_ids)
+
         return redirect(url_for(
             'course_prerequisites.update_course_prerequisite_view',
             course_id=course_id
         ))
 
-    prerequisites = CoursePrerequisite.query.filter_by(
-        course_id=course_id
-    ).all()
-
-    available_prereqs = Course.query.all()
+    prerequisites = filter_prerequisites(course_id)
+    available_prereqs = get_all_courses()
+    
     return render_template(
         'course_prerequisites/edit.html',
         course=course,
@@ -127,10 +108,38 @@ def update_course_prerequisite_view(course_id):
     methods=['POST']
 )
 def delete_course_prerequisite_view(course_id, prerequisite_id):
-    print(f"Deleting prerequisite: {prerequisite_id} for course {course_id}")
     course_prerequisite = get_course_prerequisite(course_id, prerequisite_id)
     if not course_prerequisite:
         return jsonify({'message': 'Course prerequisite not found'}), 404
+    
     delete_course_prerequisite(course_id, prerequisite_id)
-
     return redirect(url_for('course_prerequisites.get_course_prerequisites'))
+
+
+def group_course_prerequisites(prerequisites):
+    grouped = {}
+    for pair in prerequisites:
+        course = pair.course
+        prereq = pair.prerequisite
+
+        if course.id not in grouped:
+            grouped[course.id] = {
+                "name": course.name,
+                "prerequisites": []
+            }
+
+        grouped[course.id]["prerequisites"].append({
+            "id": prereq.id,
+            "name": prereq.name
+        })
+
+    return grouped
+
+def get_all_prerequisites():
+    return CoursePrerequisite.query.all()
+
+def get_course_prerequisite(course_id, prerequisite_id):
+    return CoursePrerequisite.query.get((course_id, prerequisite_id))
+
+def filter_prerequisites(course_id):
+    return CoursePrerequisite.query.filter_by(course_id=course_id).all()

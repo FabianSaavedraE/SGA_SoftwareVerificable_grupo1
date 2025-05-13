@@ -13,6 +13,11 @@
 
 <div class="main">
     <h1>Crear Evaluación de tipo {{ evaluation_type.topic }}</h1>
+
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
     <h2>
         Curso:
         {{ evaluation_type.course_section.course_instance.course.name }}

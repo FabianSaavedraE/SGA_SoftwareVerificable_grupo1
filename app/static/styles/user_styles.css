@@ -36,6 +36,7 @@ a:hover {
     box-sizing: border-box;
     margin: 0 auto;
     max-width: 800px;
+    min-width: 500px;
     padding: 20px;
     overflow-y: auto;
 }
@@ -71,6 +72,13 @@ p {
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
+}
+
+.hint {
+    color: #6c757d; 
+    font-size: 0.85em;
+    margin-top: 2px;
+    display: block;
 }
 
 /* ===== TABLES ===== */
@@ -254,6 +262,24 @@ a.btn-action:hover {
     background-color: #fdd;
     color: #900;
     border: 1px solid #900;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.form-error {
+    color: #b00020;               
+    background-color: #fce4ec;    
+    border-left: 4px solid #b00020;
+    padding: 8px 12px;
+    margin-top: 6px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+.success-msg {
+    background-color: rgb(10, 153, 0);
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
     padding: 8px;
     margin-bottom: 15px;
     border-radius: 4px;

@@ -2,7 +2,9 @@ from flask import Blueprint, request, render_template, redirect, url_for
 
 from app.controllers.course_section_controller import (
     get_all_sections, get_section, create_section,
-    update_section, delete_section, create_course_sections_from_json
+
+    update_section, delete_section, create_course_sections_from_json,  data_validation
+
 )
 from app.controllers.course_instance_controller import get_course_instance
 from app.controllers.teacher_controller import get_all_teachers
@@ -21,10 +23,39 @@ def show_section_view(course_section_id):
     course_section = get_section(course_section_id)
     if not course_section:
         return redirect(url_for('courses.get_courses_view'))
+    
+    warning_evaluation_types = None
+    if course_section.overall_ponderation_type == 'Porcentaje':
+        total_ponderation_of_evaluation_types = (
+            sum(evaluation_type.overall_ponderation 
+                for evaluation_type in course_section.evaluation_types
+            )
+        )
+        if total_ponderation_of_evaluation_types < 100:
+            warning_evaluation_types = (
+                f"Suma actual de ponderaciones de tipos: "
+                f"{total_ponderation_of_evaluation_types}%. "
+                "Falta completar hasta 100%."
+            )
+            
+    warning_evaluations = {}
+    for evaluation_type in course_section.evaluation_types:
+        if evaluation_type.ponderation_type == 'Porcentaje':
+            total_ponderation_of_evaluations = sum(
+                (evaluation.ponderation or 0) 
+                for evaluation in evaluation_type.evaluations
+            )
+            if total_ponderation_of_evaluations < 100:
+                warning_evaluations[evaluation_type.id] = (
+                    f"Falta ponderar instancias de '{evaluation_type.topic}': "
+                    f"{total_ponderation_of_evaluations}% (meta 100%)."
+                )
 
     return render_template(
         'course_sections/show.html',
-        course_section=course_section
+        course_section=course_section,
+        warning_evaluation_types=warning_evaluation_types,
+        warning_evaluations=warning_evaluations
     )
 
 @course_section_bp.route(
@@ -42,6 +73,16 @@ def create_section_view(course_instance_id):
 
     if request.method == 'POST':
         data = build_section_data(request.form, course_instance_id)
+        errors = data_validation(data)
+
+        if errors:
+            return render_template(
+                'course_sections/create.html',
+                course_instance=course_instance,
+                teacher=teachers,
+                errors=errors
+            )
+
         create_section(data)
         return redirect(url_for(
             'course_instances.show_course_instance_view',
@@ -66,6 +107,16 @@ def update_section_view(course_section_id):
 
     if request.method == 'POST':
         data = request.form
+        errors = data_validation(data, course_section_id)
+
+        if errors:
+            return render_template(
+                'course_sections/edit.html',
+                course_section=course_section,
+                teachers=teachers,
+                errors=errors
+            )
+        
         update_section(course_section, data)
 
         return redirect(url_for('course_sections.get_sections_view'))

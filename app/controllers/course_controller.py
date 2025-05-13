@@ -13,10 +13,12 @@ def get_course(course_id):
 
 def create_course(data):
     credits = int(data.get('credits', 0))
+    code = transform_code_to_valid_format(data)
+
     new_course = Course(
         name = data.get('name'),
         description = data.get('description'),
-        code = data.get('code'),
+        code = code,
         credits=credits
     )
     db.session.add(new_course)
@@ -28,9 +30,12 @@ def update_course(course, data):
     if not course:
         return None
 
+    raw_code = data.get('code', str(course.code)[4:])
+    full_code = f"ICC-{raw_code.zfill(4)}"
+
     course.name = data.get('name', course.name)
     course.description = data.get('description', course.description)
-    course.code = data.get('code', course.code)
+    course.code = full_code
     course.credits = data.get('credits', course.credits)
 
     db.session.commit()
@@ -43,7 +48,7 @@ def delete_course(course):
     db.session.delete(course)
     db.session.commit()
     return True
-
+  
 def create_courses_from_json(data):   
     courses = data.get('cursos', [])
     for course in courses:
@@ -93,3 +98,8 @@ def generate_prerequisites(id, prerequisites):
         prerequisite_id = course.id
         processable_data = {'course_id' : id, 'prerequisite_id' : prerequisite_id}
         create_course_prerequisite(processable_data)
+
+def transform_code_to_valid_format(data):
+    raw_code = data.get('code', '').zfill(4)
+    return f"ICC-{raw_code}"
+

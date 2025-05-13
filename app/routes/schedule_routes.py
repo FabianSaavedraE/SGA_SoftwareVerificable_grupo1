@@ -15,17 +15,19 @@ def generate_schedule_view():
     year = int(request.form.get('year'))
     semester = int(request.form.get('semester'))
 
-    success = generate_schedule(year=year, semester=semester)
+    success, message = generate_schedule(year=year, semester=semester)
+    error = None
 
     if success:
-        message = "Horario generado exitosamente. Puedes descargar el archivo."
+        error = False
         file_link = url_for('static', filename=FILE_NAME)
     else:
-        message = "No se pudo generar un horario válido."
+        error = True
         file_link = None
 
     return render_template(
         'schedules/generate_schedule.html',
         message=message,
-        file_link=file_link
+        file_link=file_link,
+        error=error
     )

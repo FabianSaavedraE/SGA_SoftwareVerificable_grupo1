@@ -30,6 +30,25 @@
     {% include 'navbar.html' %}
 
 <div class="main">
+    {% if errors and errors.course_id %}
+        <p class="form-error">{{errors.course_id}}</p>
+    {% endif %}
+
+    {% if errors and errors.prerequisite_ids %}
+        <p class="form-error">{{errors.prerequisite_ids}}</p>
+    {% endif %}
+
+    {% if errors and errors.self_reference %}
+        <p class="form-error">{{errors.self_reference}}</p>
+    {% endif %}
+
+    {% if errors and errors.cycle %}
+        <p class="form-error">{{errors.cycle}}</p>
+    {% endif %}
+
+    {% if errors and errors.duplicate %}
+        <p class="form-error">{{errors.duplicate}}</p>
+    {% endif %}
 
     <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
 

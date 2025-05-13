@@ -66,3 +66,4 @@ def delete_evaluation(evaluation):
     db.session.delete(evaluation)
     db.session.commit()
     return True
+
