@@ -5,6 +5,7 @@ from app.controllers.evaluation_controller import (
 )
 from app.controllers.evaluation_type_controller import get_evaluation_type
 from app.controllers.course_section_controller import get_section
+from app.validators.evaluation_validator import assign_default_ponderations
 
 evaluation_bp = Blueprint('evaluations', __name__, url_prefix='/evaluations')
 
@@ -24,25 +25,7 @@ def create_evaluation_view(evaluation_type_id):
     if request.method == 'POST':
         evaluations = build_evaluation_data(request.form, evaluation_type_id)
         
-        if all(data['ponderation'] is None for data in evaluations):
-            if evaluation_type.ponderation_type == 'Peso':
-                for data in evaluations:
-                    data['ponderation'] = 1
-            else:
-                existing_percentage_sum = round(
-                    sum((evaluation.ponderation or 0) for evaluation in evaluation_type.evaluations), 2
-                )
-                remaining = round(100 - existing_percentage_sum, 2)
-                amount_of_evaluations_being_created = len(evaluations)
-                if remaining <= 0:
-                    error = "No queda porcentaje disponible para repartir."
-                else:
-                    percentage_each_evaluation = round(remaining / amount_of_evaluations_being_created, 2)
-                    for index, data in enumerate(evaluations):
-                        if index < amount_of_evaluations_being_created - 1:
-                            data['ponderation'] = percentage_each_evaluation
-                        else:
-                            data['ponderation'] = round(remaining - percentage_each_evaluation * (amount_of_evaluations_being_created - 1), 2)
+        error = assign_default_ponderations(evaluation_type, evaluations)
 
         if not error:
             for data in evaluations:
