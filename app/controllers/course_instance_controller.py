@@ -1,11 +1,7 @@
-from datetime import datetime
-
 from sqlalchemy import func
 
 from app import db
 from app.models import CourseInstance
-
-MIN_YEAR = 1980
 
 def get_all_course_instances():
     course_instances = CourseInstance.query.all()
@@ -55,44 +51,6 @@ def delete_course_instance(course_instance):
     db.session.commit()
     return True
 
-def validate_course_instance(data, course_instance_id=None):
-    errors = {}
-
-    year = (data.get('year') or '').strip()
-    semester = (data.get('semester') or '').strip()
-    course_id = data.get('course_id')
-
-    if not course_id and course_instance_id:
-        course_instance = get_course_instance(course_instance_id)
-        if course_instance:
-            course_id = course_instance.course_id
-
-    if not year:
-        errors['year'] = "El año es obligatorio."
-    elif not is_valid_year(year):
-        errors['year'] = (f"El año debe estar entre {MIN_YEAR} y "
-                          f"{datetime.now().year}")
-
-    if not semester:
-        errors['semester'] = "El semestre es obligatorio."
-
-    if not errors.get('year') and not errors.get('semester') and course_id:
-        existing_instance = CourseInstance.query.filter_by(
-            course_id=course_id,
-            year=year,
-            semester=semester
-        ).filter(CourseInstance.id != course_instance_id).first()
-
-        if existing_instance:
-            errors['exists'] = (f"Ya existe una instancia de este curso para "
-                                f"{year}-{semester}.")
-
-    return errors
-
-def is_valid_year(year):
-    current_year = datetime.now().year
-    return MIN_YEAR <= int(year) <= int(current_year)
-
 def create_course_instances_from_json(data):
     year = data.get('año')
     semester = data.get('semestre')
@@ -100,15 +58,20 @@ def create_course_instances_from_json(data):
 
     for instance in instances:
         instance_id = instance.get('id')
-        instance_data = transform_json_entry_into_processable_course_instance_format(year, semester, instance)
+        instance_data = (
+            transform_json_entry_into_processable_course_instance_format(
+                year, semester, instance
+            )
+        )
         
         if check_if_course_instancewith_id_exists(instance_id):
             handle_course_instance_with_existing_id(instance_id)
         
         create_course_instance(instance_data)
         
-    
-def transform_json_entry_into_processable_course_instance_format(year, semester, instance):
+def transform_json_entry_into_processable_course_instance_format(
+    year, semester, instance
+):
     data = {
         'year' : year,
         'semester' : semester,

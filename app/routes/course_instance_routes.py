@@ -5,11 +5,11 @@ from flask import (
 from app.controllers.course_instance_controller import (
     get_course_instance, create_course_instance,
     update_course_instance, delete_course_instance,
-    get_all_course_instances, create_course_instances_from_json,
-    validate_course_instance
+    get_all_course_instances, create_course_instances_from_json
 )
 
 from app.controllers.course_controller import get_course
+from app.validators.course_instance_validator import validate_course_instance
 
 course_instance_bp = Blueprint(
     'course_instances', __name__, url_prefix='/course_instances'
@@ -20,7 +20,9 @@ def get_course_instances_view():
     course_instances = get_all_course_instances()
     for course_instance in course_instances:
         print(course_instance)
-    return render_template('course_instances/index.html', course_instances=course_instances)
+    return render_template(
+        'course_instances/index.html', course_instances=course_instances
+    )
 
 @course_instance_bp.route('/<int:course_instance_id>/show', methods=['GET'])
 def show_course_instance_view(course_instance_id):
