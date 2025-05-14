@@ -64,7 +64,7 @@ python run.py
 
 La carga de datos JSON debe seguir el siguiente órden dado:
 
- - Primeros cuatro, cualquiera de entre alumnos (botón de carga disponible en vista de alumnos), profesores (botón de carga disponible en vista de profesores), cursos (botón de carga disponible en vista de cursos) u horarios (botón de carga disponible en vista de horarios)
+ - Primeros tres, cualquiera de entre alumnos (botón de carga disponible en vista de alumnos), profesores (botón de carga disponible en vista de profesores), cursos (botón de carga disponible en vista de cursos)
 
  - Luego, el JSON de instancias de cursos (botón de carga disponible en vista de instancias de cursos).
 
@@ -72,7 +72,9 @@ La carga de datos JSON debe seguir el siguiente órden dado:
 
 - Luego, el JSON de alumnos por sección (botón de carga disponible en vista de secciones).
 
-- Finalmente, el JSON de evaluaciones y notas para alumnos (botón de carga disponible en vista de secciones)
+- El JSON de evaluaciones y notas para alumnos (botón de carga disponible en vista de secciones)
+
+- Finalmente las salas, el botón para agregar este JSON se encuentra en la vista de Salas.
 
 Todos los JSON, especialmente los de creaciones de evaluación, siguen la lógica de verificación de suma de porcentajes.
 Es necesario que estén en el formato correcto para cargar los datos. De otra forma, los datos simplemente no se guardan en la base de datos definida.
