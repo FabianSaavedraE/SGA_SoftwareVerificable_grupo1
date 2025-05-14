@@ -79,19 +79,20 @@ def get_conflicting_schedules(timeslots_id, students_id, current_section_id):
 def create_students_from_json(data):
     students = data.get('alumnos', [])
     for student in students:
-        name = student.get('nombre', '')
-        name_parts = name.strip().split()
-        first_name = name_parts[0]
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-        
-        entry_year = int(student.get('anio_ingreso'))
-
-        new_student = Student(
-            first_name=first_name,
-            last_name=last_name,
-            email=student.get('correo'),
-            entry_year=entry_year
+        student_data = transform_json_entry_into_processable_student_format(
+            student
         )
-        db.session.add(new_student)
+        create_student(student_data)
 
-    db.session.commit()
+def transform_json_entry_into_processable_student_format(student):
+    name = student.get('nombre', '')
+    name_parts = name.strip().split()
+    data = {
+            'first_name' : name_parts[0],
+            'last_name' : (
+                ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+            ),
+            'email' : student.get('correo'),
+            'entry_year' : int(student.get('anio_ingreso'))
+    }
+    return data

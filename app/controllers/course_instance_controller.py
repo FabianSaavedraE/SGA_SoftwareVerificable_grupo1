@@ -23,6 +23,7 @@ def get_course_instance_by_parameters(year, semester):
     return course_instances
 
 def create_course_instance(data):
+    instance_id = data.get('instance_id')
     new_course_instance = CourseInstance(
         year = data.get('year'),
         semester = data.get('semester'),
@@ -30,6 +31,9 @@ def create_course_instance(data):
     )
     db.session.add(new_course_instance)
     db.session.commit()
+
+    if instance_id is not None:
+        new_course_instance.id = instance_id
 
     return new_course_instance
 
@@ -96,20 +100,22 @@ def create_course_instances_from_json(data):
 
     for instance in instances:
         instance_id = instance.get('id')
-        course_id = instance.get('curso_id')
+        instance_data = transform_json_entry_into_processable_course_instance_format(year, semester, instance)
         
         if check_if_course_instancewith_id_exists(instance_id):
             handle_course_instance_with_existing_id(instance_id)
         
-        new_instance = CourseInstance(
-            id=instance_id,
-            year=year,
-            semester=semester,
-            course_id=course_id
-        )
-        db.session.add(new_instance)
-
-    db.session.commit()
+        create_course_instance(instance_data)
+        
+    
+def transform_json_entry_into_processable_course_instance_format(year, semester, instance):
+    data = {
+        'year' : year,
+        'semester' : semester,
+        'instance_id' : instance.get('id'),
+        'course_id' : instance.get('curso_id')
+    }
+    return(data)
 
 def check_if_course_instancewith_id_exists(id):
     course_instance = CourseInstance.query.filter_by(id=id).first()

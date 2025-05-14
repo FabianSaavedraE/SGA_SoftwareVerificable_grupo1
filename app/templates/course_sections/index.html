@@ -16,6 +16,16 @@
         <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
     </form>
 
+    <form action="{{ url_for('student_courses.upload_student_courses_json') }}" method="POST" enctype="multipart/form-data">
+        <label for="uploadStudentsFile" class="top-button">Cargar alumnos con JSON</label>
+        <input type="file" id="uploadStudentsFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+    </form>
+
+    <form action="{{ url_for('student_evaluations.upload_student_evaluation_json') }}" method="POST" enctype="multipart/form-data">
+        <label for="uploadEvaluationsFile" class="top-button">Cargar notas a alumnos con JSON</label>
+        <input type="file" id="uploadEvaluationsFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
+    </form>
+
     <h1>Secciones</h1>
 
     <table>
