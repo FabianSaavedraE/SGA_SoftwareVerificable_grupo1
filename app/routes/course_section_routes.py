@@ -3,10 +3,14 @@ from flask import Blueprint, request, render_template, redirect, url_for
 from app.controllers.course_section_controller import (
     get_all_sections, get_section, create_section,
     update_section, delete_section, 
-    data_validation, create_course_sections_from_json
+    create_course_sections_from_json
 )
 from app.controllers.course_instance_controller import get_course_instance
 from app.controllers.teacher_controller import get_all_teachers
+from app.validators.course_section_validator import (
+    validate_course_section, validate_evaluations_warning,
+    validate_evaluation_types_warning
+)
 
 course_section_bp = Blueprint(
     'course_sections', __name__, url_prefix='/course_sections'
@@ -23,32 +27,10 @@ def show_section_view(course_section_id):
     if not course_section:
         return redirect(url_for('courses.get_courses_view'))
     
-    warning_evaluation_types = None
-    if course_section.overall_ponderation_type == 'Porcentaje':
-        total_ponderation_of_evaluation_types = (round(
-            sum(evaluation_type.overall_ponderation 
-                for evaluation_type in course_section.evaluation_types
-            ), 2)
-        )
-        if total_ponderation_of_evaluation_types < 100:
-            warning_evaluation_types = (
-                f"Suma actual de ponderaciones de tipos: "
-                f"{total_ponderation_of_evaluation_types}%. "
-                "Falta completar hasta 100%."
-            )
-            
-    warning_evaluations = {}
-    for evaluation_type in course_section.evaluation_types:
-        if evaluation_type.ponderation_type == 'Porcentaje':
-            total_ponderation_of_evaluations = round(
-                sum((evaluation.ponderation or 0) 
-                for evaluation in evaluation_type.evaluations)
-            , 2)
-            if total_ponderation_of_evaluations < 100:
-                warning_evaluations[evaluation_type.id] = (
-                    f"Falta ponderar instancias de '{evaluation_type.topic}': "
-                    f"{total_ponderation_of_evaluations}% (meta 100%)."
-                )
+    warning_evaluation_types = validate_evaluation_types_warning(
+        course_section
+    )
+    warning_evaluations = validate_evaluations_warning(course_section)
 
     return render_template(
         'course_sections/show.html',
@@ -72,7 +54,7 @@ def create_section_view(course_instance_id):
 
     if request.method == 'POST':
         data = build_section_data(request.form, course_instance_id)
-        errors = data_validation(data)
+        errors = validate_course_section(data)
 
         if errors:
             return render_template(
@@ -106,7 +88,7 @@ def update_section_view(course_section_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = data_validation(data, course_section_id)
+        errors = validate_course_section(data, course_section_id)
 
         if errors:
             return render_template(

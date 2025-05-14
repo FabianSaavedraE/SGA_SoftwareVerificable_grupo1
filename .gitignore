@@ -9,6 +9,9 @@ __pycache__/
 # Archivos generados por Flask-Migrate
 migrations/
 
+# Horario generado
+app/static/horario.xlsx
+
 # Configuración local (por ejemplo, archivos .env)
 .env
 

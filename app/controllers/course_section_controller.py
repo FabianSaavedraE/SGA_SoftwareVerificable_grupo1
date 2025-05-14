@@ -84,28 +84,6 @@ def delete_section(course_section):
     db.session.commit()
     return True
 
-def data_validation(data, course_section_id=None):
-    errors = {}
-
-    nrc = (data.get('nrc') or '').strip()
-
-    if not nrc:
-        errors['nrc'] = 'El NRC es obligatorio.'
-    elif len(nrc) != NRC_LENGTH:
-        errors['nrc'] = (f'El NRC debe ser un número de {NRC_LENGTH} dígitos.')
-    else:
-        existing_section = CourseSection.query.filter_by(
-            nrc=f'NRC{nrc}'
-        ).first()
-
-        if existing_section and (
-            course_section_id is None or
-            existing_section.id != course_section_id
-        ):
-            errors['nrc'] = f'El NRC ({nrc}) ya está en uso por otra sección.'
-
-    return errors
-
 def create_course_sections_from_json(data): 
     course_sections = data.get('secciones', [])
     for course_section in course_sections:
