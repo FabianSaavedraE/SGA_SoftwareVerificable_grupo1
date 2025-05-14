@@ -13,11 +13,16 @@ def get_classroom(classroom_id):
     return classroom
 
 def create_classroom(data):
+    classroom_id = data.get('id')
     new_classroom = Classroom(
         name = data.get('name'),
         capacity = data.get('capacity')
 
     )
+
+    if classroom_id is not None:
+        new_classroom.id = classroom_id
+        
     db.session.add(new_classroom)
     db.session.commit()
 
@@ -44,18 +49,16 @@ def delete_classroom(classroom):
 def create_classroom_from_json(data):
     classrooms = data.get('salas', [])
     for classroom in classrooms:
-        id = classroom.get('id', '')
-        name = classroom.get('nombre')
-        capacity = classroom.get('capacidad')
+        classroom_data = transform_json_entry_into_classroom_format(classroom)
+        create_classroom(classroom_data)
 
-        new_classroom = Classroom(
-           id = id,
-           name = name,
-           capacity = capacity
-        )
-        db.session.add(new_classroom)
-
-    db.session.commit()
+def transform_json_entry_into_classroom_format(classroom):
+    data = {
+        'id' : classroom.get('id'),
+        'name' : classroom.get('nombre'),
+        'capacity' : classroom.get('capacidad')
+    }
+    return data
 
 def get_available_classrooms_for_block(block, num_students):
     timeslot_ids = [timeslot.id for timeslot in block]

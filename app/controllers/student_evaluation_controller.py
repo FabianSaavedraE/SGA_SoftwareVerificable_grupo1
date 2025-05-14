@@ -31,21 +31,24 @@ def update_student_evaluation(student_evaluation, data):
 def create_student_evaluation_json(data):
     student_evaluations = data.get('notas', [])
     for student_evaluation in student_evaluations:
-        student_id = student_evaluation.get('alumno_id')
-        evaluation_type_id = student_evaluation.get('topico_id')
-        instance = student_evaluation.get('instancia')
-        grade = student_evaluation.get('nota')
-        evaluation_id = get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance)
-        
-        new_student_evaluation = StudentEvaluations(
-          student_id = student_id,
-          evaluation_id = evaluation_id,
-          grade = grade
-        )
-        db.session.add(new_student_evaluation)
-    db.session.commit()
+        student_evaluation_data = transform_json_entry_into_processable_student_evaluation_format(student_evaluation)
+        create_student_evaluation(student_evaluation_data)
 
 def get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance):
     evaluations = Evaluation.query.filter_by(evaluation_type_id=evaluation_type_id).order_by(Evaluation.id).all()
+    print(f'all evaluations are!: {evaluations}')
     selected_evaluation_id = evaluations[instance - 1].id
     return selected_evaluation_id
+
+def transform_json_entry_into_processable_student_evaluation_format(student_evaluation):
+    evaluation_type_id = student_evaluation.get('topico_id')
+    instance = student_evaluation.get('instancia')
+    print(f'{evaluation_type_id} is the id for the evaluation, we are searching for instance {instance}')
+
+    data = {
+        'student_id' : student_evaluation.get('alumno_id'),
+        'grade' : student_evaluation.get('nota'),
+        'evaluation_id' : get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance)
+    }
+
+    return data

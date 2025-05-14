@@ -114,9 +114,11 @@ def data_validation(data, course_section_id=None):
 
     return errors
 
-def create_course_sections_from_json(data):   
+def create_course_sections_from_json(data): 
     course_sections = data.get('secciones', [])
     for course_section in course_sections:
+        print("Accessing for entry:")
+        print(course_section)
         section_id = course_section.get('id')
         evaluations = course_section.get('evaluacion')
         evaluation_instances = evaluations.get('combinacion_topicos')
@@ -131,7 +133,7 @@ def create_course_sections_from_json(data):
         create_section(course_section_data)
 
         add_evaluation_topics_and_evaluations_to_section(section_id, evaluation_instances, evaluation_instances_topics)
- 
+        print("All done, commiting to db")
     db.session.commit()
 
 def transform_json_entry_into_processable_course_sections_format(course_section, overall_ponderation_type, section_id):
@@ -195,7 +197,7 @@ def add_evaluation_topics_and_evaluations_to_section(id, evaluation_instances, e
                                                       'evaluation_type_id' : evaluation_instance_id,
                                                       'name' : 'placeholder',
                                                       'ponderation' : valor,
-                                                      'optional' : bool(is_evaluation_required)
+                                                      'optional' : str(is_evaluation_required).lower() == "false"
                                                       }
             
             #Creating the evaluation
