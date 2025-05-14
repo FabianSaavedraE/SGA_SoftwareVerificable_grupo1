@@ -17,8 +17,8 @@ def get_students_view():
 def create_student_view():
     if request.method == 'POST':
         data = request.form
-
         errors = validate_student_data(data)
+    
         if errors:
             return render_template('students/create.html', errors=errors)
 
@@ -39,15 +39,14 @@ def update_student_view(student_id):
 
     if request.method == 'POST':
         data = request.form
-
         errors = validate_student_data(data, student_id)
+
         if errors:
             return render_template(
                 'students/edit.html', student=student, errors=errors
             )
         
         update_student(student, data)
-
         return redirect(url_for('students.get_students_view'))
 
     return render_template('students/edit.html', student=student)
@@ -71,9 +70,7 @@ def upload_students_json():
     try:
         data = json.load(file)
     except Exception as e:
-        print("Error leyendo JSON:", e)
         return redirect(url_for('students.get_students_view'))
     
     create_students_from_json(data)
-
     return redirect(url_for('students.get_students_view'))

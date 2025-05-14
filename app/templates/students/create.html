@@ -126,7 +126,7 @@
                 <div>
                     <label for="entry_year">Año de Ingreso (opcional):</label>
                     <input type="number" id="entry_year" name="entry_year"
-                           min="1900" max="{{ current_year }}" value="{{ student.entry_year if student else '' }}">
+                           max="{{ current_year }}" value="{{ student.entry_year if student else '' }}">
                 </div>         
                 {% if errors and errors.entry_year %}
                     <p class="form-error">{{errors.entry_year}}</p>
