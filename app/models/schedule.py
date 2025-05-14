@@ -7,7 +7,9 @@ class Schedule(db.Model):
     
     section_id = db.Column(
         db.Integer,
-        db.ForeignKey('course_sections.id', ondelete='CASCADE', onupdate='CASCADE'),
+        db.ForeignKey(
+            'course_sections.id', ondelete='CASCADE', onupdate='CASCADE'
+        ),
         nullable=False
     )
     classroom_id = db.Column(
@@ -26,4 +28,4 @@ class Schedule(db.Model):
     time_slot = db.relationship('TimeSlot')
 
     def __repr__(self):
-        return f"{self.section_id} -> {self.classroom_id} @ {self.time_slot}"
+        return f'{self.section_id} -> {self.classroom_id} @ {self.time_slot}'

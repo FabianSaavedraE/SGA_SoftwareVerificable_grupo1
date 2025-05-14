@@ -22,7 +22,7 @@ def assign_default_ponderations(evaluation_type, evaluations):
     amount_of_evaluations_being_created = len(evaluations)
 
     if remaining_percentage <= 0:
-        return "No queda porcentaje disponible para repartir."
+        return 'No queda porcentaje disponible para repartir.'
 
     percentage_each_evaluation = round(
         remaining_percentage / amount_of_evaluations_being_created, 2

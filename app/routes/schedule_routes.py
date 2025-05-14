@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, url_for
 
 from app.controllers.schedule_controller import generate_schedule
 

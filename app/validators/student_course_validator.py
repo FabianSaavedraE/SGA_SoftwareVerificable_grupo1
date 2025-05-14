@@ -4,7 +4,7 @@ from app.models import StudentCourses, CourseSection
 def has_met_prerequisites(student_id, course_section):
     course = course_section.course_instance.course
     prerequisites = course.prerequisites
-    error_message = "El estudiante no ha aprobado todos los requisitos."
+    error_message = 'El estudiante no ha aprobado todos los requisitos.'
 
     for prereq in prerequisites:
         if not has_approved_course(student_id, prereq.prerequisite.id):

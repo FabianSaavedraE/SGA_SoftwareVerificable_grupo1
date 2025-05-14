@@ -115,7 +115,6 @@ def delete_course_prerequisite_view(course_id, prerequisite_id):
     delete_course_prerequisite(course_id, prerequisite_id)
     return redirect(url_for('course_prerequisites.get_course_prerequisites'))
 
-
 def group_course_prerequisites(prerequisites):
     grouped = {}
     for pair in prerequisites:

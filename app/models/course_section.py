@@ -57,4 +57,4 @@ class CourseSection(db.Model):
         ]
 
     def __repr__(self):
-        return f"<Course Section {self.nrc}>"
+        return f'<Course Section {self.nrc}>'

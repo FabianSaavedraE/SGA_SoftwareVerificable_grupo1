@@ -10,7 +10,7 @@ def get_sections_ranking(year, semester):
     course_sections = get_course_sections_by_parameters(year, semester)
 
     if not course_sections:
-        message = f"No hay secciones para el periodo {year}-{semester}"
+        message = f'No hay secciones para el periodo {year}-{semester}.'
         return None, message
 
     sections_with_metrics = get_all_sections_metrics(course_sections)

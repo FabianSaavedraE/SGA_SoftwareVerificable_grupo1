@@ -130,7 +130,6 @@ def upload_course_sections_json():
     try:
         data = json.load(file)
     except Exception as e:
-        print("Error leyendo JSON:", e)
         return redirect(url_for('course_sections.get_sections_view'))
     
     create_course_sections_from_json(data)
@@ -159,4 +158,3 @@ def build_section_data(form_data, course_instance_id):
     data = form_data.to_dict()
     data['course_instance_id'] = course_instance_id
     return data
-

@@ -29,10 +29,10 @@ def generate_schedule(year, semester, export_path=SCHEDULE_PATH):
     
     if assign_sections(ranked_sections, timeslots):
         export_schedule_to_excel(export_path)
-        message = "Horario generado exitosamente."
+        message = 'Horario generado exitosamente.'
         return True, message
     
-    return False, "No se pudo generar un horario."
+    return False, 'No se pudo generar un horario.'
 
 def clear_previous_schedule():
     Schedule.query.delete()

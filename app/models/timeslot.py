@@ -11,6 +11,6 @@ class TimeSlot(db.Model):
     semester = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return (f"{self.day} {self.start_time.strftime('%H:%M')}–"
-                f"{self.end_time.strftime('%H:%M')}")
+        return (f'{self.day} {self.start_time.strftime('%H:%M')}-'
+                f'{self.end_time.strftime('%H:%M')}')
     

@@ -13,7 +13,9 @@ class EvaluationType(db.Model):
 
     course_section_id = db.Column(
         db.Integer,
-        db.ForeignKey('course_sections.id', ondelete='CASCADE', onupdate='CASCADE'),
+        db.ForeignKey(
+            'course_sections.id', ondelete='CASCADE', onupdate='CASCADE'
+        ),
         nullable=False
     )
 
@@ -26,4 +28,4 @@ class EvaluationType(db.Model):
     )
 
     def __rpr__(self):
-        return f"{self.topic}"
+        return f'{self.topic}'

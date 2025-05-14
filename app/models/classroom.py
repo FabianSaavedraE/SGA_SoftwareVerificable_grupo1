@@ -15,4 +15,4 @@ class Classroom(db.Model):
     )
 
     def __repr__(self):
-        return f"{self.name}"
+        return f'{self.name}'

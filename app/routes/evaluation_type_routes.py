@@ -43,8 +43,8 @@ def create_evaluation_type_view(course_section_id):
         
         if new_evaluation_type is None:
             error = (
-                f"Suma actual de porcentajes: {current_sum}%. "
-                "No puede exceder 100% al agregar este tipo."
+                f'Suma actual de porcentajes: {current_sum}%. '
+                f'No puede exceder 100% al agregar este tipo.'
             )
         else:
             return redirect(url_for(
@@ -70,12 +70,14 @@ def update_evaluation_type_view(evaluation_type_id):
 
     if request.method == 'POST':
         data = request.form
-        updated_evaluation_type, current_sum = update_evaluation_type(evaluation_type, data)
+        updated_evaluation_type, current_sum = update_evaluation_type(
+            evaluation_type, data
+        )
         
         if updated_evaluation_type is None:
             error = (
-                f"Suma actual de porcentajes sin este tipo: {current_sum}%. "
-                "No puede exceder 100% al actualizar."
+                f'Suma actual de porcentajes sin este tipo: {current_sum}%. '
+                f'No puede exceder 100% al actualizar.'
             )
         else:
             return redirect(url_for(

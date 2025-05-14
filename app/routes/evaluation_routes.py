@@ -32,8 +32,8 @@ def create_evaluation_view(evaluation_type_id):
                 evaluation, current_sum = create_evaluation(data)
                 if evaluation is None:
                     error = (
-                        f"Suma actual de ponderaciones: {current_sum}%. "
-                        "No puede exceder 100% al agregar esta evaluación."
+                        f'Suma actual de ponderaciones: {current_sum}%. '
+                        f'No puede exceder 100% al agregar esta evaluación.'
                     )
                     break
             
@@ -73,8 +73,8 @@ def update_evaluation_view(evaluation_id):
         
         if updated_evaluation is None:
             error = (
-                f"Suma actual sin esta evaluación: {current_sum}%. "
-                "No puede exceder 100% al actualizar."
+                f'Suma actual sin esta evaluación: {current_sum}%. '
+                f'No puede exceder 100% al actualizar.'
             )
         else:
             return redirect(url_for(
@@ -82,7 +82,9 @@ def update_evaluation_view(evaluation_id):
                 course_section_id=evaluation.evaluation_type.course_section_id
             ))
 
-    return render_template('evaluations/edit.html', evaluation=evaluation, error=error)
+    return render_template(
+        'evaluations/edit.html', evaluation=evaluation, error=error
+    )
 
 @evaluation_bp.route('/<int:evaluation_id>/show', methods=['GET'])
 def show_evaluation_view(evaluation_id):

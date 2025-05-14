@@ -12,7 +12,7 @@ from app.controllers.classroom_controller import (
     get_available_classrooms_for_block
 )
 
-DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 VALID_TIME_BLOCKS = [
     (9, 10), (10, 11), (11, 12), (12, 13),
     (14, 15), (15, 16), (16, 17), (17, 18)

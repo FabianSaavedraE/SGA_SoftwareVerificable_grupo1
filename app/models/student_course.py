@@ -10,7 +10,9 @@ class StudentCourses(db.Model):
     )
     course_section_id = db.Column(
         db.Integer,
-        db.ForeignKey('course_sections.id', ondelete='CASCADE', onupdate = 'CASCADE'),
+        db.ForeignKey(
+            'course_sections.id', ondelete='CASCADE', onupdate = 'CASCADE'
+        ),
         primary_key=True
     )
     state = db.Column(

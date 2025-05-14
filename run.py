@@ -39,9 +39,5 @@ def landing_page():
         classrooms=classrooms
     ) 
 
-# This are the configurations for runing the page. I -Vicente Acevedo- stated 
-# host as 0.0.0.0 to use both local host and local ip adress as it was standard
-# in the documentation I studied for flask developement.
-
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', debug=True)

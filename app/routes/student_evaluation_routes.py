@@ -58,7 +58,10 @@ def upload_student_evaluation_json():
 
     return redirect(url_for('course_sections.get_sections_view'))
 
-@student_evaluation_bp.route('/<int:evaluation_id>/students/<int:student_id>/edit', methods=['GET', 'POST'])
+@student_evaluation_bp.route(
+    '/<int:evaluation_id>/students/<int:student_id>/edit',
+    methods=['GET', 'POST']
+)
 def update_student_evaluation_view(student_id, evaluation_id):
     student_evaluation = get_student_evaluation(student_id, evaluation_id)
     evaluation = get_evaluation(evaluation_id)

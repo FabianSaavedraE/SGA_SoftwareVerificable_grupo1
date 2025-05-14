@@ -49,7 +49,6 @@ def create_student_course_view(course_section_id):
 
         create_student_course(data)
 
-        # Preservamos el valor del query de búsqueda
         return redirect(url_for(
             'student_courses.create_student_course_view',
             course_section_id=course_section_id,
@@ -133,7 +132,7 @@ def build_student_course_data(form_data, course_section_id):
 def get_students_by_query(query):
     return Student.query.filter(
         or_(
-            Student.first_name.ilike(f"%{query}%"),
-            Student.last_name.ilike(f"%{query}%")
+            Student.first_name.ilike(f'%{query}%'),
+            Student.last_name.ilike(f'%{query}%')
         )
     ).all()

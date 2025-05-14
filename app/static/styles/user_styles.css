@@ -242,8 +242,8 @@ input, select {
 
 /* ===== ACTIONS CELL STYLES ===== */
 td.actions {
-    white-space: nowrap; /* Evita saltos de línea */
-    min-width: 150px; /* Asegura espacio mínimo */
+    white-space: nowrap; 
+    min-width: 150px; 
 }
 
 .action-form {
@@ -266,9 +266,9 @@ a.btn-action {
     margin: 0 4px;
     font-size: 14px;
     border-radius: 4px;
-    background-color: red; /* Color de botón normal */
-    color: white !important;   /* Fuerza texto blanco */
-    text-decoration: none !important; /* Elimina subrayado */
+    background-color: red; 
+    color: white !important;
+    text-decoration: none !important;
     border: none;
     cursor: pointer;
     text-align: center;
@@ -276,8 +276,8 @@ a.btn-action {
 }
 
 a.btn-action:hover {
-    background-color: darkred; /* Color hover */
-    text-decoration: none !important; /* Mantiene sin subrayado */
+    background-color: darkred;
+    text-decoration: none !important;
     opacity: 0.9;
 }
 

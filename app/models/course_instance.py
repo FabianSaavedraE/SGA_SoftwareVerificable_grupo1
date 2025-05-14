@@ -30,5 +30,5 @@ class CourseInstance(db.Model):
     )
 
     def __repr__(self):
-        return f"<Course Intance {self.id}>"
+        return f'<Course Intance {self.id}>'
     

@@ -1,8 +1,7 @@
 from sqlalchemy import func
 
 from app import db
-from app.models.evaluation_type import EvaluationType
-from app.models.course_section import CourseSection
+from app.models import EvaluationType, CourseSection
 
 def get_evaluation_types_by_course(course_id):
     evaluation_types = EvaluationType.query.filter_by(
@@ -21,10 +20,17 @@ def create_evaluation_type(data):
     section = CourseSection.query.get(section_id)
     
     if section.overall_ponderation_type == 'Porcentaje':
-        current_total_ponderation_value = db.session.query(
-            func.coalesce(func.sum(EvaluationType.overall_ponderation), 0)
-        ).filter_by(course_section_id=section_id).scalar()
-        current_total_ponderation_value = round(current_total_ponderation_value or 0, 2)
+        current_total_ponderation_value = (
+            db.session.query(
+                func.coalesce(
+                    func.sum(EvaluationType.overall_ponderation), 0))
+                    .filter_by(course_section_id=section_id).scalar()
+        )
+
+        current_total_ponderation_value = round(
+            current_total_ponderation_value or 0, 2
+        )
+
         if current_total_ponderation_value + evaluation_type_ponderation > 100:
             return None, round(current_total_ponderation_value, 2)
         

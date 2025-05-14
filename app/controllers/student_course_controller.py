@@ -1,5 +1,5 @@
 from app import db
-from app.models.student_course import StudentCourses
+from app.models import StudentCourses
 
 def get_student_course(student_id, course_section_id):
     student_course = StudentCourses.query.get((student_id, course_section_id))
@@ -45,7 +45,10 @@ def delete_student_course(student_id, course_section_id):
 def create_student_courses_from_json(data):
     student_courses = data.get('alumnos_seccion', [])
     for student_course in student_courses:
-        student_course_data = transform_json_entry_into_processable_student_course_format(student_course)
+        student_course_data = (
+            transform_json_entry_into_processable_student_course_format(
+                student_course
+        ))
         create_student_course(student_course_data)
     
 def transform_json_entry_into_processable_student_course_format(student_course):
