@@ -16,4 +16,4 @@ class Teacher(db.Model):
     )
 
     def __repr__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f'{self.first_name} {self.last_name}'

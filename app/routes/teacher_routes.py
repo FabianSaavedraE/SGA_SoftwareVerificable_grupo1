@@ -23,7 +23,6 @@ def create_teacher_view():
             return render_template('teachers/create.html', errors=errors)
         
         create_teacher(request.form)
-
         return redirect(url_for('teachers.get_teachers_view'))
 
     return render_template('teachers/create.html')
@@ -67,9 +66,7 @@ def upload_teachers_json():
     try:
         data = json.load(file)
     except Exception as e:
-        print("Error leyendo JSON:", e)
         return redirect(url_for('teachers.get_teachers_view'))
 
     create_teachers_from_json(data)
-
     return redirect(url_for('teachers.get_teachers_view'))

@@ -75,25 +75,24 @@ def is_teacher_available_for_timeslot(section, block):
     return has_conflict is None
 
 def validate_teacher_overload(ranked_sections, timeslots):
-    teacher_load = defaultdict(int)
+    credits_per_teacher = defaultdict(int)
 
-    for section_data in ranked_sections:
-        teacher_id = section_data['section'].teacher_id
-        credits = section_data['num_credits']
-        teacher_load[teacher_id] += credits
+    for section_info in ranked_sections:
+        section = section_info['section']
+        credits_per_teacher[section.teacher_id] += section_info['num_credits']
 
-    total_slots = len(set(
-        (slot.day, slot.start_time) for slot in timeslots
-    ))
+    unique_blocks = set((slot.day, slot.start_time) for slot in timeslots)
+    max_blocks_per_teacher = len(unique_blocks)
 
-    for teacher_id, total_credits in teacher_load.items():
-        if total_credits > total_slots:
+    for teacher_id, assigned_credits in credits_per_teacher.items():
+        if assigned_credits > max_blocks_per_teacher:
             message = (
-                f"El profesor con ID {teacher_id} tiene {total_credits} horas "
-                f"asignadas, pero solo hay {total_slots} bloques disponibles.")
+                f'El profesor con ID {teacher_id} tiene {assigned_credits} '
+                f'horas asignadas, pero solo hay {max_blocks_per_teacher} '
+                f'bloques disponibles.')
             return False, message
         
-    return True, ""
+    return True, ''
 
 def create_teachers_from_json(data):
     teachers = data.get('profesores', [])
