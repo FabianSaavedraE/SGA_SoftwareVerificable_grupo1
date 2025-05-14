@@ -39,9 +39,9 @@ def calculate_scores(sections):
 
     for index, section in enumerate(sections):
         section['score'] = (
-            normalized_students[index] * STUDENTS_WEIGHT +
-            normalized_credits[index] * CREDITS_WEIGHT +
-            normalized_shared_sections[index] * SHARED_SECTIONS_WEIGHT
+            normalized_students[index] * STUDENTS_WEIGHT
+            + normalized_credits[index] * CREDITS_WEIGHT
+            + normalized_shared_sections[index] * SHARED_SECTIONS_WEIGHT
         )
 
     return sections
