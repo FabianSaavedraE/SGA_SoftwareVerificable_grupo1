@@ -42,6 +42,7 @@ def get_section(course_section_id):
 def create_section(data):
     raw_nrc = data.get('nrc', '').zfill(NRC_LENGTH)
     nrc = f"NRC{raw_nrc}"
+    section_id = data.get('section_id')
 
     new_section = CourseSection(
         nrc = nrc,
@@ -50,6 +51,10 @@ def create_section(data):
         teacher_id = data.get('teacher_id') or None,
         state = data.get('state', 'Open')
     )
+
+    if section_id is not None:
+        new_section.id = section_id
+
     db.session.add(new_section)
     db.session.commit()
 
@@ -62,8 +67,6 @@ def update_section(course_section, data):
     
     raw_nrc = data.get('nrc', str(course_section.nrc)[NRC_LENGTH:])
     print("RAW NRC:", raw_nrc)
-
-
 
     full_nrc = f"NRC{raw_nrc.zfill(NRC_LENGTH)}"
 
@@ -114,34 +117,35 @@ def data_validation(data, course_section_id=None):
 def create_course_sections_from_json(data):   
     course_sections = data.get('secciones', [])
     for course_section in course_sections:
-        id = course_section.get('id')
-        course_instance_id = course_section.get('instancia_curso')
-        nrc = f"NRC{str(id).zfill(NRC_LENGTH)}"
+        section_id = course_section.get('id')
         evaluations = course_section.get('evaluacion')
         evaluation_instances = evaluations.get('combinacion_topicos')
         evaluation_instances_topics = evaluations.get('topicos')
         overall_ponderation_type = capitalize_first_character(evaluations.get('tipo')) #It's required to have the name of the
-        #ponderation type capitalized as part of the format implemented by ourselves.
-        state = "Open" #As default, since isn't given in JSON files and assumed to be Open.
-        teacher_id = course_section.get('profesor_id')
-    
-        if check_if_course_section_with_id_exists(id): 
-            handle_course_section_with_existing_id(id)
-        
-        new_section = CourseSection(
-            id=id,
-            nrc=nrc,
-            overall_ponderation_type=overall_ponderation_type,
-            state=state,
-            course_instance_id=course_instance_id,
-            teacher_id=teacher_id
-        )
 
-        db.session.add(new_section)
+        course_section_data = transform_json_entry_into_processable_course_sections_format(course_section, overall_ponderation_type, section_id)
+        print(course_section_data)
+        if check_if_course_section_with_id_exists(section_id): 
+            handle_course_section_with_existing_id(section_id)
 
-        add_evaluation_topics_and_evaluations_to_section(id, evaluation_instances, evaluation_instances_topics)
+        create_section(course_section_data)
+
+        print("CREATED SECTION?")
+
+        add_evaluation_topics_and_evaluations_to_section(section_id, evaluation_instances, evaluation_instances_topics)
  
     db.session.commit()
+
+def transform_json_entry_into_processable_course_sections_format(course_section, overall_ponderation_type, section_id):
+    data = {
+        'section_id' : section_id,
+        'nrc' : str(section_id),  
+        'overall_ponderation_type': overall_ponderation_type,
+        'course_instance_id' : course_section.get('instancia_curso'),
+        'teacher_id' : course_section.get('profesor_id'),
+        'state' : 'Open' #As default, since isn't given in JSON files and assumed to be Open.
+    }
+    return(data)
 
 def check_if_course_section_with_id_exists(id):
     course_section = CourseSection.query.filter_by(id=id).first()
@@ -166,25 +170,46 @@ def capitalize_first_character(text):
 def add_evaluation_topics_and_evaluations_to_section(id, evaluation_instances, evaluation_instances_topics):
     for evaluation_instance in evaluation_instances:
         evaluation_instance_id = evaluation_instance.get('id')
-        evaluation_instance_name = evaluation_instance.get('nombre')
-        evaluation_ponderation = evaluation_instance.get('valor')
         topic = evaluation_instances_topics.get(str(evaluation_instance_id))
-        processable_data_format_for_evaluation_type = {'ponderation_type' : capitalize_first_character(topic.get('tipo')),
-                                   'topic' : evaluation_instance_name,
-                                   'overall_ponderation' : evaluation_ponderation,
-                                   'course_section_id' : id,
-                                   'evaluation_instance_id' : evaluation_instance_id}
-        
-        create_evaluation_type(processable_data_format_for_evaluation_type)
+        evaluation_instance_data = transform_json_entry_into_processable_evaluation_type_format(id, evaluation_instance, evaluation_instance_id,topic)
+
+        create_evaluation_type(evaluation_instance_data)
+
+        #Due to the nature of multiple values in a topic, it's not possible to refactor this function further
+        #to make it more readable / simple. So, the following comments are to separate into chunks to make it
+        #more readable.
+
+
+        #Prepare the data for instanciating an evaluation on a topic.
+
+        topic = evaluation_instances_topics.get(str(evaluation_instance_id))
         evaluation_values = topic.get('valores')
         evaluation_id = topic.get('id')
         is_evaluation_required_list = topic.get('obligatorias')
+
+        #Cycling through values / ponderations on each instance of a topic to create each one specifically
+
         for valor, is_evaluation_required in zip(evaluation_values, is_evaluation_required_list):
+
+            #Formating the data
+
             processable_data_format_for_evaluation = {'evaluation_id' : evaluation_id,
                                                       'evaluation_type_id' : evaluation_instance_id,
                                                       'name' : 'placeholder',
                                                       'ponderation' : valor,
                                                       'optional' : bool(is_evaluation_required)
                                                       }
+            
+            #Creating the evaluation
             create_evaluation(processable_data_format_for_evaluation)
         pass
+
+def transform_json_entry_into_processable_evaluation_type_format(id, evaluation_instance, evaluation_instance_id,topic):
+    evaluation_instance_name = evaluation_instance.get('nombre')
+    evaluation_ponderation = evaluation_instance.get('valor')
+    data = {'ponderation_type' : capitalize_first_character(topic.get('tipo')),
+            'topic' : evaluation_instance_name,
+            'overall_ponderation' : evaluation_ponderation,
+            'course_section_id' : id,
+            'evaluation_instance_id' : evaluation_instance_id}
+    return data
