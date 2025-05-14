@@ -45,15 +45,13 @@ def delete_student_course(student_id, course_section_id):
 def create_student_courses_from_json(data):
     student_courses = data.get('alumnos_seccion', [])
     for student_course in student_courses:
-        course_section_id = student_course.get('seccion_id')
-        student_id = student_course.get('alumno_id')
-
-        new_student = StudentCourses(
-          student_id = student_id,
-          course_section_id = course_section_id,
-          state = "Inscrito"
-        )
-        db.session.add(new_student)
-
-    db.session.commit()
+        student_course_data = transform_json_entry_into_processable_student_course_format(student_course)
+        create_student_course(student_course_data)
     
+def transform_json_entry_into_processable_student_course_format(student_course):
+    data = {
+        'student_id' : student_course.get('alumno_id'),
+        'course_section_id' : student_course.get('seccion_id'),
+        'state' : 'Inscrito'
+    }
+    return(data)

@@ -124,13 +124,11 @@ def create_course_sections_from_json(data):
         overall_ponderation_type = capitalize_first_character(evaluations.get('tipo')) #It's required to have the name of the
 
         course_section_data = transform_json_entry_into_processable_course_sections_format(course_section, overall_ponderation_type, section_id)
-        print(course_section_data)
+
         if check_if_course_section_with_id_exists(section_id): 
             handle_course_section_with_existing_id(section_id)
 
         create_section(course_section_data)
-
-        print("CREATED SECTION?")
 
         add_evaluation_topics_and_evaluations_to_section(section_id, evaluation_instances, evaluation_instances_topics)
  
