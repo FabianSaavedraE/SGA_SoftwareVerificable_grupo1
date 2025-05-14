@@ -1,50 +1,65 @@
 from app.models import Course
 
+COURSE_CODE_PREFIX = 'ICC'
+CODE_LENGTH = 4
 MAX_NAME_LENGTH = 50
 MAX_DESCRIPTION_LENGTH = 100
-CODE_LENGTH = 4
-MAX_CREDITS_VALUE = 30
+MIN_CREDITS_VALUE = 1
+MAX_CREDITS_VALUE = 4
 
 def validate_course_data(data, course_id=None):
     errors = {}
 
-    name = (data.get('name') or '').strip()
-    description = (data.get('description') or '').strip()
-    code = (data.get('code') or '').strip()
-    credits = (data.get('credits') or '').strip()
+    name = get_stripped_field(data, 'name')
+    description = get_stripped_field(data, 'description')
+    code = get_stripped_field(data, 'code')
+    raw_credits = get_stripped_field(data, 'credits')
 
-    if not name:
-        errors['name'] = "El nombre es obligatorio."
-    elif len(name) > MAX_NAME_LENGTH:
-        errors['name'] = (f"El nombre no puede superar los {MAX_NAME_LENGTH} "
-                          f"caracteres")
-
-    if not description:
-        errors['description'] = "La descripción es obligatoria."
-    elif len(description) > MAX_DESCRIPTION_LENGTH:
-        errors['description'] = (f"La descripción no puede superar los "
-                                 f"{MAX_DESCRIPTION_LENGTH} caracteres")
-
-    if not code:
-        errors['code'] = "El código es obligatorio."
-    elif len(code) != CODE_LENGTH:
-        errors['code'] = (f"El código debe ser un número de {CODE_LENGTH} "
-                          f"dígitos")
-    else:
-        existing_course = Course.query.filter_by(
-            code=f"ICC{code}"
-        ).first()
-        if existing_course and (
-            course_id is None or existing_course.id != course_id
-        ):
-            errors['code'] = "El código ya está en uso por otro curso."
-
-    try:
-        credits = int(credits)
-        if credits < 0 or credits > MAX_CREDITS_VALUE:
-            errors['credits'] = (f"El valor de los créditos debe ser entre "
-                                 f"0-{MAX_CREDITS_VALUE}")
-    except ValueError:
-        errors['credits'] = "Los créditos deber ser un número entero."
+    validate_text_field('name', name, MAX_NAME_LENGTH, errors)
+    validate_text_field(
+        'description', description, MAX_DESCRIPTION_LENGTH, errors
+    )
+    validate_course_code(code, course_id, errors)
+    validate_credits(raw_credits, errors)
 
     return errors
+
+def get_stripped_field(data, field):
+    return (str(data.get(field) or '')).strip()
+
+def validate_text_field(field_name, value, max_length, errors):
+    if not value:
+        field_display = 'nombre' if field_name == 'name' else 'descripción'
+        errors[field_name] = f'El atributo {field_display} es obligatorio.'
+
+    elif len(value) > max_length:
+        field_display = 'nombre' if field_name == 'name' else 'descripción'
+        errors[field_name] = (
+            f'El atributo {field_display} no puede superar los {max_length} '
+            f'caracteres.'
+        )
+
+def validate_course_code(code, course_id, errors):
+    if not code:
+        errors['code'] = 'El código es obligatorio.'
+
+    elif len(code) != CODE_LENGTH or not code.isdigit():
+        errors['code'] = (
+            f'El código debe ser un número de {CODE_LENGTH} dígitos.'
+        )
+    else:
+        full_code = f'{COURSE_CODE_PREFIX}{code}'
+        existing = Course.query.filter_by(code=full_code).first()
+        if existing and (course_id is None or existing.id != course_id):
+            errors['code'] = 'El código ya está en uso por otro curso.'
+
+def validate_credits(credits, errors):
+    try:
+        value = int(credits)
+        if not MIN_CREDITS_VALUE <= value <= MAX_CREDITS_VALUE:
+            errors['credits'] = (
+                f'El valor de los créditos debe ser entre '
+                f'{MIN_CREDITS_VALUE} y {MAX_CREDITS_VALUE}.'
+            )
+    except ValueError:
+        errors['credits'] = 'Los créditos deben ser un número entero.'

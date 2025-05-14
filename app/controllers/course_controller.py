@@ -6,6 +6,7 @@ from app.controllers.course_prerequisites_controllers import (
     create_course_prerequisite
 )
 
+COURSE_CODE_PREFIX = 'ICC'
 CODE_LENGTH = 4
 
 def get_all_courses():
@@ -17,14 +18,11 @@ def get_course(course_id):
     return course
 
 def create_course(data):
-    credits = int(data.get('credits', 0))
-    code = transform_code_to_valid_format(data)
-
     new_course = Course(
         name = data.get('name'),
         description = data.get('description'),
-        code = code,
-        credits=credits
+        credits=int(data.get('credits', 0)),
+        code=format_course_code(data.get('code'))
     )
     db.session.add(new_course)
     db.session.commit()
@@ -35,16 +33,22 @@ def update_course(course, data):
     if not course:
         return None
 
-    raw_code = data.get('code', str(course.code)[CODE_LENGTH:])
-    full_code = f"ICC{raw_code.zfill(CODE_LENGTH)}"
-
     course.name = data.get('name', course.name)
     course.description = data.get('description', course.description)
-    course.code = full_code
     course.credits = data.get('credits', course.credits)
+    course.code = format_course_code(
+        data.get('code', get_raw_code_from_course(course))
+    )
 
     db.session.commit()
     return course
+
+def format_course_code(raw_code):
+    code_str = str(raw_code or '').zfill(CODE_LENGTH)
+    return f'{COURSE_CODE_PREFIX}{code_str}'
+
+def get_raw_code_from_course(course):
+    return str(course.code)[len(COURSE_CODE_PREFIX):]
 
 def delete_course(course):
     if not course:
@@ -53,10 +57,6 @@ def delete_course(course):
     db.session.delete(course)
     db.session.commit()
     return True
-
-def transform_code_to_valid_format(data):
-    raw_code = data.get('code', '').zfill(CODE_LENGTH)
-    return f"ICC{raw_code}"
 
 def create_courses_from_json(data):   
     courses = data.get('cursos', [])
@@ -88,7 +88,6 @@ def create_courses_from_json(data):
         generate_prerequisites(id, prerequisites)
 
     db.session.commit()
-
 
 def check_if_course_with_id_exists(id):
     course = Course.query.filter_by(id=id).first()
