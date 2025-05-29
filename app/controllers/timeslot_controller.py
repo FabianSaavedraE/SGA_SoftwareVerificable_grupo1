@@ -76,21 +76,32 @@ def generate_valid_block(section_data, timeslots):
     return valid_options
 
 def find_consecutive_timeslot_blocks(section, timeslots):
-    required_block_size = section['num_credits']
+    required_blocks_size = section['num_credits']
+    timeslots_by_day = group_timeslots_by_day(timeslots)
+    return get_consecutive_blocks(timeslots_by_day, required_blocks_size)
+
+def get_consecutive_blocks(timeslots_by_day, block_size):
     consecutive_blocks = []
 
-    timeslots_by_day = group_timeslots_by_day(timeslots)
-
-    for _, day_slots in timeslots_by_day.items():
-        sorted_slots = sorted(day_slots, key=lambda slot: slot.start_time)
-
-        for start_index in range(len(sorted_slots) - required_block_size + 1):
-            block = sorted_slots[start_index:start_index + required_block_size]
-
-            if are_consecutive_blocks(block):
-                consecutive_blocks.append(block)
+    for day_slots in timeslots_by_day.values():
+        sorted_slots = sort_timeslots_by_start_time(day_slots)
+        day_blocks = extract_valid_blocks(sorted_slots, block_size)
+        consecutive_blocks.extend(day_blocks)
 
     return consecutive_blocks
+
+def sort_timeslots_by_start_time(timeslots):
+    return sorted(timeslots, key=lambda slot: slot.start_time)
+
+def extract_valid_blocks(sorted_slots, block_size):
+    valid_blocks = []
+
+    for start_index in range(len(sorted_slots) - block_size + 1):
+        block = sorted_slots[start_index:start_index + block_size]
+        if are_consecutive_blocks(block):
+            valid_blocks.append(block)
+
+    return valid_blocks
 
 def group_timeslots_by_day(timeslots):
     timeslots_by_day = {}

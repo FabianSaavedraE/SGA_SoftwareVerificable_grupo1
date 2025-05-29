@@ -33,7 +33,6 @@ with app.app_context():
         print(est) 
 
 
-    #Query for all prerequisite pairings: (Im debugging this rn, love, vicente acevedo.)
         
     print("\nPares de prerequisitos:")
     prerequisites = CoursePrerequisite.query.all()

@@ -1,15 +1,9 @@
-from app import create_app
 from flask import render_template
-from app.models.course import Course
-from app.models.student import Student
-from app.models.course_section import CourseSection
-from app.models.teacher import Teacher
-from app.models.course_prerequisite import CoursePrerequisite
-from app.models.course_instance import CourseInstance
 
 from app import create_app
 from app.models import (
-    Course, Student, CourseSection, Teacher, CoursePrerequisite, Classroom
+    Course, Student, CourseSection, Teacher,
+    CoursePrerequisite, Classroom, CourseInstance
 )
 
 app = create_app()
