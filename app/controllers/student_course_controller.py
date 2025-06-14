@@ -1,6 +1,10 @@
 from app import db
 from app.models import StudentCourses
 
+APPROVED = "Aprobado"
+FAILED = "Reprobado"
+APPROVED_GRADE = 4
+
 def get_student_course(student_id, course_section_id):
     student_course = StudentCourses.query.get((student_id, course_section_id))
     return student_course
@@ -15,6 +19,25 @@ def create_student_course(data):
     db.session.commit()
 
     return new_student_course
+
+def apply_final_grade(student_course, final_grade):
+    if not student_course:
+        return None
+    
+    student_course.final_grade = final_grade
+    update_state(student_course, final_grade)
+
+    db.session.commit()
+    return student_course
+
+def update_state(student_course, final_grade):
+    if not student_course:
+        return None
+
+    student_course.state = (
+        APPROVED if final_grade >= APPROVED_GRADE else FAILED
+    )
+    return student_course
 
 def update_student_course(student_course, data):
     if not student_course:

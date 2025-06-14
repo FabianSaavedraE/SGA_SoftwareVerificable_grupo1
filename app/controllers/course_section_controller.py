@@ -4,6 +4,7 @@ from app import db
 from app.models import CourseSection
 from app.controllers.evaluation_type_controller import create_evaluation_type
 from app.controllers.evaluation_controller import create_evaluation
+from app.controllers.final_grades_controller import calculate_final_grades
 from app.controllers.course_instance_controller import (
     get_course_instance_by_parameters
 )
@@ -59,6 +60,7 @@ def update_section(course_section, data):
     if not course_section:
         return None
     
+    previous_state = course_section.state
     raw_nrc = data.get('nrc', str(course_section.nrc)[NRC_LENGTH:])
     full_nrc = f"NRC{raw_nrc.zfill(NRC_LENGTH)}"
 
@@ -74,6 +76,10 @@ def update_section(course_section, data):
     course_section.state = data.get('state', course_section.state)
 
     db.session.commit()
+
+    if has_section_been_closed(previous_state, course_section.state):
+        calculate_final_grades(course_section)
+
     return course_section
 
 def delete_section(course_section):
@@ -205,3 +211,7 @@ def transform_json_entry_into_processable_evaluation_type_format(
     }
 
     return data
+
+def has_section_been_closed(old_state, new_state):
+    """Returns True if state went from 'Open' to 'Closed'"""
+    return old_state == 'Open' and new_state == 'Closed'
