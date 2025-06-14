@@ -59,10 +59,19 @@ def create_teachers_from_json(data):
     db.session.commit()
 
 def is_teacher_available_for_timeslot(section, block):
-    teacher_id = section['section'].teacher_id
-    timeslot_ids = [slot.id for slot in block]
+    teacher_id = get_teacher_id_from_section(section)
+    timeslot_ids = extract_timeslot_ids(block)
 
-    has_conflict = (
+    return not has_schedule_conflict(teacher_id, timeslot_ids)
+
+def get_teacher_id_from_section(section):
+    return section['section'].teacher_id
+
+def extract_timeslot_ids(block):
+    return [slot.id for slot in block]
+
+def has_schedule_conflict(teacher_id, timeslot_ids):
+    conflict = (
         Schedule.query
         .join(CourseSection)
         .filter(
@@ -72,7 +81,7 @@ def is_teacher_available_for_timeslot(section, block):
         .first()
     )
 
-    return has_conflict is None
+    return conflict is not None
 
 def validate_teacher_overload(ranked_sections, timeslots):
     credits_per_teacher = defaultdict(int)
