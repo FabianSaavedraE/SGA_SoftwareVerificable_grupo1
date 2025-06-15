@@ -37,6 +37,13 @@
                 <p class="form-error">{{errors.credits}}</p>
             {% endif %}
 
+            <label for="state">Estado:</label>
+            <select id="state" name="state" required>
+                <option value="Open"  {% if course.state == 'Open'  %}selected{% endif %}>Abierto</option>
+                <option value="Closed" {% if course.state == 'Closed' %}selected{% endif %}>Cerrado</option>
+            </select>
+            <br>
+
             <button type="submit">Actualizar Curso</button>
         </form>
         <a href="{{ url_for('courses.get_courses_view') }}" class="btn-back">Volver</a>

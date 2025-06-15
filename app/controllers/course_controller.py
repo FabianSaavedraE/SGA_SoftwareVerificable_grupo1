@@ -2,6 +2,9 @@ from sqlalchemy import func
 
 from app import db
 from app.models import Course
+from app.controllers.course_section_controller import (
+    close_all_sections_for_course
+)
 from app.controllers.course_prerequisites_controllers import (
     create_course_prerequisite
 )
@@ -26,7 +29,8 @@ def create_course(data):
         name = data.get('name'),
         description = data.get('description'),
         credits=credits,
-        code=code
+        code=code,
+        state = data.get('state', 'Open')
     )
 
     if course_id is not None:
@@ -41,14 +45,19 @@ def update_course(course, data):
     if not course:
         return None
 
+    previous_state = course.state
     course.name = data.get('name', course.name)
     course.description = data.get('description', course.description)
     course.credits = data.get('credits', course.credits)
     course.code = format_course_code(
         data.get('code', get_raw_code_from_course(course))
     )
-
+    course.state = data.get('state', course.state)
     db.session.commit()
+
+    if has_course_been_closed(previous_state, course.state):
+        close_all_sections_for_course(course.id)
+
     return course
 
 def format_course_code(raw_code):
@@ -57,6 +66,10 @@ def format_course_code(raw_code):
 
 def get_raw_code_from_course(course):
     return str(course.code)[len(COURSE_CODE_PREFIX):]
+
+def has_course_been_closed(old_state, new_state):
+    """Returns True if state went from 'Open' to 'Closed'"""
+    return old_state == 'Open' and new_state == 'Closed'
 
 def delete_course(course):
     if not course:

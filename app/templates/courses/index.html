@@ -29,6 +29,7 @@
             <thead>
                 <tr>
                     <th>Nombre</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -37,6 +38,15 @@
                 {% for course in courses %}
                     <tr>
                         <td>{{ course.name }}</td>
+                        <td>
+                            {% if course.state == 'Open' %}
+                                Abierto
+                            {% elif course.state == 'Closed' %}
+                                Cerrado
+                            {% else %}
+                                {{course.state}}
+                            {% endif %}
+                        </td>
                         <td class="actions">
                             <a href="{{ url_for('courses.show_course_view', course_id=course.id) }}" class="btn-action">Ver</a>
                             <a href="{{ url_for('courses.update_course_view', course_id=course.id) }}" class="btn-action">Editar</a>

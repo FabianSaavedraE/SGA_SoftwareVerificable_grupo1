@@ -8,6 +8,11 @@ class Course(db.Model):
     description = db.Column(db.String(100), nullable=False)
     code = db.Column(db.String(10), nullable=False, unique=True)
     credits = db.Column(db.Integer, nullable=False, default=0)
+    state = db.Column(
+        db.Enum('Open', 'Closed', name='section_state_enum'),
+        nullable=False,
+        default='Open'
+    )
 
     instances = db.relationship(
         'CourseInstance',

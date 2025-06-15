@@ -1,7 +1,7 @@
 from sqlalchemy import func
 
 from app import db
-from app.models import CourseSection
+from app.models import CourseSection, CourseInstance
 from app.controllers.evaluation_type_controller import create_evaluation_type
 from app.controllers.evaluation_controller import create_evaluation
 from app.controllers.final_grades_controller import calculate_final_grades
@@ -215,3 +215,15 @@ def transform_json_entry_into_processable_evaluation_type_format(
 def has_section_been_closed(old_state, new_state):
     """Returns True if state went from 'Open' to 'Closed'"""
     return old_state == 'Open' and new_state == 'Closed'
+
+def close_all_sections_for_course(course_id):
+    course_instances = CourseInstance.query.filter_by(course_id=course_id).all()
+
+    for course_instance in course_instances:
+        course_sections = get_all_course_sections(course_instance.id)
+
+        for section in course_sections:
+            if section.state == 'Open':
+                section.state = 'Closed'
+                db.session.commit()
+                calculate_final_grades(section)

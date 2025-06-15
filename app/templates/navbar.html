@@ -12,6 +12,11 @@
             <img src="{{ url_for('static', filename='calendar.png') }}" alt="Logo" class="calendar-icon">
         </a>
     </div>
+    <div class="user-section">
+        <a href="/schedules">
+            <img src="{{ url_for('static', filename='reportes.png') }}" alt="Logo" class="report-icon">
+        </a>
+    </div>
 </div>
 
 <style>
@@ -59,6 +64,12 @@
     margin-bottom: 10px;
 }
 .calendar-icon {
+    width: 95%;
+    height: 80%;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+.report-icon {
     width: 95%;
     height: 80%;
     border-radius: 50%;
