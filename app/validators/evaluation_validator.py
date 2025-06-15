@@ -1,7 +1,3 @@
-# app/validators/evaluation_validator.py
-
-from app.models.evaluation_type import EvaluationType
-
 def assign_default_ponderations(evaluation_type, evaluations):
     if not all(data['ponderation'] is None for data in evaluations):
         return None

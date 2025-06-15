@@ -41,6 +41,9 @@
                                 required
                             >
                         </td>
+                        {% if errors and errors.grade %}
+                            <p class="form-error">{{errors.grade}}</p>
+                        {% endif %}
                         <td class = "actions">
                             <button type="submit">Guardar nota</button>
                         </td>
