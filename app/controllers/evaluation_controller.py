@@ -1,8 +1,16 @@
+import pandas as pd
+from io import BytesIO
+
 from sqlalchemy import func
 
 from app import db
 from app.models.evaluation import Evaluation
 from app.models.evaluation_type import EvaluationType
+
+REPORT_COLUMNS = [
+    'Curso', 'Sección', 'Tipo de Evaluación',
+    'Evaluación', 'Estudiante', 'Nota'
+]
 
 def get_all_evaluations():
     evaluations = Evaluation.query.all()
@@ -81,3 +89,50 @@ def delete_evaluation(evaluation):
     db.session.delete(evaluation)
     db.session.commit()
     return True
+
+def export_evaluation_report_to_excel(evaluation):
+    records = generate_records(evaluation)
+    excel_buffer = convert_records_to_excel(records)
+
+    if excel_buffer is None:
+        return None
+
+    filename = f'{evaluation.name}_reporte_notas.xlsx'
+    return excel_buffer, filename
+
+def generate_records(evaluation):
+    data = []
+
+    evaluation_name = evaluation.name
+    evaluation_type = evaluation.evaluation_type
+    course_section = evaluation_type.course_section
+    course_instance = course_section.course_instance
+    course = course_instance.course
+
+    for evaluation in evaluation.student_evaluations:
+        student = evaluation.student
+        student_name = f'{student.first_name} {student.last_name}'
+        grade = evaluation.grade
+
+        data.append({
+            'Curso': course.name,
+            'Sección': course_section.nrc,
+            'Tipo de Evaluación': evaluation_type.topic,
+            'Evaluación': evaluation_name,
+            'Estudiante': student_name,
+            'Nota': grade
+        })
+
+    return sorted(data, key=lambda r: (r['Estudiante']))
+
+def convert_records_to_excel(records):
+    if not records:
+        return None
+
+    dataframe = pd.DataFrame(records, columns=REPORT_COLUMNS)
+    excel_buffer = BytesIO()
+    dataframe.to_excel(excel_buffer, index=False)
+    excel_buffer.seek(0)
+
+    return excel_buffer
+    

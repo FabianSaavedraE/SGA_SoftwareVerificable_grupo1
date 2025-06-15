@@ -1,6 +1,5 @@
 from flask import (
-    Blueprint, request, render_template, redirect,
-    url_for, send_file, flash
+    Blueprint, request, render_template, redirect, url_for, send_file, flash
 )
 
 from app.controllers.student_controller import (

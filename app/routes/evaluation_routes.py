@@ -1,7 +1,10 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import (
+    Blueprint, request, render_template, redirect, url_for, send_file, flash
+)
 
 from app.controllers.evaluation_controller import (
-    get_evaluation, create_evaluation, update_evaluation, delete_evaluation
+    get_evaluation, create_evaluation, update_evaluation,
+    delete_evaluation, export_evaluation_report_to_excel
 )
 from app.controllers.evaluation_type_controller import get_evaluation_type
 from app.controllers.course_section_controller import get_section
@@ -151,3 +154,23 @@ def build_evaluation_data(form_data, evaluation_type_id):
             evaluations.append(data)
 
     return evaluations
+
+@evaluation_bp.route('/<int:evaluation_id>/report', methods=['GET'])
+def download_evaluation_report(evaluation_id):
+    evaluation = get_evaluation(evaluation_id)
+    result = export_evaluation_report_to_excel(evaluation)
+
+    if result is None:
+        flash(
+            'No se puede generar reporte para esta evaluación',
+            'error'
+        )
+        print("SECTION ID:", evaluation.evaluation_type.course_section_id)
+        return redirect(
+            url_for(
+                'course_sections.show_section_view',
+                course_section_id=evaluation.evaluation_type.course_section_id
+        ))
+
+    file_buffer, filename = result
+    return send_file(file_buffer, as_attachment=True, download_name=filename)
