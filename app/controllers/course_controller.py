@@ -8,9 +8,11 @@ from app.controllers.course_section_controller import (
 from app.controllers.course_prerequisites_controllers import (
     create_course_prerequisite
 )
+from app.validators.data_load_validators import validate_json_has_required_key
 
 COURSE_CODE_PREFIX = 'ICC'
 CODE_LENGTH = 4
+KEY_COURSE_JSON = "cursos"
 
 def get_all_courses():
     courses = Course.query.all()
@@ -87,24 +89,25 @@ def transform_code_to_valid_format(data):
     return f"{COURSE_CODE_PREFIX}{raw_code}"
 
 def create_courses_from_json(data):   
-    courses = data.get('cursos', [])
-    for course in courses:
-        id = course.get('id')
-        prerequisites = course.get('requisitos')
+    if validate_json_has_required_key(data, KEY_COURSE_JSON):
+        courses = data.get('cursos', [])
+        for course in courses:
+            id = course.get('id')
+            prerequisites = course.get('requisitos')
+            
+            course_data = transform_json_entry_into_processable_course_format(
+                course
+            )
         
-        course_data = transform_json_entry_into_processable_course_format(
-            course
-        )
-       
-        if check_if_course_with_id_exists(id): 
-            handle_course_with_existing_id(id)
-        
-        create_course(course_data)
+            if check_if_course_with_id_exists(id): 
+                handle_course_with_existing_id(id)
+            
+            create_course(course_data)
 
-        if prerequisites != []:
-            generate_prerequisites(id, prerequisites)
+            if prerequisites != []:
+                generate_prerequisites(id, prerequisites)
 
-    db.session.commit()
+        db.session.commit()
 
 def transform_json_entry_into_processable_course_format(course):
     data = {

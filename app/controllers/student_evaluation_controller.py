@@ -1,5 +1,8 @@
 from app import db
 from app.models import StudentEvaluations, Evaluation
+from app.validators.data_load_validators import validate_json_has_required_key
+
+STUDENT_EVALUATION_JSON_KEY = "notas"
 
 def get_student_evaluation(student_id, evaluation_id):
     student_evaluation = StudentEvaluations.query.get(
@@ -28,14 +31,15 @@ def update_student_evaluation(student_evaluation, data):
     return student_evaluation
 
 def create_student_evaluation_json(data):
-    student_evaluations = data.get('notas', [])
-    for student_evaluation in student_evaluations:
-        student_evaluation_data = (
-            transform_json_entry_into_processable_student_evaluation_format(
-                student_evaluation
+    if validate_json_has_required_key(data, STUDENT_EVALUATION_JSON_KEY):
+        student_evaluations = data.get('notas', [])
+        for student_evaluation in student_evaluations:
+            student_evaluation_data = (
+                transform_json_entry_into_processable_student_evaluation_format(
+                    student_evaluation
+                )
             )
-        )
-        create_student_evaluation(student_evaluation_data)
+            create_student_evaluation(student_evaluation_data)
 
 def get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance):
     evaluations = Evaluation.query.filter_by(

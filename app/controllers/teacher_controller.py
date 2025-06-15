@@ -3,6 +3,10 @@ from collections import defaultdict
 from app import db
 from app.models import Teacher, CourseSection, Schedule
 
+from app.validators.data_load_validators import validate_json_has_required_key
+
+TEACHERS_JSON_KEY = "profesores"
+
 def get_all_teachers():
     teachers = Teacher.query.all()
     return teachers
@@ -104,12 +108,13 @@ def validate_teacher_overload(ranked_sections, timeslots):
     return True, ''
 
 def create_teachers_from_json(data):
-    teachers = data.get('profesores', [])
-    for teacher in teachers:
-        teacher_data = transform_json_entry_into_processable_teacher_format(
-            teacher
-        )
-        create_teacher(teacher_data)
+    if validate_json_has_required_key(data, TEACHERS_JSON_KEY):
+        teachers = data.get('profesores', [])
+        for teacher in teachers:
+            teacher_data = transform_json_entry_into_processable_teacher_format(
+                teacher
+            )
+            create_teacher(teacher_data)
 
 def transform_json_entry_into_processable_teacher_format(teacher):
     name = teacher.get('nombre', '')

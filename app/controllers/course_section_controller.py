@@ -11,7 +11,9 @@ from app.controllers.final_grades_controller import calculate_final_grades
 from app.controllers.course_instance_controller import (
     get_course_instance_by_parameters
 )
+from app.validators.data_load_validators import validate_json_has_required_key
 
+KEY_COURSE_SECTIONS_JSON = "secciones"
 NRC_LENGTH = 4
 REPORT_COLUMNS = ['Estudiante', 'Email', 'Nota Final', 'Estado']
 
@@ -95,35 +97,36 @@ def delete_section(course_section):
     return True
 
 def create_course_sections_from_json(data): 
-    course_sections = data.get('secciones', [])
-    for course_section in course_sections:
-        section_id = course_section.get('id')
-        evaluations = course_section.get('evaluacion')
-        evaluation_instances = evaluations.get('combinacion_topicos')
-        evaluation_instances_topics = evaluations.get('topicos')
+    if validate_json_has_required_key(data, KEY_COURSE_SECTIONS_JSON):
+        course_sections = data.get('secciones', [])
+        for course_section in course_sections:
+            section_id = course_section.get('id')
+            evaluations = course_section.get('evaluacion')
+            evaluation_instances = evaluations.get('combinacion_topicos')
+            evaluation_instances_topics = evaluations.get('topicos')
 
-        # overall_ponderation_type is required to have the name of the type 
-        # with the first letter capitalized.
-        overall_ponderation_type = capitalize_first_character(
-            evaluations.get('tipo')
-        ) 
+            # overall_ponderation_type is required to have the name of the type 
+            # with the first letter capitalized.
+            overall_ponderation_type = capitalize_first_character(
+                evaluations.get('tipo')
+            ) 
 
-        course_section_data = (
-            transform_json_entry_into_processable_course_sections_format(
-                course_section, overall_ponderation_type, section_id
+            course_section_data = (
+                transform_json_entry_into_processable_course_sections_format(
+                    course_section, overall_ponderation_type, section_id
+                )
             )
-        )
 
-        if check_if_course_section_with_id_exists(section_id): 
-            handle_course_section_with_existing_id(section_id)
+            if check_if_course_section_with_id_exists(section_id): 
+                handle_course_section_with_existing_id(section_id)
 
-        create_section(course_section_data)
+            create_section(course_section_data)
 
-        add_evaluation_topics_and_evaluations_to_section(
-            section_id, evaluation_instances, evaluation_instances_topics
-        )
+            add_evaluation_topics_and_evaluations_to_section(
+                section_id, evaluation_instances, evaluation_instances_topics
+            )
 
-    db.session.commit()
+        db.session.commit()
 
 def transform_json_entry_into_processable_course_sections_format(
     course_section, overall_ponderation_type, section_id

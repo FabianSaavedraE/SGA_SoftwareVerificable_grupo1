@@ -1,5 +1,10 @@
 from app import db
 from app.models import Classroom, Schedule
+from app.validators.data_load_validators import(
+    validate_json_has_required_key
+)
+
+CLASSROOM_JSON_KEY = 'salas'
 
 def get_all_classrooms():
     return Classroom.query.all()
@@ -42,10 +47,11 @@ def delete_classroom(classroom):
     return True
 
 def create_classroom_from_json(data):
-    classrooms = data.get('salas', [])
-    for classroom in classrooms:
-        classroom_data = transform_json_entry_into_classroom_format(classroom)
-        create_classroom(classroom_data)
+    if validate_json_has_required_key(data, CLASSROOM_JSON_KEY):
+        classrooms = data.get('salas', [])
+        for classroom in classrooms:
+            classroom_data = transform_json_entry_into_classroom_format(classroom)
+            create_classroom(classroom_data)
 
 def transform_json_entry_into_classroom_format(classroom):
     data = {

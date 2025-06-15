@@ -4,7 +4,9 @@ from io import BytesIO
 from app import db
 from app.models import Student, Schedule, CourseSection, StudentCourses
 from app.validators.student_validator import normalize_entry_year
+from app.validators.data_load_validators import validate_json_has_required_key
 
+STUDENT_JSON_KEY = "alumnos"
 CLOSED_STATE = 'Closed'
 REPORT_COLUMNS = ['Curso', 'Año', 'Semestre', 'Sección', 'Nota Final', 'Estado']
 
@@ -83,11 +85,12 @@ def get_conflicting_schedules(timeslots_id, students_id, current_section_id):
     )
 
 def create_students_from_json(data):
-    students = data.get('alumnos', [])
-    for student in students:
-        student_data = transform_json_entry_into_processable_student_format(
-            student
-        )
+    if validate_json_has_required_key(data, STUDENT_JSON_KEY):
+        students = data.get('alumnos', [])
+        for student in students:
+            student_data = transform_json_entry_into_processable_student_format(
+                student
+            )
         create_student(student_data)
 
 def transform_json_entry_into_processable_student_format(student):
