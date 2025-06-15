@@ -9,6 +9,7 @@ def test_extract_timeslot_ids():
         def __init__(self, id):
             self.id = id
     block = [MockSlot(1), MockSlot(2), MockSlot(3)]
+
     assert controller.extract_timeslot_ids(block) == [1, 2, 3]
 
 def test_validate_teacher_overload_passes():
@@ -36,6 +37,7 @@ def test_validate_teacher_overload_passes():
     result, message = (
         controller.validate_teacher_overload(ranked_sections, timeslots)
     )
+
     assert result is True
     assert message == ''
 
@@ -62,5 +64,6 @@ def test_validate_teacher_overload_fails():
     result, message = (
         controller.validate_teacher_overload(ranked_sections, timeslots)
     )
+
     assert result is False
     assert 'profesor con ID 1' in message

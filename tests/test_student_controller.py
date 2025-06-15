@@ -32,6 +32,7 @@ class MockSection:
 def test_are_students_available_for_timeslot_no_students():
     section = {'section': MagicMock(students=[])}
     block = [MagicMock(id=1)]
+
     assert (
         controller.are_students_available_for_timeslot(section, block) is True
     )
@@ -46,6 +47,7 @@ def test_are_students_available_for_timeslot_conflict(mock_conflicts):
     mock_conflicts.return_value = [MagicMock()]
 
     result = controller.are_students_available_for_timeslot(section, block)
+
     assert result is False
     mock_conflicts.assert_called_once()
 
@@ -74,6 +76,7 @@ def test_generate_closed_course_records_and_sort():
     student.student_courses = [enrollment2, enrollment1]
 
     records = controller.generate_closed_course_records(student)
+
     assert len(records) == 1
     assert records[0]['Curso'] == 'Diseño de Software Verificable'
     assert records[0]['Año'] == 2023

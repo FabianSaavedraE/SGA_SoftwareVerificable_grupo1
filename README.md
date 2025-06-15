@@ -86,8 +86,8 @@ Para la generación de horarios se debe hacer uso del ícono de calendario a la 
 
 Esto lleva a un menú donde se puede seleccionar el año y el semestre en que se genera el horario. Una vez generado el horario, este se puede descargar, reflejando el NRC, bloque de horario y sala para todas las secciones correspondientes del período de tiempo estipulado.
 
-12. Para ejecutar los tests, se debe ingresar el siguiente comando desde el directorio raíz:
+12. Para ejecutar los tests con el detalle de coberture, se debe ingresar el siguiente comando desde el directorio raíz:
 
 ```
-pytest
+pytest --cov=app --cov-report=term
 ```

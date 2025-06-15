@@ -1,4 +1,5 @@
 from datetime import time
+
 from app.controllers import timeslot_controller as controller
 
 class MockSlot:
@@ -14,6 +15,7 @@ def test_sort_timeslots_by_start_time():
         MockSlot('Monday', time(11), time(12)),
     ]
     sorted_slots = controller.sort_timeslots_by_start_time(slots)
+
     assert (
         [s.start_time for s in sorted_slots] == [time(9), time(10), time(11)]
     )
@@ -24,6 +26,7 @@ def test_are_consecutive_blocks_true():
         MockSlot('Monday', time(10), time(11)),
         MockSlot('Monday', time(11), time(12)),
     ]
+
     assert controller.are_consecutive_blocks(slots) is True
 
 def test_are_consecutive_blocks_false():
@@ -31,6 +34,7 @@ def test_are_consecutive_blocks_false():
         MockSlot('Monday', time(9), time(10)),
         MockSlot('Monday', time(11), time(12)),
     ]
+
     assert controller.are_consecutive_blocks(slots) is False
 
 def test_group_timeslots_by_day():
@@ -40,6 +44,7 @@ def test_group_timeslots_by_day():
         MockSlot('Monday', time(10), time(11)),
     ]
     grouped = controller.group_timeslots_by_day(slots)
+
     assert set(grouped.keys()) == {'Monday', 'Tuesday'}
     assert len(grouped['Monday']) == 2
     assert len(grouped['Tuesday']) == 1
@@ -52,6 +57,7 @@ def test_extract_valid_blocks():
         MockSlot('Monday', time(13), time(14)),
     ]
     valid_blocks = controller.extract_valid_blocks(slots, 3)
+
     assert len(valid_blocks) == 1
     assert valid_blocks[0] == slots[:3]
 
@@ -69,5 +75,6 @@ def test_get_consecutive_blocks():
         ]
     }
     blocks = controller.get_consecutive_blocks(slots_by_day, 3)
+
     assert len(blocks) == 1
     assert blocks[0] == slots_by_day['Monday'][:3]

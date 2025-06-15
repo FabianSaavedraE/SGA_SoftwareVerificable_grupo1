@@ -28,16 +28,19 @@ def test_count_shared_sections():
     s2 = MockSection(2, [MockStudent(2), MockStudent(3)], 5)
     s3 = MockSection(3, [MockStudent(4)], 5)
     result = controller.count_shared_sections(s1, [s1, s2, s3])
+
     assert result == 1
 
 def test_normalize():
     values = [10, 20, 30]
     normalized = controller.normalize(values)
+
     assert normalized == [0.0, 0.5, 1.0]
 
 def test_normalize_all_equal():
     values = [5, 5, 5]
     normalized = controller.normalize(values)
+
     assert normalized == [0.0, 0.0, 0.0]
 
 def test_calculate_scores():
@@ -49,6 +52,7 @@ def test_calculate_scores():
         'shared_sections': 1
     }
     result = controller.calculate_scores([section_data])
+
     assert 'score' in result[0]
     assert isinstance(result[0]['score'], float)
 

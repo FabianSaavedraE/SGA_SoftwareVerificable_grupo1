@@ -31,3 +31,6 @@ Thumbs.db
 # Dependencias de Python
 *.pyc
 *.pyo
+
+# Coverage Report
+.coverage

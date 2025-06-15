@@ -18,7 +18,9 @@ class MockStudentEvaluation:
         self.grade = grade
 
 class MockEvaluationType:
-    def __init__(self, overall_ponderation, ponderation_type, evaluations=None):
+    def __init__(
+            self, overall_ponderation, ponderation_type, evaluations=None
+        ):
         self.overall_ponderation = overall_ponderation
         self.ponderation_type = ponderation_type
         self.evaluations = evaluations or []
@@ -34,7 +36,9 @@ def test_get_student_grade_returns_correct_grade():
         MockStudentEvaluation(1, 6.0),
         MockStudentEvaluation(2, 5.0)
     ]
-    evaluation = MockEvaluation(ponderation=30, student_evaluations=evaluations)
+    evaluation = MockEvaluation(
+        ponderation=30, student_evaluations=evaluations
+    )
 
     grade = get_student_grade(evaluation, student)
     assert grade == 6.0
@@ -45,7 +49,9 @@ def test_get_student_grade_returns_none_if_not_found():
         MockStudentEvaluation(1, 6.0),
         MockStudentEvaluation(2, 5.0)
     ]
-    evaluation = MockEvaluation(ponderation=30, student_evaluations=evaluations)
+    evaluation = MockEvaluation(
+        ponderation=30, student_evaluations=evaluations
+    )
 
     grade = get_student_grade(evaluation, student)
     assert grade is None
@@ -127,6 +133,7 @@ def test_compute_student_final_grade_with_percentages():
     result = compute_student_final_grade(
         student, course_section, is_percentage=True
     )
+
     assert result == 4.8
 
 def test_compute_student_final_grade_without_percentages():
@@ -159,4 +166,5 @@ def test_compute_student_final_grade_without_percentages():
     result = compute_student_final_grade(
         student, course_section, is_percentage=False
     )
+
     assert result == 4.3
