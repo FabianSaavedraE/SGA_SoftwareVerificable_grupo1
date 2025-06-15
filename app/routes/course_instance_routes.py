@@ -11,6 +11,10 @@ from app.controllers.course_instance_controller import (
 from app.controllers.course_controller import get_course
 from app.validators.course_instance_validator import validate_course_instance
 
+from app.validators.data_load_validators import(
+     validate_json_file_and_return_processed_file
+)
+
 course_instance_bp = Blueprint(
     'course_instances', __name__, url_prefix='/course_instances'
 )
@@ -101,14 +105,11 @@ def upload_course_instances_json():
     if not file:
         return redirect(url_for('course_instances.get_course_instances_view'))
 
-    import json
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print("Error leyendo JSON:", e)
-        return redirect(url_for('course_instances.get_course_instances_view'))
-    
-    create_course_instances_from_json(data)
+   
+    data = validate_json_file_and_return_processed_file(file)
+  
+    if data:
+        create_course_instances_from_json(data)
 
     return redirect(url_for('course_instances.get_course_instances_view'))
 

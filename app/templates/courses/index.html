@@ -13,8 +13,22 @@
 <div class="main">
 
     <div class="title">Listado de Cursos</div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                    <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
      
     <div class="box">
+        
 
         <form action="{{ url_for('courses.upload_courses_json') }}" method="POST" enctype="multipart/form-data">
             <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>

@@ -13,7 +13,6 @@ def create_classroom(data):
     new_classroom = Classroom(
         name = data.get('name'),
         capacity = data.get('capacity')
-
     )
 
     if classroom_id is not None:

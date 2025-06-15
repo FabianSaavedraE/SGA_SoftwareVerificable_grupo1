@@ -14,7 +14,9 @@ from app.validators.course_section_validator import (
     validate_course_section, validate_evaluations_warning,
     validate_evaluation_types_warning
 )
-
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file
+)
 course_section_bp = Blueprint(
     'course_sections', __name__, url_prefix='/course_sections'
 )
@@ -125,17 +127,14 @@ def delete_section_view(course_section_id, course_instance_id):
 
 @course_section_bp.route('/upload-json', methods=['POST'])
 def upload_course_sections_json():
+    print("\n\nCALLED UPLOAD CURSE SECTIONS!!!\n\n")
     file = request.files.get('jsonFile')
     if not file:
         return redirect(url_for('courses.get_courses_view'))
 
-    import json
-    try:
-        data = json.load(file)
-    except Exception as e:
-        return redirect(url_for('course_sections.get_sections_view'))
-    
-    create_course_sections_from_json(data)
+    data = validate_json_file_and_return_processed_file(file)
+    if data:
+        create_course_sections_from_json(data)
 
     return redirect(url_for('course_sections.get_sections_view'))
 

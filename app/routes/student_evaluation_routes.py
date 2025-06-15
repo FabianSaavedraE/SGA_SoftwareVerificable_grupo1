@@ -9,6 +9,10 @@ from app.controllers.student_controller import get_student
 from app.validators.student_evaluation_validator import (
     validate_student_evaluation_data
 )
+from app.validators.data_load_validators import(
+     validate_json_file_and_return_processed_file
+)
+
 
 student_evaluation_bp = Blueprint(
     'student_evaluations', __name__, url_prefix='/student_evaluations'
@@ -62,14 +66,10 @@ def upload_student_evaluation_json():
     if not file:
         return redirect(url_for('course_sections.get_sections_view'))
 
-    import json
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print("Error leyendo JSON:", e)
-        return redirect(url_for('course_sections.get_sections_view'))
+    data = validate_json_file_and_return_processed_file(file)
     
-    create_student_evaluation_json(data)
+    if data:
+        create_student_evaluation_json(data)
 
     return redirect(url_for('course_sections.get_sections_view'))
 

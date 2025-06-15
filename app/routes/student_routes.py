@@ -6,7 +6,13 @@ from app.controllers.student_controller import (
     get_all_students, get_student, create_student, update_student,
     delete_student, create_students_from_json, export_student_report_to_excel
 )
-from app.validators.student_validator import validate_student_data
+from app.validators.student_validator import (
+    validate_student_data
+)
+
+from app.validators.data_load_validators import(
+     validate_json_file_and_return_processed_file
+)
 
 student_bp = Blueprint('students', __name__, url_prefix='/students')
 
@@ -71,13 +77,11 @@ def upload_students_json():
     if not file:
         return redirect(url_for('students.get_students_view'))
 
-    import json
-    try:
-        data = json.load(file)
-    except Exception as e:
-        return redirect(url_for('students.get_students_view'))
+    data = validate_json_file_and_return_processed_file(file)
     
-    create_students_from_json(data)
+    if data:
+        create_students_from_json(data)
+
     return redirect(url_for('students.get_students_view'))
 
 @student_bp.route('/<int:student_id>/report', methods=['GET'])

@@ -6,6 +6,11 @@ from app.controllers.teacher_controller import (
 )
 from app.validators.teacher_validator import validate_teacher_data
 
+from app.validators.data_load_validators import(
+     validate_json_file_and_return_processed_file
+)
+
+
 teacher_bp = Blueprint('teachers', __name__, url_prefix='/teachers')
 
 @teacher_bp.route('/', methods=['GET'])
@@ -62,11 +67,8 @@ def upload_teachers_json():
     if not file:
         return redirect(url_for('teachers.get_teachers_view'))
 
-    import json
-    try:
-        data = json.load(file)
-    except Exception as e:
-        return redirect(url_for('teachers.get_teachers_view'))
+    data = validate_json_file_and_return_processed_file(file)
 
-    create_teachers_from_json(data)
+    if data:   
+        create_teachers_from_json(data)
     return redirect(url_for('teachers.get_teachers_view'))

@@ -9,6 +9,11 @@ from app.controllers.student_course_controller import (
 )
 from app.controllers.course_section_controller import get_section
 from app.validators.student_course_validator import has_met_prerequisites
+
+from app.validators.data_load_validators import(
+     validate_json_file_and_return_processed_file
+)
+
 from app.models.student import Student
 
 student_course_bp = Blueprint(
@@ -95,14 +100,10 @@ def upload_student_courses_json():
     if not file:
         return redirect(url_for('course_sections.get_sections_view'))
 
-    import json
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print("Error leyendo JSON:", e)
-        return redirect(url_for('course_sections.get_sections_view'))
-    
-    create_student_courses_from_json(data)
+    data = validate_json_file_and_return_processed_file(file)
+
+    if data:
+        create_student_courses_from_json(data)
 
     return redirect(url_for('course_sections.get_sections_view'))
 
