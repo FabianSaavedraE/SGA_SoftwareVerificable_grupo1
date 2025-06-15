@@ -39,7 +39,7 @@ def all_sections_have_students(sections):
         section = section_data['section']
         if not section.students:
             message = (
-                f'Sección {section_data['section'].nrc} no tiene '
+                f'Sección {section_data["section"].nrc} no tiene '
                 f'estudiantes asignados.'
             )
             return False, message
