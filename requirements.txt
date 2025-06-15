@@ -2,6 +2,7 @@ alembic==1.15.2
 blinker==1.9.0
 click==8.1.8
 colorama==0.4.6
+coverage==7.9.1
 Flask==3.1.0
 Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.1.1
@@ -19,6 +20,7 @@ pandas==2.2.3
 pathspec==0.12.1
 platformdirs==4.3.7
 pytest==8.4.0
+pytest-cov==6.2.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 pytz==2025.2
