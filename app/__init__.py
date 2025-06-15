@@ -1,7 +1,12 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config import Config
+from dotenv import load_dotenv
+
+load_dotenv()
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -20,6 +25,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
+    app.secret_key = os.getenv("SECRET_KEY")
     app.config.from_object(Config)
 
     db.init_app(app)

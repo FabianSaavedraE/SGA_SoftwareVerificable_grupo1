@@ -13,6 +13,19 @@
 
         <div class="title">Lista de Estudiantes</div>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                            <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         <div class="box">
             
             <form action="{{ url_for('students.upload_students_json') }}" method="POST" enctype="multipart/form-data">
@@ -46,10 +59,15 @@
                             </td>
                             <td class="actions">
                                 <a href="{{ url_for('students.update_student_view', student_id=student.id) }}" class="btn-action">Editar</a>
+
                                 <form action="{{ url_for('students.delete_student_view', student_id=student.id) }}" method="POST" class="action-form">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="action-btn">Eliminar</button>
                                 </form>
+
+                                <a href="{{url_for('students.download_student_report', student_id=student.id)}}" class="btn-action">
+                                    Generar certificado de notas
+                                </a>
                             </td>
                         </tr>
                     {% else %}

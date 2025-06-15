@@ -1,6 +1,12 @@
+import pandas as pd
+from io import BytesIO
+
 from app import db
 from app.models import Student, Schedule, CourseSection, StudentCourses
 from app.validators.student_validator import normalize_entry_year
+
+CLOSED_STATE = 'Closed'
+REPORT_COLUMNS = ['Curso', 'Año', 'Semestre', 'Sección', 'Nota Final', 'Estado']
 
 def get_all_students():
     students = Student.query.all()
@@ -96,3 +102,47 @@ def transform_json_entry_into_processable_student_format(student):
             'entry_year' : int(student.get('anio_ingreso'))
     }
     return data
+
+def export_student_report_to_excel(student):
+    records = generate_closed_course_records(student)
+    excel_buffer = convert_records_to_excel(records)
+
+    if excel_buffer is None:
+        return None
+
+    filename = f'{student.first_name}_{student.last_name}_reporte_notas.xlsx'
+    return excel_buffer, filename
+
+def generate_closed_course_records(student):
+    closed_courses = []
+
+    for enrollment in student.student_courses:
+        section = enrollment.course_section
+
+        if section is None or section.state != CLOSED_STATE:
+            continue
+
+        instance = section.course_instance
+        course = instance.course
+
+        closed_courses.append({
+            'Curso': course.name,
+            'Año': instance.year,
+            'Semestre': instance.semester,
+            'Sección': section.nrc,
+            'Nota Final': enrollment.final_grade,
+            'Estado': enrollment.state
+        })
+
+    return sorted(closed_courses, key=lambda r: (r['Año'], r['Semestre']))
+
+def convert_records_to_excel(records):
+    if not records:
+        return None
+
+    dataframe = pd.DataFrame(records, columns=REPORT_COLUMNS)
+    excel_buffer = BytesIO()
+    dataframe.to_excel(excel_buffer, index=False)
+    excel_buffer.seek(0)
+
+    return excel_buffer

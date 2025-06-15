@@ -46,6 +46,7 @@ Crear un archivo llamado .env en el directorio raíz del proyecto con el siguien
 DATABASE_URI=mysql://root:tu_contraseña_mysql@localhost:3306/academic_db
 FLASK_APP=run.py
 FLASK_ENV=development
+SECRET_KEY=secret_key
 ```
 
 7. Inicializar las migraciones y crear las tablas en la base de datos
