@@ -1,3 +1,6 @@
+import pandas as pd
+from io import BytesIO
+
 from sqlalchemy import func
 
 from app import db
@@ -10,6 +13,7 @@ from app.controllers.course_instance_controller import (
 )
 
 NRC_LENGTH = 4
+REPORT_COLUMNS = ['Estudiante', 'Email', 'Nota Final', 'Estado']
 
 def get_all_sections():
     sections = CourseSection.query.all()
@@ -227,3 +231,49 @@ def close_all_sections_for_course(course_id):
                 section.state = 'Closed'
                 db.session.commit()
                 calculate_final_grades(section)
+
+def export_section_report_to_excel(course_section):
+    if course_section.state == 'Open':
+        return None
+
+    data = generate_section_report(course_section)
+    excel_buffer = convert_data_to_excel(data)
+
+    if excel_buffer is None:
+        return None
+
+    filename = f'{course_section.nrc}_reporte_notas.xlsx'
+    return excel_buffer, filename
+
+
+def generate_section_report(course_section):
+    student_courses = course_section.student_courses
+
+    data = []
+    for course in student_courses:
+        student = course.student
+        student_name = f'{student.first_name} {student.last_name}'
+        final_grade = (
+            course.final_grade if course.final_grade is not None else 'N/A'
+        )
+        state = course.state
+
+        data.append({
+            'Estudiante': student_name,
+            'Email': student.email,
+            'Nota Final': final_grade,
+            'Estado': state
+        })
+    
+    return sorted(data, key=lambda r: (r['Estudiante']))
+
+def convert_data_to_excel(data):
+    if not data:
+        return None
+
+    dataframe = pd.DataFrame(data, columns=REPORT_COLUMNS)
+    excel_buffer = BytesIO()
+    dataframe.to_excel(excel_buffer, index=False)
+    excel_buffer.seek(0)
+
+    return excel_buffer

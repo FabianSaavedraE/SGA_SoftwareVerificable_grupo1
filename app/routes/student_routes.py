@@ -15,7 +15,9 @@ student_bp = Blueprint('students', __name__, url_prefix='/students')
 def get_students_view():
     error = request.args.get('error')
     students = get_all_students()
-    return render_template('students/index.html', students=students, error=error)
+    return render_template(
+        'students/index.html', students=students, error=error
+    )
 
 @student_bp.route('/create', methods=['GET', 'POST'])
 def create_student_view():
@@ -79,7 +81,7 @@ def upload_students_json():
     create_students_from_json(data)
     return redirect(url_for('students.get_students_view'))
 
-@student_bp.route("/<int:student_id>/report", methods=['GET'])
+@student_bp.route('/<int:student_id>/report', methods=['GET'])
 def download_student_report(student_id):
     student = get_student(student_id)
     result = export_student_report_to_excel(student)

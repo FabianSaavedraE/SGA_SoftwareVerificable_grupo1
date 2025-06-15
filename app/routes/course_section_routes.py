@@ -1,9 +1,12 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import (
+    Blueprint, request, render_template, redirect,
+    url_for, flash, send_file
+)
 
 from app.controllers.course_section_controller import (
     get_all_sections, get_section, create_section,
-    update_section, delete_section, 
-    create_course_sections_from_json
+    update_section, delete_section, create_course_sections_from_json,
+    export_section_report_to_excel
 )
 from app.controllers.course_instance_controller import get_course_instance
 from app.controllers.teacher_controller import get_all_teachers
@@ -153,6 +156,25 @@ def delete_section_view_from_show(course_section_id, course_instance_id):
         'course_instances.show_course_instance_view',
         course_instance_id=course_instance_id
     )
+
+@course_section_bp.route('/<int:course_section_id>/report', methods=['GET'])
+def download_course_section_report(course_section_id):
+    course_section = get_section(course_section_id)
+    result = export_section_report_to_excel(course_section)
+
+    if result is None:
+        flash(
+            'No se pudo generar el reporte de notas para esta sección.',
+            'error'
+        )
+        return redirect(
+            url_for(
+                'course_instances.show_course_instance_view',
+                course_instance_id=course_section.course_instance_id
+        ))
+
+    file_buffer, filename = result
+    return send_file(file_buffer, as_attachment=True, download_name=filename)
 
 def build_section_data(form_data, course_instance_id):
     data = form_data.to_dict()

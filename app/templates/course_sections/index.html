@@ -28,6 +28,19 @@
 
     <h1>Secciones</h1>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                        <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <table>
         <thead>
             <tr>
@@ -55,6 +68,7 @@
                     <td>
                         <a href="{{ url_for('course_sections.show_section_view', course_section_id=section.id) }}" class="btn-action">Ver</a>
                         <a href="{{ url_for('course_sections.update_section_view', course_section_id=section.id) }}" class="btn-action">Editar</a>
+                        <a href="{{ url_for('course_sections.download_course_section_report', course_section_id=section.id) }}" class="btn-action">Generar Reporte</a>
                         <form method="POST" action="{{ url_for('course_sections.delete_section_view', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" style="display:inline;">
                             <button type="submit" class="button" style="background-color: #555;">Eliminar</button>
                         </form>

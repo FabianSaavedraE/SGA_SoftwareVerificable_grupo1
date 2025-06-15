@@ -13,6 +13,19 @@
 <div class="main">
     <h1>Detalles de la instancia {{ course_instance.course.name }} {{ course_instance.year }}-{{ course_instance.semester }}</h1>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                        <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <h1>Secciones:</h1>
     {% if course_instance.sections %}
         <table>
@@ -48,6 +61,9 @@
                         </td>
                         <td>
                             <a href="{{ url_for('course_sections.update_section_view', course_section_id=section.id) }}" class="button">Editar</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('course_sections.download_course_section_report', course_section_id=section.id) }}" class="button">Generar Reporte</a>
                         </td>
                         <td>
                             <form action="{{ url_for('course_sections.delete_section_view_from_show', course_section_id=section.id, course_instance_id=section.course_instance.id) }}" method="POST" style="display:inline;">
