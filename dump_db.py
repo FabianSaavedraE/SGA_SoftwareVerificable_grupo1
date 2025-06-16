@@ -5,4 +5,4 @@ app = create_app()
 with app.app_context():
     db.drop_all()
     db.create_all()
-    print("Database reset (tables dropped and recreated).")
+    print('Database reset (tables dropped and recreated).')

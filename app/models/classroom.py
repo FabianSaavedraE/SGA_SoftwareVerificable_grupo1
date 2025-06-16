@@ -1,5 +1,6 @@
 from app import db
 
+
 class Classroom(db.Model):
     __tablename__ = 'classrooms'
 
@@ -11,7 +12,7 @@ class Classroom(db.Model):
         'Schedule',
         back_populates='classroom',
         cascade='all, delete-orphan',
-        passive_deletes=True
+        passive_deletes=True,
     )
 
     def __repr__(self):

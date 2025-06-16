@@ -1,6 +1,7 @@
 MAX_GRADE = 7.0
 MIN_GRADE = 1.0
 
+
 def validate_student_evaluation_data(data, student_evaluation_id=None):
     errors = {}
 
@@ -8,6 +9,7 @@ def validate_student_evaluation_data(data, student_evaluation_id=None):
     validate_grade(grade, errors)
 
     return errors
+
 
 def validate_grade(grade, errors):
     if grade < MIN_GRADE or grade > MAX_GRADE:

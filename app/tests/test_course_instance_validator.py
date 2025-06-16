@@ -1,7 +1,8 @@
 from datetime import datetime
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from app.validators import course_instance_validator as validator
+
 
 def test_get_stripped_field_returns_stripped_string():
     data = {'year': ' 2020 '}
@@ -9,17 +10,20 @@ def test_get_stripped_field_returns_stripped_string():
 
     assert result == '2020'
 
+
 def test_validate_year_missing():
     errors = {}
     validator.validate_year('', errors)
 
     assert 'year' in errors
 
+
 def test_validate_year_invalid_low():
     errors = {}
     validator.validate_year('1970', errors)
 
     assert 'year' in errors
+
 
 def test_validate_year_invalid_high():
     errors = {}
@@ -28,6 +32,7 @@ def test_validate_year_invalid_high():
 
     assert 'year' in errors
 
+
 def test_validate_year_valid():
     errors = {}
     current_year = str(datetime.now().year)
@@ -35,11 +40,13 @@ def test_validate_year_valid():
 
     assert 'year' not in errors
 
+
 def test_validate_semester_missing():
     errors = {}
     validator.validate_semester('', errors)
 
     assert 'semester' in errors
+
 
 @patch('app.validators.course_instance_validator.get_course_instance')
 @patch('app.validators.course_instance_validator.CourseInstance')
@@ -55,6 +62,7 @@ def test_validate_course_instance_uniqueness_exists(
 
     assert 'exists' in errors
 
+
 @patch('app.validators.course_instance_validator.get_course_instance')
 @patch('app.validators.course_instance_validator.CourseInstance')
 def test_validate_course_instance_uniqueness_no_conflict(
@@ -68,6 +76,7 @@ def test_validate_course_instance_uniqueness_no_conflict(
     validator.validate_course_instance_uniqueness('2023', '1', 1, None, errors)
 
     assert 'exists' not in errors
+
 
 @patch('app.validators.course_instance_validator.CourseInstance')
 @patch('app.validators.course_instance_validator.get_course_instance')
@@ -84,6 +93,7 @@ def test_validate_course_instance_all_validations(
     errors = validator.validate_course_instance(data)
 
     assert errors == {}
+
 
 def test_is_valid_year():
     current_year = datetime.now().year

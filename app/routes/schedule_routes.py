@@ -1,14 +1,16 @@
-from flask import Blueprint, request, render_template, url_for
+from flask import Blueprint, render_template, request, url_for
 
 from app.controllers.schedule_controller import generate_schedule
 
-FILE_NAME = "horario.xlsx"
+FILE_NAME = 'horario.xlsx'
 
 schedule_bp = Blueprint('schedules', __name__, url_prefix='/schedules')
+
 
 @schedule_bp.route('/', methods=['GET'])
 def show_generate_schedule_view():
     return render_template('schedules/generate_schedule.html')
+
 
 @schedule_bp.route('/', methods=['POST'])
 def generate_schedule_view():
@@ -29,5 +31,5 @@ def generate_schedule_view():
         'schedules/generate_schedule.html',
         message=message,
         file_link=file_link,
-        error=error
+        error=error,
     )

@@ -1,5 +1,6 @@
 from app import db
 
+
 class Evaluation(db.Model):
     __tablename__ = 'evaluations'
 
@@ -11,14 +12,14 @@ class Evaluation(db.Model):
     evaluation_type_id = db.Column(
         db.Integer,
         db.ForeignKey('evaluation_types.id', ondelete='CASCADE'),
-        nullable=False
+        nullable=False,
     )
 
     student_evaluations = db.relationship(
         'StudentEvaluations',
         back_populates='evaluation',
         cascade='all, delete-orphan',
-        passive_deletes=True
+        passive_deletes=True,
     )
 
     def __repr__(self):

@@ -2,6 +2,7 @@ from app.models import CourseSection
 
 NRC_LENGTH = 4
 
+
 def validate_course_section(data, course_section_id=None):
     errors = {}
 
@@ -11,34 +12,37 @@ def validate_course_section(data, course_section_id=None):
 
     return errors
 
+
 def get_stripped_field(data, field):
     return (str(data.get(field) or '')).strip()
+
 
 def validate_nrc(nrc, course_section_id, errors):
     if not nrc:
         errors['nrc'] = 'El NRC es obligatorio.'
     elif len(nrc) != NRC_LENGTH:
-        errors['nrc'] = (f'El NRC debe ser un número de {NRC_LENGTH} dígitos.')
+        errors['nrc'] = f'El NRC debe ser un número de {NRC_LENGTH} dígitos.'
     else:
         existing_section = CourseSection.query.filter_by(
             nrc=f'NRC{nrc}'
         ).first()
 
         if existing_section and (
-            course_section_id is None or
-            existing_section.id != course_section_id
+            course_section_id is None
+            or existing_section.id != course_section_id
         ):
             errors['nrc'] = f'El NRC ({nrc}) ya está en uso por otra sección.'
+
 
 def validate_evaluation_types_warning(course_section):
     warning_evaluation_types = None
     if course_section.overall_ponderation_type == 'Porcentaje':
-        total_ponderation_of_evaluation_types = (
-            round(
-                sum(
-                    evaluation_type.overall_ponderation
-                    for evaluation_type in course_section.evaluation_types
-                ),2)
+        total_ponderation_of_evaluation_types = round(
+            sum(
+                evaluation_type.overall_ponderation
+                for evaluation_type in course_section.evaluation_types
+            ),
+            2,
         )
 
         if total_ponderation_of_evaluation_types < 100:
@@ -47,17 +51,21 @@ def validate_evaluation_types_warning(course_section):
                 f'{total_ponderation_of_evaluation_types}%. '
                 f'Falta completar hasta 100%.'
             )
-    
+
     return warning_evaluation_types
 
-def validate_evaluations_warning(course_section):        
+
+def validate_evaluations_warning(course_section):
     warning_evaluations = {}
     for evaluation_type in course_section.evaluation_types:
         if evaluation_type.ponderation_type == 'Porcentaje':
             total_ponderation_of_evaluations = round(
-                sum((evaluation.ponderation or 0) 
-                for evaluation in evaluation_type.evaluations)
-            , 2)
+                sum(
+                    (evaluation.ponderation or 0)
+                    for evaluation in evaluation_type.evaluations
+                ),
+                2,
+            )
 
             if total_ponderation_of_evaluations < 100:
                 warning_evaluations[evaluation_type.id] = (

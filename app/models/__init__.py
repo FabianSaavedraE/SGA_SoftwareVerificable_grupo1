@@ -1,13 +1,29 @@
-from .student import Student
-from .teacher import Teacher
-from .course import Course
-from .course_instance import CourseInstance
-from .course_section import CourseSection
-from .course_prerequisite import CoursePrerequisite
-from .evaluation_type import EvaluationType
-from .evaluation import Evaluation
-from .student_evaluation import StudentEvaluations
-from .student_course import StudentCourses
-from .classroom import Classroom
-from .schedule import Schedule 
-from .timeslot import TimeSlot
+from .classroom import Classroom as Classroom
+from .course import Course as Course
+from .course_instance import CourseInstance as CourseInstance
+from .course_prerequisite import CoursePrerequisite as CoursePrerequisite
+from .course_section import CourseSection as CourseSection
+from .evaluation import Evaluation as Evaluation
+from .evaluation_type import EvaluationType as EvaluationType
+from .schedule import Schedule as Schedule
+from .student import Student as Student
+from .student_course import StudentCourses as StudentCourses
+from .student_evaluation import StudentEvaluations as StudentEvaluations
+from .teacher import Teacher as Teacher
+from .timeslot import TimeSlot as TimeSlot
+
+__all__ = [
+    'Classroom',
+    'Course',
+    'CourseInstance',
+    'CoursePrerequisite',
+    'CourseSection',
+    'Evaluation',
+    'EvaluationType',
+    'Schedule',
+    'Student',
+    'StudentCourses',
+    'StudentEvaluations',
+    'Teacher',
+    'TimeSlot',
+]

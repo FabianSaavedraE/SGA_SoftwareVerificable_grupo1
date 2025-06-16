@@ -1,10 +1,11 @@
 from app.controllers.course_section_controller import (
-    get_course_sections_by_parameters
+    get_course_sections_by_parameters,
 )
 
 SHARED_SECTIONS_WEIGHT = 0.3
 CREDITS_WEIGHT = 0.5
 STUDENTS_WEIGHT = 0.2
+
 
 def get_sections_ranking(year, semester):
     course_sections = get_course_sections_by_parameters(year, semester)
@@ -18,13 +19,13 @@ def get_sections_ranking(year, semester):
 
     return ranking, None
 
+
 def rank_sections(sections):
     scored_sections = calculate_scores(sections)
     return sorted(
-        scored_sections,
-        key=lambda section: section['score'],
-        reverse=True
+        scored_sections, key=lambda section: section['score'], reverse=True
     )
+
 
 def calculate_scores(sections):
     num_students_list = get_attributes_from_sections(sections, 'num_students')
@@ -46,19 +47,23 @@ def calculate_scores(sections):
 
     return sections
 
+
 def get_attributes_from_sections(rankings, attribute):
     return [section[attribute] for section in rankings]
 
+
 def get_all_sections_metrics(sections):
     return [build_section_metrics(section, sections) for section in sections]
+
 
 def build_section_metrics(section, all_sections):
     return {
         'section': section,
         'num_students': len(get_students_ids(section)),
         'num_credits': section.course_instance.course.credits,
-        'shared_sections': count_shared_sections(section, all_sections)
+        'shared_sections': count_shared_sections(section, all_sections),
     }
+
 
 def count_shared_sections(section, all_sections):
     """Obtener con cuántas otras secciones se comparten estudiantes"""
@@ -71,11 +76,13 @@ def count_shared_sections(section, all_sections):
 
         if section_ids & get_students_ids(other):
             count += 1
-    
+
     return count
+
 
 def get_students_ids(section):
     return {student.id for student in section.students}
+
 
 def normalize(values):
     min_val = min(values)
@@ -83,5 +90,5 @@ def normalize(values):
 
     if min_val == max_val:
         return [0.0] * len(values)
-    
-    return [(v-min_val) / (max_val-min_val) for v in values]
+
+    return [(v - min_val) / (max_val - min_val) for v in values]

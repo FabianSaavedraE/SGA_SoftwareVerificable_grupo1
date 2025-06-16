@@ -1,14 +1,26 @@
 from flask import (
-    Blueprint, request, render_template, redirect, url_for, send_file, flash
+    Blueprint,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
 )
 
 from app.controllers.student_controller import (
-    get_all_students, get_student, create_student, update_student,
-    delete_student, create_students_from_json, export_student_report_to_excel
+    create_student,
+    create_students_from_json,
+    delete_student,
+    export_student_report_to_excel,
+    get_all_students,
+    get_student,
+    update_student,
 )
 from app.validators.student_validator import validate_student_data
 
 student_bp = Blueprint('students', __name__, url_prefix='/students')
+
 
 @student_bp.route('/', methods=['GET'])
 def get_students_view():
@@ -18,12 +30,13 @@ def get_students_view():
         'students/index.html', students=students, error=error
     )
 
+
 @student_bp.route('/create', methods=['GET', 'POST'])
 def create_student_view():
     if request.method == 'POST':
         data = request.form
         errors = validate_student_data(data)
-    
+
         if errors:
             return render_template('students/create.html', errors=errors)
 
@@ -31,6 +44,7 @@ def create_student_view():
         return redirect(url_for('students.get_students_view'))
 
     return render_template('students/create.html')
+
 
 @student_bp.route('/<int:student_id>', methods=['GET', 'POST'])
 def update_student_view(student_id):
@@ -50,11 +64,12 @@ def update_student_view(student_id):
             return render_template(
                 'students/edit.html', student=student, errors=errors
             )
-        
+
         update_student(student, data)
         return redirect(url_for('students.get_students_view'))
 
     return render_template('students/edit.html', student=student)
+
 
 @student_bp.route('/delete/<int:student_id>', methods=['POST'])
 def delete_student_view(student_id):
@@ -65,6 +80,7 @@ def delete_student_view(student_id):
 
     return redirect(url_for('students.get_students_view'))
 
+
 @student_bp.route('/upload-json', methods=['POST'])
 def upload_students_json():
     file = request.files.get('jsonFile')
@@ -72,13 +88,15 @@ def upload_students_json():
         return redirect(url_for('students.get_students_view'))
 
     import json
+
     try:
         data = json.load(file)
-    except Exception as e:
+    except Exception:
         return redirect(url_for('students.get_students_view'))
-    
+
     create_students_from_json(data)
     return redirect(url_for('students.get_students_view'))
+
 
 @student_bp.route('/<int:student_id>/report', methods=['GET'])
 def download_student_report(student_id):
@@ -87,8 +105,9 @@ def download_student_report(student_id):
 
     if result is None:
         flash(
-            'Este estudiante no tiene cursos cerrados para generar un ' \
-            'certificado', 'error'
+            'Este estudiante no tiene cursos cerrados para generar un '
+            'certificado',
+            'error',
         )
         return redirect(url_for('students.get_students_view'))
 

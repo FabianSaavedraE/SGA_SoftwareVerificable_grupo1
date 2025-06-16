@@ -29,63 +29,66 @@
 <body>
     {% include 'navbar.html' %}
 
-<div class="main">
-    {% if errors and errors.course_id %}
+    <div class="main">
+        {% if errors and errors.course_id %}
         <p class="form-error">{{errors.course_id}}</p>
-    {% endif %}
+        {% endif %}
 
-    {% if errors and errors.prerequisite_ids %}
+        {% if errors and errors.prerequisite_ids %}
         <p class="form-error">{{errors.prerequisite_ids}}</p>
-    {% endif %}
+        {% endif %}
 
-    {% if errors and errors.self_reference %}
+        {% if errors and errors.self_reference %}
         <p class="form-error">{{errors.self_reference}}</p>
-    {% endif %}
+        {% endif %}
 
-    {% if errors and errors.cycle %}
+        {% if errors and errors.cycle %}
         <p class="form-error">{{errors.cycle}}</p>
-    {% endif %}
+        {% endif %}
 
-    {% if errors and errors.duplicate %}
+        {% if errors and errors.duplicate %}
         <p class="form-error">{{errors.duplicate}}</p>
-    {% endif %}
+        {% endif %}
 
-    <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
+        <div class="title">Editar Prerrequisitos de: {{ course.name }}</div>
 
-    <div class="box">
-        <form action="{{ url_for('course_prerequisites.update_course_prerequisite_view', course_id=course.id) }}" method="POST">
-            
-            <h3>Prerrequisitos actuales</h3>
-            <ul>
-                {% for prereq in prerequisites %}
+        <div class="box">
+            <form action="{{ url_for('course_prerequisites.update_course_prerequisite_view', course_id=course.id) }}"
+                method="POST">
+
+                <h3>Prerrequisitos actuales</h3>
+                <ul>
+                    {% for prerequisite in prerequisites %}
                     <li>
-                        {{ prereq.prerequisite.name }}
-                        <button type="submit" name="delete_prerequisite_id" value="{{ prereq.prerequisite.id }}">Eliminar</button>
+                        {{ prerequisite.prerequisite.name }}
+                        <button type="submit" name="delete_prerequisite_id"
+                            value="{{ prerequisite.prerequisite.id }}">Eliminar</button>
                     </li>
-                {% endfor %}
-            </ul>
+                    {% endfor %}
+                </ul>
 
-            <div class="actions">
-                <h3>Añadir nuevo(s) prerrequisito(s)</h3>
-                <label for="new_prerequisite">Selecciona un curso como prerrequisito:</label>
+                <div class="actions">
+                    <h3>Añadir nuevo(s) prerrequisito(s)</h3>
+                    <label for="new_prerequisite">Selecciona un curso como prerrequisito:</label>
 
-                <div id="new-prereqs">
-                    <select name="new_prerequisite[]" class="prerequisite-select">
-                        {% for prereq in available_prereqs %}
-                            <option value="{{ prereq.id }}">{{ prereq.name }}</option>
-                        {% endfor %}
-                    </select>
+                    <div id="new-prereqs">
+                        <select name="new_prerequisite[]" class="prerequisite-select">
+                            {% for prerequisite in available_prerequisites %}
+                            <option value="{{ prerequisite.id }}">{{ prerequisite.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
                 </div>
+                <br>
+                <button type="submit" class="btn">Guardar Cambios</button>
+            </form>
 
-            </div>
-            <br>
-            <button type="submit" class="btn">Guardar Cambios</button>
-        </form>
+            <a href="{{ url_for('course_prerequisites.get_course_prerequisites') }}" class="go-back">Volver a la lista
+                de cursos</a>
+        </div>
 
-        <a href="{{ url_for('course_prerequisites.get_course_prerequisites') }}" class="go-back">Volver a la lista de cursos</a>
     </div>
-
-</div>
 </body>
 
 </html>

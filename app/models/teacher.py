@@ -1,5 +1,6 @@
 from app import db
 
+
 class Teacher(db.Model):
     __tablename__ = 'teachers'
 
@@ -9,10 +10,7 @@ class Teacher(db.Model):
     email = db.Column(db.String(50), nullable=False)
 
     sections = db.relationship(
-        'CourseSection',
-        backref='teacher',
-        lazy=True,
-        passive_deletes=True
+        'CourseSection', backref='teacher', lazy=True, passive_deletes=True
     )
 
     def __repr__(self):

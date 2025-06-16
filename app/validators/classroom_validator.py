@@ -4,6 +4,7 @@ MAX_NAME_LENGTH = 20
 MIN_CAPACITY = 1
 MAX_CAPACITY = 400
 
+
 def validate_classroom_data(data, classroom_id=None):
     errors = {}
 
@@ -17,9 +18,7 @@ def validate_classroom_data(data, classroom_id=None):
             f'El nombre no puede superar los {MAX_NAME_LENGTH} caracteres.'
         )
     else:
-        existing_classroom = Classroom.query.filter_by(
-            name=name
-        ).first()
+        existing_classroom = Classroom.query.filter_by(name=name).first()
 
         if existing_classroom and (
             classroom_id is None or existing_classroom.id != classroom_id

@@ -4,6 +4,7 @@ MAX_LENGTH_FIRST_NAME = 50
 MAX_LENGTH_LAST_NAME = 50
 MAX_LENGTH_EMAIL = 50
 
+
 def validate_teacher_data(data, teacher_id=None):
     errors = {}
 
@@ -18,14 +19,14 @@ def validate_teacher_data(data, teacher_id=None):
             f'El nombre no puede superar los {MAX_LENGTH_FIRST_NAME} '
             f'caracteres.'
         )
-        
+
     if not last_name:
-        errors['last_name'] = 'El apellido es obligatorio.'  
+        errors['last_name'] = 'El apellido es obligatorio.'
     elif len(last_name) > MAX_LENGTH_LAST_NAME:
         errors['last_name'] = (
             f'El apellido no puede superar los {MAX_LENGTH_LAST_NAME} '
             f'caracteres.'
-        ) 
+        )
 
     if not email:
         errors['email'] = 'El email es obligatorio.'

@@ -34,3 +34,9 @@ Thumbs.db
 
 # Coverage Report
 .coverage
+
+# Ruff
+.ruff_cache
+
+# Pytest
+.pytest_cache

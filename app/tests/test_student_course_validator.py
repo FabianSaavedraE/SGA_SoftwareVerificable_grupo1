@@ -1,6 +1,7 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from app.validators import student_course_validator as validator
+
 
 @patch('app.validators.student_course_validator.has_approved_course')
 def test_has_met_prerequisites_fails(mock_has_approved):
@@ -11,6 +12,7 @@ def test_has_met_prerequisites_fails(mock_has_approved):
 
     assert not result
     assert 'no ha aprobado' in message
+
 
 @patch('app.validators.student_course_validator.has_approved_course')
 def test_has_met_prerequisites_succeeds(mock_has_approved):

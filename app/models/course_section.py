@@ -1,5 +1,6 @@
 from app import db
 
+
 class CourseSection(db.Model):
     __tablename__ = 'course_sections'
 
@@ -7,31 +8,33 @@ class CourseSection(db.Model):
     nrc = db.Column(db.String(10), nullable=False)
     overall_ponderation_type = db.Column(
         db.Enum('Porcentaje', 'Peso', name='ponderation_type_enum'),
-        nullable=False
+        nullable=False,
     )
-    
+
     state = db.Column(
         db.Enum('Open', 'Closed', name='section_state_enum'),
         nullable=False,
-        default='Open'
+        default='Open',
     )
 
     course_instance_id = db.Column(
         db.Integer,
-        db.ForeignKey('course_instances.id', ondelete='CASCADE', onupdate='CASCADE'),
-        nullable=False
+        db.ForeignKey(
+            'course_instances.id', ondelete='CASCADE', onupdate='CASCADE'
+        ),
+        nullable=False,
     )
     teacher_id = db.Column(
         db.Integer,
         db.ForeignKey('teachers.id', ondelete='SET NULL'),
-        nullable=True
+        nullable=True,
     )
 
     student_courses = db.relationship(
         'StudentCourses',
         back_populates='course_section',
         cascade='all, delete-orphan',
-        passive_deletes=True
+        passive_deletes=True,
     )
 
     evaluation_types = db.relationship(
@@ -39,21 +42,20 @@ class CourseSection(db.Model):
         backref='course_section',
         lazy=True,
         cascade='all, delete-orphan',
-        passive_deletes=True
+        passive_deletes=True,
     )
 
     schedules = db.relationship(
         'Schedule',
         back_populates='section',
         cascade='all, delete-orphan',
-        passive_deletes=True
+        passive_deletes=True,
     )
 
     @property
     def students(self):
         return [
-            student_course.student
-            for student_course in self.student_courses
+            student_course.student for student_course in self.student_courses
         ]
 
     def __repr__(self):

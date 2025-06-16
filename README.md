@@ -61,7 +61,8 @@ flask db upgrade
 python run.py
 ```
 
-9. Carga de datos JSON
+# Uso
+1. **Carga de datos JSON**
 
 La carga de datos JSON debe seguir el siguiente órden dado:
 
@@ -80,14 +81,27 @@ La carga de datos JSON debe seguir el siguiente órden dado:
 Todos los JSON, especialmente los de creaciones de evaluación, siguen la lógica de verificación de suma de porcentajes.
 Es necesario que estén en el formato correcto para cargar los datos. De otra forma, los datos simplemente no se guardan en la base de datos definida.
 
-11. Generación de horarios.
+2. **Generación de horarios.**
 
 Para la generación de horarios se debe hacer uso del ícono de calendario a la izquierda de todo, en el navbar.
 
 Esto lleva a un menú donde se puede seleccionar el año y el semestre en que se genera el horario. Una vez generado el horario, este se puede descargar, reflejando el NRC, bloque de horario y sala para todas las secciones correspondientes del período de tiempo estipulado.
 
-12. Para ejecutar los tests con el detalle de coberture, se debe ingresar el siguiente comando desde el directorio raíz:
+# Tests Unitarios
 
+Para ejecutar los tests con el detalle de cobertura, se debe ingresar el siguiente comando desde el directorio raíz:
 ```
 pytest --cov=app --cov-report=term
+```
+
+# Static Analysis
+
+Este proyecto utiliza el linter **Ruff** y la extensión **Code Spell Checker** de VSCode (configurada para español e inglés).
+
+**Code Spell Checker** marca como errores de ortografía algunas palabras que no es posible modificar, como los nombres de campos en archivos JSON que no incluyen acentos. Por ejemplo, términos como `"seccion"` o `"descripcion"` son resaltados por la extensión, pero no deben corregirse ya que corresponden directamente a las claves utilizadas en los datos de entrada.
+
+Para verificar errores de estilo con Ruff, ejecutar el siguiente comando:
+
+```
+ruff check .
 ```

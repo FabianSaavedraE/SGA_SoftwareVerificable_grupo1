@@ -1,7 +1,8 @@
 from app import db
 
+
 class TimeSlot(db.Model):
-    __tablename__= 'time_slots'
+    __tablename__ = 'time_slots'
 
     id = db.Column(db.Integer, primary_key=True)
     day = db.Column(db.String(10), nullable=False)
@@ -11,6 +12,7 @@ class TimeSlot(db.Model):
     semester = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return (f'{self.day} {self.start_time.strftime('%H:%M')}-'
-                f'{self.end_time.strftime('%H:%M')}')
-    
+        return (
+            f'{self.day} {self.start_time.strftime("%H:%M")}-'
+            f'{self.end_time.strftime("%H:%M")}'
+        )

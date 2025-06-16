@@ -12,7 +12,7 @@ def assign_default_ponderations(evaluation_type, evaluations):
             (evaluation.ponderation or 0)
             for evaluation in evaluation_type.evaluations
         ),
-        2
+        2,
     )
     remaining_percentage = round(100 - existing_percentage_sum, 2)
     amount_of_evaluations_being_created = len(evaluations)
@@ -28,9 +28,10 @@ def assign_default_ponderations(evaluation_type, evaluations):
             data['ponderation'] = percentage_each_evaluation
         else:
             data['ponderation'] = round(
-                remaining_percentage 
-                - percentage_each_evaluation 
-                * (amount_of_evaluations_being_created - 1), 2
+                remaining_percentage
+                - percentage_each_evaluation
+                * (amount_of_evaluations_being_created - 1),
+                2,
             )
 
     return None

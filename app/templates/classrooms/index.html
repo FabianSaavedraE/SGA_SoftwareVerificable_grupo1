@@ -8,55 +8,59 @@
 </head>
 
 <body>
-{% include 'navbar.html' %}
-<div class="main">
-    
-    <div class="title">
-        Lista de Salas
-    </div>
+    {% include 'navbar.html' %}
+    <div class="main">
 
-    <div class="box">
-        
-        <form action="{{ url_for('classrooms.upload_classrooms_json') }}" method="POST" enctype="multipart/form-data">
-            <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>
-            <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
-        </form>
+        <div class="title">
+            Lista de Salas
+        </div>
 
-        <a href="{{ url_for('classrooms.create_classroom_view') }}" class="top-button">Agregar Sala</a>
+        <div class="box">
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Capacidad</th>
-                </tr>
-            </thead>
+            <form action="{{ url_for('classrooms.upload_classrooms_json') }}" method="POST"
+                enctype="multipart/form-data">
+                <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>
+                <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;"
+                    onchange="this.form.submit()">
+            </form>
 
-            <tbody>
-                {% for classroom in classrooms %}
+            <a href="{{ url_for('classrooms.create_classroom_view') }}" class="top-button">Agregar Sala</a>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Capacidad</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for classroom in classrooms %}
                     <tr>
                         <td>{{ classroom.name }}</td>
                         <td>{{ classroom.capacity }}</td>
                         <td class="actions">
-                            <a href="{{ url_for('classrooms.update_classroom_view', classroom_id=classroom.id) }}" class="btn-action">Editar</a>
-                            <form action="{{ url_for('classrooms.delete_classroom_view', classroom_id=classroom.id) }}" method="POST" style="display:inline;">
+                            <a href="{{ url_for('classrooms.update_classroom_view', classroom_id=classroom.id) }}"
+                                class="btn-action">Editar</a>
+                            <form action="{{ url_for('classrooms.delete_classroom_view', classroom_id=classroom.id) }}"
+                                method="POST" style="display:inline;">
                                 <button type="submit">Eliminar</button>
                             </form>
                         </td>
                     </tr>
-                {% else %}
+                    {% else %}
                     <tr>
                         <td colspan="3">No hay salas</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-        <a href="/" class="go-back">Volver al inicio</a>
-        
+            <a href="/" class="go-back">Volver al inicio</a>
+
+        </div>
+
     </div>
-
-</div>
 </body>
 
 </html>

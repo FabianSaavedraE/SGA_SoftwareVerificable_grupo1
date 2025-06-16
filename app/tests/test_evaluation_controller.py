@@ -1,5 +1,6 @@
 from app.controllers import evaluation_controller
 
+
 def test_convert_records_to_excel_returns_buffer():
     records = [
         {
@@ -8,7 +9,7 @@ def test_convert_records_to_excel_returns_buffer():
             'Tipo de Evaluación': 'Prueba',
             'Evaluación': 'Prueba 1',
             'Estudiante': 'Pedro Perez',
-            'Nota': 5.5
+            'Nota': 5.5,
         }
     ]
 
@@ -16,6 +17,7 @@ def test_convert_records_to_excel_returns_buffer():
 
     assert buffer is not None
     assert hasattr(buffer, 'read')
+
 
 def test_convert_records_to_excel_returns_none_if_no_records():
     result = evaluation_controller.convert_records_to_excel([])

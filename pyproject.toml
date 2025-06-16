@@ -1,0 +1,7 @@
+[tool.ruff]
+line-length = 79
+select = ["E", "F", "W", "C90", "I"]
+exclude = ["tests/*", ".venv/*", "migrations", "__pycache__"]
+
+[tool.ruff.format]
+quote-style = "single"

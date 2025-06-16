@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from app.models import CourseInstance
 from app.controllers.course_instance_controller import get_course_instance
+from app.models import CourseInstance
 
 MIN_YEAR = 1980
+
 
 def validate_course_instance(data, course_instance_id=None):
     errors = {}
@@ -20,8 +21,10 @@ def validate_course_instance(data, course_instance_id=None):
 
     return errors
 
+
 def get_stripped_field(data, field):
     return (str(data.get(field) or '')).strip()
+
 
 def validate_year(year, errors):
     if not year:
@@ -31,9 +34,11 @@ def validate_year(year, errors):
             f'El año debe estar entre {MIN_YEAR} y {datetime.now().year}'
         )
 
+
 def validate_semester(semester, errors):
     if not semester:
         errors['semester'] = 'El semestre es obligatorio.'
+
 
 def validate_course_instance_uniqueness(
     year, semester, course_instance_id, course_id, errors
@@ -44,16 +49,20 @@ def validate_course_instance_uniqueness(
             course_id = course_instance.course_id
 
     if not errors.get('year') and not errors.get('semester') and course_id:
-        existing_instance = CourseInstance.query.filter_by(
-            course_id=course_id,
-            year=year,
-            semester=semester
-        ).filter(CourseInstance.id != course_instance_id).first()
+        existing_instance = (
+            CourseInstance.query.filter_by(
+                course_id=course_id, year=year, semester=semester
+            )
+            .filter(CourseInstance.id != course_instance_id)
+            .first()
+        )
 
         if existing_instance:
             errors['exists'] = (
-                f'Ya existe una instancia de este curso para {year}-{semester}.'
+                f'Ya existe una instancia de este curso para '
+                f'{year}-{semester}.'
             )
+
 
 def is_valid_year(year):
     current_year = datetime.now().year

@@ -7,6 +7,7 @@ MAX_DESCRIPTION_LENGTH = 100
 MIN_CREDITS_VALUE = 1
 MAX_CREDITS_VALUE = 4
 
+
 def validate_course_data(data, course_id=None):
     errors = {}
 
@@ -24,8 +25,10 @@ def validate_course_data(data, course_id=None):
 
     return errors
 
+
 def get_stripped_field(data, field):
     return (str(data.get(field) or '')).strip()
+
 
 def validate_text_field(field_name, value, max_length, errors):
     if not value:
@@ -38,6 +41,7 @@ def validate_text_field(field_name, value, max_length, errors):
             f'El atributo {field_display} no puede superar los {max_length} '
             f'caracteres.'
         )
+
 
 def validate_course_code(code, course_id, errors):
     if not code:
@@ -52,6 +56,7 @@ def validate_course_code(code, course_id, errors):
         existing = Course.query.filter_by(code=full_code).first()
         if existing and (course_id is None or existing.id != course_id):
             errors['code'] = 'El código ya está en uso por otro curso.'
+
 
 def validate_credits(credits, errors):
     try:

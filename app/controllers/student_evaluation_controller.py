@@ -1,5 +1,6 @@
 from app import db
-from app.models import StudentEvaluations, Evaluation
+from app.models import Evaluation, StudentEvaluations
+
 
 def get_student_evaluation(student_id, evaluation_id):
     student_evaluation = StudentEvaluations.query.get(
@@ -7,16 +8,18 @@ def get_student_evaluation(student_id, evaluation_id):
     )
     return student_evaluation
 
+
 def create_student_evaluation(data):
     new_student_evaluation = StudentEvaluations(
-        student_id = data.get('student_id'),
-        evaluation_id = data.get('evaluation_id'),
-        grade = data.get('grade')
+        student_id=data.get('student_id'),
+        evaluation_id=data.get('evaluation_id'),
+        grade=data.get('grade'),
     )
     db.session.add(new_student_evaluation)
     db.session.commit()
 
     return new_student_evaluation
+
 
 def update_student_evaluation(student_evaluation, data):
     if not student_evaluation:
@@ -26,6 +29,7 @@ def update_student_evaluation(student_evaluation, data):
 
     db.session.commit()
     return student_evaluation
+
 
 def create_student_evaluation_json(data):
     student_evaluations = data.get('notas', [])
@@ -37,26 +41,30 @@ def create_student_evaluation_json(data):
         )
         create_student_evaluation(student_evaluation_data)
 
+
 def get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance):
-    evaluations = Evaluation.query.filter_by(
-        evaluation_type_id=evaluation_type_id
-    ).order_by(Evaluation.id).all()
+    evaluations = (
+        Evaluation.query.filter_by(evaluation_type_id=evaluation_type_id)
+        .order_by(Evaluation.id)
+        .all()
+    )
 
     selected_evaluation_id = evaluations[instance - 1].id
     return selected_evaluation_id
 
+
 def transform_json_entry_into_processable_student_evaluation_format(
-    student_evaluation
+    student_evaluation,
 ):
     evaluation_type_id = student_evaluation.get('topico_id')
     instance = student_evaluation.get('instancia')
 
     data = {
-        'student_id' : student_evaluation.get('alumno_id'),
-        'grade' : student_evaluation.get('nota'),
-        'evaluation_id' : get_evaluation_id_by_topic_and_instance(
+        'student_id': student_evaluation.get('alumno_id'),
+        'grade': student_evaluation.get('nota'),
+        'evaluation_id': get_evaluation_id_by_topic_and_instance(
             evaluation_type_id, instance
-        )
+        ),
     }
 
     return data

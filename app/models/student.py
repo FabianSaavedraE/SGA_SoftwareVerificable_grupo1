@@ -2,6 +2,7 @@ from datetime import date
 
 from app import db
 
+
 class Student(db.Model):
     __tablename__ = 'students'
 
@@ -10,22 +11,20 @@ class Student(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False)
     entry_year = db.Column(
-        db.Integer,
-        nullable=False,
-        default=date.today().year
+        db.Integer, nullable=False, default=date.today().year
     )
 
     student_courses = db.relationship(
         'StudentCourses',
         back_populates='student',
-        cascade="all, delete-orphan",
-        passive_deletes=True
+        cascade='all, delete-orphan',
+        passive_deletes=True,
     )
     student_evaluations = db.relationship(
         'StudentEvaluations',
         back_populates='student',
-        cascade="all, delete-orphan",
-        passive_deletes=True
+        cascade='all, delete-orphan',
+        passive_deletes=True,
     )
 
     @property

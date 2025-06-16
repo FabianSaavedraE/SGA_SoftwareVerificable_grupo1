@@ -8,41 +8,41 @@
 </head>
 
 <body>
-{% include 'navbar.html' %}
+    {% include 'navbar.html' %}
 
-<div class="main">
-    <h1>Crear Instancia para el curso {{ course.name }}</h1>
+    <div class="main">
+        <h1>Crear Instancia para el curso {{ course.name }}</h1>
 
-    <form action="{{ url_for('course_instances.create_course_instance_view', course_id=course.id) }}" method="POST">
-        <div>
-            <label for="year">Año:</label>
-            <input type="text" id="year" name="year" >
-        </div>
-        {% if errors and errors.year %}
+        <form action="{{ url_for('course_instances.create_course_instance_view', course_id=course.id) }}" method="POST">
+            <div>
+                <label for="year">Año:</label>
+                <input type="text" id="year" name="year">
+            </div>
+            {% if errors and errors.year %}
             <p class="form-error">{{errors.year}}</p>
-        {% endif %}
+            {% endif %}
 
-        <div>
-            <label for="semester">Semestre:</label>
-            <select id="semester" name="semester" >
-                <option value="" disabled selected>Seleccione un semestre</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-            </select>
-        </div>
-        {% if errors and errors.semester %}
+            <div>
+                <label for="semester">Semestre:</label>
+                <select id="semester" name="semester">
+                    <option value="" disabled selected>Seleccione un semestre</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+            {% if errors and errors.semester %}
             <p class="form-error">{{errors.semester}}</p>
-        {% endif %}
+            {% endif %}
 
-        {% if errors and errors.exists %}
+            {% if errors and errors.exists %}
             <p class="form-error">{{errors.exists}}</p>
-        {% endif %}
+            {% endif %}
 
-        <button type="submit">Crear Instancia de Curso</button>
-    </form>
+            <button type="submit">Crear Instancia de Curso</button>
+        </form>
 
-    <a href="{{ url_for('courses.show_course_view', course_id=course.id) }}" class="btn-back">Volver</a>
-</div>
+        <a href="{{ url_for('courses.show_course_view', course_id=course.id) }}" class="btn-back">Volver</a>
+    </div>
 </body>
 
 </html>

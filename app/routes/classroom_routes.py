@@ -1,17 +1,23 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, redirect, render_template, request, url_for
 
 from app.controllers.classroom_controller import (
-    get_all_classrooms, get_classroom, create_classroom,
-    update_classroom, delete_classroom, create_classroom_from_json
+    create_classroom,
+    create_classroom_from_json,
+    delete_classroom,
+    get_all_classrooms,
+    get_classroom,
+    update_classroom,
 )
 from app.validators.classroom_validator import validate_classroom_data
 
 classroom_bp = Blueprint('classrooms', __name__, url_prefix='/classrooms')
 
+
 @classroom_bp.route('/', methods=['GET'])
 def get_classrooms_view():
     classrooms = get_all_classrooms()
     return render_template('classrooms/index.html', classrooms=classrooms)
+
 
 @classroom_bp.route('/create', methods=['GET', 'POST'])
 def create_classroom_view():
@@ -21,11 +27,12 @@ def create_classroom_view():
 
         if errors:
             return render_template('classrooms/create.html', errors=errors)
-        
+
         create_classroom(data)
         return redirect(url_for('classrooms.get_classrooms_view'))
 
     return render_template('classrooms/create.html')
+
 
 @classroom_bp.route('/<int:classroom_id>', methods=['GET', 'POST'])
 def update_classroom_view(classroom_id):
@@ -45,11 +52,12 @@ def update_classroom_view(classroom_id):
             return render_template(
                 'classrooms/edit.html', classroom=classroom, errors=errors
             )
-        
+
         update_classroom(classroom, data)
         return redirect(url_for('classrooms.get_classrooms_view'))
 
     return render_template('classrooms/edit.html', classroom=classroom)
+
 
 @classroom_bp.route('/delete/<int:classroom_id>', methods=['POST'])
 def delete_classroom_view(classroom_id):
@@ -58,7 +66,8 @@ def delete_classroom_view(classroom_id):
         delete_classroom(classroom)
         return redirect(url_for('classrooms.get_classrooms_view'))
 
-    return redirect(url_for('classrooms.get_clasrooms_view'))
+    return redirect(url_for('classrooms.get_classrooms_view'))
+
 
 @classroom_bp.route('/upload-json', methods=['POST'])
 def upload_classrooms_json():
@@ -67,12 +76,13 @@ def upload_classrooms_json():
         return redirect(url_for('classrooms.get_classrooms_view'))
 
     import json
+
     try:
         data = json.load(file)
     except Exception as e:
-        print("Error leyendo JSON:", e)
+        print('Error leyendo JSON:', e)
         return redirect(url_for('classrooms.get_classrooms_view'))
-    
+
     create_classroom_from_json(data)
 
     return redirect(url_for('classrooms.get_classrooms_view'))

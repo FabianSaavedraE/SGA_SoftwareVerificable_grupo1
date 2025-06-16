@@ -1,26 +1,25 @@
 from app import db
 
+
 class Schedule(db.Model):
-    __tablename__= 'schedules'
+    __tablename__ = 'schedules'
 
     id = db.Column(db.Integer, primary_key=True)
-    
+
     section_id = db.Column(
         db.Integer,
         db.ForeignKey(
             'course_sections.id', ondelete='CASCADE', onupdate='CASCADE'
         ),
-        nullable=False
+        nullable=False,
     )
     classroom_id = db.Column(
         db.Integer,
         db.ForeignKey('classrooms.id', ondelete='CASCADE'),
-        nullable=False
+        nullable=False,
     )
     time_slot_id = db.Column(
-        db.Integer,
-        db.ForeignKey('time_slots.id'),
-        nullable=False
+        db.Integer, db.ForeignKey('time_slots.id'), nullable=False
     )
 
     classroom = db.relationship('Classroom', back_populates='schedules')
