@@ -3,10 +3,12 @@ from app.validators.constants import (
     MAX_LENGTH_FIRST_NAME, MAX_LENGTH_LAST_NAME, MAX_LENGTH_EMAIL,
     KEY_ID_ENTRY, KEY_FIRST_NAME_ENTRY, KEY_LAST_NAME_ENTRY, KEY_EMAIL_ENTRY,
     MUST_BE_STRING, MUST_BE_INT, MUST_BE, MAX_LENGTH_USERS_NAME, OVERFLOWS,
-    CHARACTERS, ALREADY_EXISTS
+    CHARACTERS, ALREADY_EXISTS, KEY_NAME_ENTRY, MUST_CONTAIN
 )
 
 def validate_teacher_data_and_return_errors(data, teacher_id=None):
+    print("Validating entry:")
+    print(data)
     typing_errors = return_teacher_typing_errors(data)
 
     #Since typing errors are exclusive to JSON load, should return inmediatly.
@@ -14,7 +16,6 @@ def validate_teacher_data_and_return_errors(data, teacher_id=None):
         return typing_errors
     
     attribute_errors = return_teacher_attribute_errors(data, teacher_id)
-
     return attribute_errors
 
 def return_teacher_typing_errors(data):
@@ -32,7 +33,7 @@ def return_teacher_typing_errors(data):
     if not isinstance(last_name, str):
         errors[KEY_LAST_NAME_ENTRY] = (
             f'{KEY_LAST_NAME_ENTRY} {MUST_BE_STRING}'
-        )
+            )
 
     if not isinstance(email, str):
         errors[KEY_EMAIL_ENTRY] = (
@@ -45,6 +46,8 @@ def return_teacher_typing_errors(data):
     return errors
 
 def return_teacher_attribute_errors(data, teacher_id):
+    errors = {}
+
     first_name = data.get(KEY_FIRST_NAME_ENTRY, '').strip()
     last_name = data.get(KEY_LAST_NAME_ENTRY, '').strip()
     email = data.get(KEY_EMAIL_ENTRY, '').strip()
@@ -52,24 +55,25 @@ def return_teacher_attribute_errors(data, teacher_id):
     first_name_errors = return_teacher_name_errors(
         KEY_FIRST_NAME_ENTRY, first_name
     )
+
     last_name_errors = return_teacher_name_errors(
         KEY_LAST_NAME_ENTRY, last_name
     )
+
     email_errors = return_teacher_email_errors(
         email, teacher_id
     )
 
-    errors = {}
     errors.update(first_name_errors)
     errors.update(last_name_errors)
     errors.update(email_errors)
-  
+    
     return errors
 
 def return_teacher_name_errors(key, name):
     errors = {}
 
-    if not name:
+    if not name or name == "" or name == '':
         errors[key] = f'{key} {MUST_BE}'
 
     elif len(name) > MAX_LENGTH_USERS_NAME:
@@ -90,6 +94,9 @@ def return_teacher_email_errors(email, teacher_id):
             f'{KEY_EMAIL_ENTRY} {OVERFLOWS}'
             f' 0 - {MAX_LENGTH_EMAIL} {CHARACTERS}'
         )
+
+    elif "@" not in email:
+        errors[KEY_EMAIL_ENTRY] = f'{KEY_EMAIL_ENTRY} {MUST_CONTAIN} @'
 
     else:
         existing_teacher = Teacher.query.filter_by(email=email).first()

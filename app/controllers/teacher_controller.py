@@ -132,10 +132,9 @@ def create_teachers_from_json(data):
 
 def transform_json_entry_into_processable_teacher_format(teacher):
     name = teacher.get('nombre', '')
-    name_parts = name.strip().split()
     data = {
-        'first_name' : name_parts[0],
-        'last_name' :' '.join(name_parts[1:]) if len(name_parts) > 1 else '',
+        'first_name' : name.split()[0] if isinstance(name,str) else name,
+        'last_name' : ' '.join(name.split()[1:]) if isinstance(name,str) and len(name.split()) > 1 else (''),
         'email' : teacher.get('correo')
     }
     return data

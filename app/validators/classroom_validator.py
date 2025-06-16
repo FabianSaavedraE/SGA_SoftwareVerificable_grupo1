@@ -3,7 +3,8 @@ from app.validators.constants import (
     KEY_CAPACITY_ENTRY, KEY_ID_ENTRY, KEY_NAME_ENTRY,
     MIN_CAPACITY, MAX_CAPACITY, MAX_NAME_LENGTH,
     MUST_BE_INT, MUST_BE_STRING, MUST_BE_STRING_OR_INT,
-    MUST_BE, OVERFLOWS, CHARACTERS, ALREADY_EXISTS
+    MUST_BE, OVERFLOWS, CHARACTERS, ALREADY_EXISTS,
+    KEY_CAPACITY_JSON
 )
 
 def validate_classroom_data_and_return_errors(data, classroom_id=None):
@@ -20,7 +21,7 @@ def validate_classroom_data_and_return_errors(data, classroom_id=None):
 def return_classroom_typing_errors(data):
     errors = {}
     name = data.get(KEY_NAME_ENTRY) or ''
-    capacity = data.get(KEY_CAPACITY_ENTRY) or ''
+    capacity = data.get(KEY_CAPACITY_JSON) or ''
     id = data.get(KEY_ID_ENTRY) or ''
 
     if not (isinstance(id, int) or (id == '')):
@@ -38,7 +39,7 @@ def return_classroom_typing_errors(data):
 
 def return_classroom_attribute_errors(data, classroom_id):
     name = (data.get(KEY_NAME_ENTRY) or '').strip()
-    capacity = data.get(KEY_CAPACITY_ENTRY) or ''
+    capacity = data.get(KEY_CAPACITY_JSON) or ''
     if isinstance(capacity, str):
         capacity = capacity.strip()
 
