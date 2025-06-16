@@ -55,23 +55,6 @@ def delete_teacher(teacher):
     db.session.commit()
     return True
 
-def create_teachers_from_json(data):
-    teachers = data.get('profesores', [])
-    for teacher in teachers:
-        name = teacher.get('nombre', '')
-        name_parts = name.strip().split()
-        first_name = name_parts[0]
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-
-        new_teacher = Teacher(
-            first_name=first_name,
-            last_name=last_name,
-            email=teacher.get('correo'),
-        )
-        db.session.add(new_teacher)
-
-    db.session.commit()
-
 def is_teacher_available_for_timeslot(section, block):
     teacher_id = get_teacher_id_from_section(section)
     timeslot_ids = extract_timeslot_ids(block)

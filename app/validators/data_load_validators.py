@@ -4,10 +4,15 @@ from flask import (
 )
 from app.validators.student_validator import validate_student_data
 from app.validators.teacher_validator import validate_teacher_data
+from app.validators.classroom_validator import (
+    validate_classroom_data_and_return_errors
+)
+
 
 VALIDATORS = {
     'student': validate_student_data,
-    'teacher': validate_teacher_data
+    'teacher': validate_teacher_data,
+    'classroom': validate_classroom_data_and_return_errors
 }
   
 #Functions that validate the data loading process -----------------------------
@@ -50,7 +55,7 @@ def validate_entry_can_be_loaded(entry, type :str):
         errors = validator(entry)
         if errors:
             for key in errors.keys():
-                flash(f'ERROR en categoria {key}: {errors[key]}',
+                flash(f'ERROR para linea {entry}: En {key}: {errors[key]}',
                       'error')
             return False
     return True

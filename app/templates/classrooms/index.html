@@ -31,7 +31,7 @@
     <div class="box">
         
         <form action="{{ url_for('classrooms.upload_classrooms_json') }}" method="POST" enctype="multipart/form-data">
-            <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>
+            <label for="jsonFile" class="top-button">Cargar salas desde JSON</label>
             <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;" onchange="this.form.submit()">
         </form>
 
