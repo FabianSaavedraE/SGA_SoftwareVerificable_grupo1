@@ -1,6 +1,8 @@
 from app import db
 from app.models import StudentEvaluations, Evaluation
-from app.validators.data_load_validators import validate_json_has_required_key
+from app.validators.data_load_validators import (
+    validate_json_has_required_key, validate_entry_has_required_keys
+    )
 
 STUDENT_EVALUATION_JSON_KEY = "notas"
 

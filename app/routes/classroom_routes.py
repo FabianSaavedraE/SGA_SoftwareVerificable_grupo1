@@ -5,7 +5,6 @@ from app.controllers.classroom_controller import (
     update_classroom, delete_classroom, create_classroom_from_json
 )
 from app.validators.classroom_validator import validate_classroom_data
-
 from app.validators.data_load_validators import(
      validate_json_file_and_return_processed_file
 )

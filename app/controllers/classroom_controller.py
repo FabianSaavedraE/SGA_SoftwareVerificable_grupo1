@@ -1,10 +1,13 @@
 from app import db
 from app.models import Classroom, Schedule
 from app.validators.data_load_validators import(
-    validate_json_has_required_key
+    validate_json_has_required_key, validate_entry_has_required_keys, flash
 )
 
 CLASSROOM_JSON_KEY = 'salas'
+KEY_ID_ENTRY = 'id'
+KEY_NAME_ENTRY = 'nombre'
+KEY_CAPACITY_ENTRY = 'capacidad'
 
 def get_all_classrooms():
     return Classroom.query.all()
@@ -14,19 +17,21 @@ def get_classroom(classroom_id):
     return classroom
 
 def create_classroom(data):
-    classroom_id = data.get('id')
-    new_classroom = Classroom(
-        name = data.get('name'),
-        capacity = data.get('capacity')
-    )
+    if data:
+        classroom_id = data.get('id')
+        new_classroom = Classroom(
+            name = data.get('name'),
+            capacity = data.get('capacity')
+        )
 
-    if classroom_id is not None:
-        new_classroom.id = classroom_id
-        
-    db.session.add(new_classroom)
-    db.session.commit()
+        if classroom_id is not None:
+            new_classroom.id = classroom_id
+            
+        db.session.add(new_classroom)
+        db.session.commit()
 
-    return new_classroom
+        return new_classroom
+    return None
 
 def update_classroom(classroom, data):
     if not classroom:
@@ -50,16 +55,25 @@ def create_classroom_from_json(data):
     if validate_json_has_required_key(data, CLASSROOM_JSON_KEY):
         classrooms = data.get('salas', [])
         for classroom in classrooms:
-            classroom_data = transform_json_entry_into_classroom_format(classroom)
-            create_classroom(classroom_data)
+            classroom_data = transform_json_entry_into_classroom_format(
+                classroom
+                )
+            if classroom_data:
+                create_classroom(classroom_data)
+            else:
+                break
 
 def transform_json_entry_into_classroom_format(classroom):
-    data = {
-        'id' : classroom.get('id'),
-        'name' : classroom.get('nombre'),
-        'capacity' : classroom.get('capacidad')
-    }
-    return data
+    if validate_entry_has_required_keys(
+        classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
+        ):
+        data = {
+            'id' : classroom.get('id'),
+            'name' : classroom.get('nombre'),
+            'capacity' : classroom.get('capacidad')
+        }
+        return data
+    return None
 
 def get_available_classrooms_for_block(block, num_students):
     timeslot_ids = [timeslot.id for timeslot in block]

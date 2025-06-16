@@ -1,14 +1,29 @@
 import pandas as pd
 from io import BytesIO
 
+from flask import flash
+
 from app import db
 from app.models import Student, Schedule, CourseSection, StudentCourses
 from app.validators.student_validator import normalize_entry_year
-from app.validators.data_load_validators import validate_json_has_required_key
+from app.validators.data_load_validators import (
+    validate_json_has_required_key, validate_entry_has_required_keys,
+    validate_entry_can_be_loaded
+)
 
 STUDENT_JSON_KEY = "alumnos"
 CLOSED_STATE = 'Closed'
-REPORT_COLUMNS = ['Curso', 'Año', 'Semestre', 'Sección', 'Nota Final', 'Estado']
+REPORT_COLUMNS = (
+    ['Curso', 'Año', 'Semestre', 'Sección', 'Nota Final', 'Estado']
+)
+KEY_ID_ENTRY = "id"
+KEY_NAME_ENTRY = "nombre"
+KEY_MAIL_ENTRY = "correo"
+KEY_YEAR_ENTRY = "anio_ingreso"
+KEYS_NEEDED_FOR_STUDENT_JSON = (
+    [KEY_ID_ENTRY, KEY_MAIL_ENTRY, KEY_NAME_ENTRY, KEY_YEAR_ENTRY]
+)
+
 
 def get_all_students():
     students = Student.query.all()
@@ -85,13 +100,34 @@ def get_conflicting_schedules(timeslots_id, students_id, current_section_id):
     )
 
 def create_students_from_json(data):
-    if validate_json_has_required_key(data, STUDENT_JSON_KEY):
-        students = data.get('alumnos', [])
-        for student in students:
-            student_data = transform_json_entry_into_processable_student_format(
-                student
-            )
-        create_student(student_data)
+    if not validate_json_has_required_key(data, STUDENT_JSON_KEY):
+        return None
+    
+    students = data.get('alumnos', [])
+
+    #Validation cicle  (Will break if an entry it's not valid -----------------
+    for student in students:
+        if not validate_entry_has_required_keys(
+        student, KEYS_NEEDED_FOR_STUDENT_JSON
+        ):
+            return None
+        
+        if not validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_student_format(student),
+            "student"
+        ):
+            return None
+        
+    #Creation cicle (Will only execute if ALL validations pass) -----------
+    #(Thus, two for cicles are needed) ------------------------------------
+    for student in students:
+        student_data=transform_json_entry_into_processable_student_format( 
+            student
+        )
+        if student_data: 
+            create_student(student_data)
+        else:
+            break
 
 def transform_json_entry_into_processable_student_format(student):
     name = student.get('nombre', '')

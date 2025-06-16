@@ -3,9 +3,19 @@ from collections import defaultdict
 from app import db
 from app.models import Teacher, CourseSection, Schedule
 
-from app.validators.data_load_validators import validate_json_has_required_key
+from app.validators.data_load_validators import (
+    validate_json_has_required_key, validate_entry_has_required_keys,
+    validate_entry_can_be_loaded
+    )
 
 TEACHERS_JSON_KEY = "profesores"
+KEY_ID_ENTRY = "id"
+KEY_NAME_ENTRY = "nombre"
+KEY_MAIL_ENTRY = "correo"
+KEYS_NEEDED_FOR_TEACHER_JSON = (
+    [KEY_ID_ENTRY, KEY_MAIL_ENTRY, KEY_NAME_ENTRY]
+)
+
 
 def get_all_teachers():
     teachers = Teacher.query.all()
@@ -108,13 +118,34 @@ def validate_teacher_overload(ranked_sections, timeslots):
     return True, ''
 
 def create_teachers_from_json(data):
-    if validate_json_has_required_key(data, TEACHERS_JSON_KEY):
-        teachers = data.get('profesores', [])
-        for teacher in teachers:
-            teacher_data = transform_json_entry_into_processable_teacher_format(
-                teacher
-            )
+    if not validate_json_has_required_key(data, TEACHERS_JSON_KEY):
+        return None
+    
+    teachers = data.get('profesores', [])
+    
+    #Validation cicle  (Will break if an entry it's not valid -----------------
+    for teacher in teachers:
+        if not validate_entry_has_required_keys(
+        teacher, KEYS_NEEDED_FOR_TEACHER_JSON
+        ):
+            return None
+        
+        if not validate_entry_can_be_loaded(
+        transform_json_entry_into_processable_teacher_format(teacher),
+        "teacher"
+        ):
+            return None
+          
+    #Creation cicle (Will only execute if ALL validations pass) -----------
+    #(Thus, two for cicles are needed) ------------------------------------
+    for teacher in teachers:
+        teacher_data= transform_json_entry_into_processable_teacher_format(
+            teacher)
+        if teacher_data: 
             create_teacher(teacher_data)
+        else:
+            break
+
 
 def transform_json_entry_into_processable_teacher_format(teacher):
     name = teacher.get('nombre', '')
