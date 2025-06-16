@@ -1,17 +1,17 @@
 from app.models import Classroom
-MAX_NAME_LENGTH = 20
-MIN_CAPACITY = 1
-MAX_CAPACITY = 400
-KEY_NAME_ENTRY = 'name'
-KEY_CAPACITY_ENTRY = 'capacity'
-KEY_ID_ENTRY = 'id'
+from app.validators.constants import (
+    KEY_CAPACITY_ENTRY, KEY_ID_ENTRY, KEY_NAME_ENTRY,
+    MIN_CAPACITY, MAX_CAPACITY, MAX_NAME_LENGTH,
+    MUST_BE_INT, MUST_BE_STRING, MUST_BE_STRING_OR_INT,
+    MUST_BE, OVERFLOWS, CHARACTERS, ALREADY_EXISTS
+)
 
 def validate_classroom_data_and_return_errors(data, classroom_id=None):
     typing_errors = return_classroom_typing_errors(data)
 
     #Since typing errors are exclusive to JSON load, should return inmediatly.
     if typing_errors:
-        return(typing_errors)
+        return typing_errors
     
     attribute_errors = return_classroom_attribute_errors(data, classroom_id)
 
@@ -24,13 +24,15 @@ def return_classroom_typing_errors(data):
     id = data.get(KEY_ID_ENTRY) or ''
 
     if not (isinstance(id, int) or (id == '')):
-        errors[KEY_ID_ENTRY] = 'El id debe ser un int'
+        errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'
         
     if not isinstance(name, str):
-        errors[KEY_NAME_ENTRY] = 'El nombre debe ser un string'
+        errors[KEY_NAME_ENTRY] = f'{KEY_NAME_ENTRY} {MUST_BE_STRING}'
 
     if not (isinstance(capacity, str) or isinstance(capacity, int)):
-        errors[KEY_CAPACITY_ENTRY] = 'La capacidad debe ser un int o un string'
+        errors[KEY_CAPACITY_ENTRY] = (
+            f'{KEY_CAPACITY_ENTRY} {MUST_BE_STRING_OR_INT}'
+        )
 
     return errors
 
@@ -51,10 +53,10 @@ def return_classroom_attribute_errors(data, classroom_id):
 def return_classroom_name_errors(name, classroom_id):
     errors = {}
     if not name:
-        errors[KEY_NAME_ENTRY] = 'El nombre es obligatorio.'
+        errors[KEY_NAME_ENTRY] = f'{KEY_NAME_ENTRY} {MUST_BE}'
     elif len(name) > MAX_NAME_LENGTH:
         errors[KEY_NAME_ENTRY] = (
-            f'El nombre no puede superar los {MAX_NAME_LENGTH} caracteres.'
+            f'{KEY_NAME_ENTRY} {OVERFLOWS} 0 - {MAX_NAME_LENGTH} {CHARACTERS}'
         )
     else:
         existing_classroom = Classroom.query.filter_by(
@@ -64,22 +66,24 @@ def return_classroom_name_errors(name, classroom_id):
         if existing_classroom and (
             classroom_id is None or existing_classroom.id != classroom_id
         ):
-            errors[KEY_NAME_ENTRY] = f'Esta sala ya existe ({name}).'
+            errors[KEY_NAME_ENTRY] = f'{KEY_NAME_ENTRY} {ALREADY_EXISTS}'
 
     return errors
 
 def return_classroom_capacity_errors(capacity):
     errors = {}
     if not capacity:
-        errors[KEY_CAPACITY_ENTRY] = 'La capacidad es obligatoria.'
+        errors[KEY_CAPACITY_ENTRY] = f'{KEY_CAPACITY_ENTRY} {MUST_BE}'
     else:
         try:
             capacity = int(capacity)
             if capacity < MIN_CAPACITY or capacity > MAX_CAPACITY:
                 errors[KEY_CAPACITY_ENTRY] = (
-                    f'La capacidad debe ser un valor entre '
-                    f'{MIN_CAPACITY} y {MAX_CAPACITY}.'
+                    f'{KEY_CAPACITY_ENTRY} {OVERFLOWS} '
+                    f'{MIN_CAPACITY} - {MAX_CAPACITY}.'
                 )
         except ValueError:
-            errors[KEY_CAPACITY_ENTRY] = 'La capacidad debe ser un número entero.'
+            errors[KEY_CAPACITY_ENTRY] = (
+                f'{KEY_CAPACITY_ENTRY} {MUST_BE_STRING_OR_INT}'
+                )
     return errors

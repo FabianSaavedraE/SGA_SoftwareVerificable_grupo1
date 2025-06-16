@@ -3,7 +3,7 @@ from flask import (
     redirect, flash, url_for
 )
 from app.validators.student_validator import validate_student_data
-from app.validators.teacher_validator import validate_teacher_data
+from app.validators.teacher_validator import validate_teacher_data_and_return_errors
 from app.validators.classroom_validator import (
     validate_classroom_data_and_return_errors
 )
@@ -11,7 +11,7 @@ from app.validators.classroom_validator import (
 
 VALIDATORS = {
     'student': validate_student_data,
-    'teacher': validate_teacher_data,
+    'teacher': validate_teacher_data_and_return_errors,
     'classroom': validate_classroom_data_and_return_errors
 }
   

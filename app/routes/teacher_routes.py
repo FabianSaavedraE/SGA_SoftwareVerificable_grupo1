@@ -4,7 +4,7 @@ from app.controllers.teacher_controller import (
     get_all_teachers, get_teacher, create_teacher,
     update_teacher, delete_teacher, create_teachers_from_json
 )
-from app.validators.teacher_validator import validate_teacher_data
+from app.validators.teacher_validator import validate_teacher_data_and_return_errors
 
 from app.validators.data_load_validators import(
      validate_json_file_and_return_processed_file
@@ -22,7 +22,7 @@ def get_teachers_view():
 def create_teacher_view():
     if request.method == 'POST':
         data = request.form
-        errors = validate_teacher_data(data)
+        errors = validate_teacher_data_and_return_errors(data)
         
         if errors:
             return render_template('teachers/create.html', errors=errors)
@@ -40,7 +40,7 @@ def update_teacher_view(teacher_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_teacher_data(data, teacher_id)
+        errors = validate_teacher_data_and_return_errors(data, teacher_id)
 
         if errors:
             return render_template(
