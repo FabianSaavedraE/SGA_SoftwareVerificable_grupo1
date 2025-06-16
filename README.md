@@ -64,7 +64,7 @@ python run.py
 # Uso
 1. **Carga de datos JSON**
 
-La carga de datos JSON debe seguir el siguiente órden dado:
+La carga de datos JSON debe seguir el siguiente orden dado:
 
  - Primeros tres, cualquiera de entre alumnos (botón de carga disponible en vista de alumnos), profesores (botón de carga disponible en vista de profesores), cursos (botón de carga disponible en vista de cursos)
 
@@ -90,15 +90,20 @@ Esto lleva a un menú donde se puede seleccionar el año y el semestre en que se
 # Tests Unitarios
 
 Para ejecutar los tests con el detalle de cobertura, se debe ingresar el siguiente comando desde el directorio raíz:
+
 ```
-pytest --cov=app --cov-report=term
+pytest
 ```
+
+Esto ejecuta los tests y mostrará el detalle de cobertura en el terminal. Además, se crea una carpeta `htmlcov` que contiene un archivo `index.html`, al abrirlo, se mostrará un análisis más detallado.
 
 # Static Analysis
 
 Este proyecto utiliza el linter **Ruff** y la extensión **Code Spell Checker** de VSCode (configurada para español e inglés).
 
-**Code Spell Checker** marca como errores de ortografía algunas palabras que no es posible modificar, como los nombres de campos en archivos JSON que no incluyen acentos. Por ejemplo, términos como `"seccion"` o `"descripcion"` son resaltados por la extensión, pero no deben corregirse ya que corresponden directamente a las claves utilizadas en los datos de entrada.
+**Code Spell Checker** marca como errores de ortografía algunas palabras que no son posible modificar, como los nombres de campos en archivos JSON que no incluyen acentos. Por ejemplo, términos como `"seccion"` o `"descripcion"` son resaltados por la extensión, pero no se corrigieron ya que corresponden directamente a las claves utilizadas en los datos de entrada.
+
+Otras palabras de uso interno como `timeslot(s)`, `ponderation(s)` y `prerrequisito(s)`, también se muestran como errores, pero se decidieron no modificar por el mismo motivo explicado anteriormente. 
 
 Para verificar errores de estilo con Ruff, ejecutar el siguiente comando:
 

@@ -191,7 +191,7 @@ def add_evaluation_topics_and_evaluations_to_section(
 
         create_evaluation_type(evaluation_instance_data)
 
-        # Prepare the data for instanciating an evaluation on a topic.
+        # Prepare the data for instantiating an evaluation on a topic.
         topic = evaluation_instances_topics.get(str(evaluation_instance_id))
         evaluation_values = topic.get('valores')
         evaluation_id = topic.get('id')

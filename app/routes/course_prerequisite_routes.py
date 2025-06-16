@@ -11,9 +11,10 @@ from app.controllers.course_controller import get_all_courses, get_course
 from app.controllers.course_prerequisites_controllers import (
     create_course_prerequisites,
     delete_course_prerequisite,
+    get_all_course_prerequisites,
     get_course_prerequisite,
+    get_prerequisites_by_course,
 )
-from app.models.course_prerequisite import CoursePrerequisite
 from app.validators.course_prerequisites_validator import (
     validate_prerequisites,
 )
@@ -25,7 +26,7 @@ course_prerequisite_bp = Blueprint(
 
 @course_prerequisite_bp.route('/', methods=['GET'])
 def get_course_prerequisites():
-    all_prerequisites = get_all_prerequisites()
+    all_prerequisites = get_all_course_prerequisites()
     grouped = group_course_prerequisites(all_prerequisites)
 
     return render_template(
@@ -89,7 +90,7 @@ def update_course_prerequisite_view(course_id):
             return render_template(
                 'course_prerequisites/edit.html',
                 course=course,
-                prerequisites=filter_prerequisites(course_id),
+                prerequisites=get_prerequisites_by_course(course_id),
                 available_prerequisites=get_all_courses(),
                 errors=errors,
             )
@@ -103,7 +104,7 @@ def update_course_prerequisite_view(course_id):
             )
         )
 
-    prerequisites = filter_prerequisites(course_id)
+    prerequisites = get_prerequisites_by_course(course_id)
     available_prerequisites = get_all_courses()
 
     return render_template(
@@ -140,15 +141,3 @@ def group_course_prerequisites(prerequisites):
         )
 
     return grouped
-
-
-def get_all_prerequisites():
-    return CoursePrerequisite.query.all()
-
-
-def get_course_prerequisite(course_id, prerequisite_id):
-    return CoursePrerequisite.query.get((course_id, prerequisite_id))
-
-
-def filter_prerequisites(course_id):
-    return CoursePrerequisite.query.filter_by(course_id=course_id).all()

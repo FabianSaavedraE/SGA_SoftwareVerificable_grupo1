@@ -38,5 +38,6 @@ Thumbs.db
 # Ruff
 .ruff_cache
 
-# Pytest
+# Tests
 .pytest_cache
+htmlcov

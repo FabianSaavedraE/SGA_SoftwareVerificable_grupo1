@@ -12,6 +12,10 @@ def get_course_prerequisite(course_id, prerequisite_id):
     ).first()
 
 
+def get_prerequisites_by_course(course_id):
+    return CoursePrerequisite.query.filter_by(course_id=course_id).all()
+
+
 def create_course_prerequisite(course_id, prerequisite_id):
     new_prerequisite = CoursePrerequisite(
         course_id=course_id, prerequisite_id=prerequisite_id
