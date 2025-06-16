@@ -5,8 +5,11 @@ MAX_LENGTH_EMAIL = 50
 KEY_FIRST_NAME_ENTRY = "first_name"
 KEY_LAST_NAME_ENTRY = "last_name"
 KEY_EMAIL_ENTRY = "email"
+KEY_ENTRY_YEAR = "entry_year"
 MAX_LENGTH_USERS_NAME = 50
 KEY_USER_NAME = 'nombre'
+MIN_VALID_ENTRY_YEAR = 1980
+MAX_VALID_ENTRY_YEAR = 2025
 
 #General use constants --------------------------------------------------------
 MAX_NAME_LENGTH = 20
@@ -26,6 +29,6 @@ MUST_BE_INT = 'debe ser un int'
 MUST_BE_STRING_OR_INT = 'debe ser un string o un int'
 MUST_BE = 'es obligatorio'
 MUST_CONTAIN = 'debe contener'
-OVERFLOWS = 'supera el rango establecido de'
+OVERFLOWS = 'cae fuera del rango establecido de'
 CHARACTERS = 'caractéres'
 ALREADY_EXISTS = 'ya existe en la base de datos'

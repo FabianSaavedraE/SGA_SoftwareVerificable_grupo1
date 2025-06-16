@@ -40,7 +40,7 @@ def return_teacher_typing_errors(data):
         )
 
     if not (isinstance(id, int) or (id == '')):
-            errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'
+        errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'
 
     return errors
 
@@ -77,7 +77,7 @@ def return_teacher_name_errors(key, name):
 
     elif len(name) > MAX_LENGTH_USERS_NAME:
         errors[key] = (
-            f'{key} {OVERFLOWS} 0 - {MAX_LENGTH_USERS_NAME} {CHARACTERS}.'
+            f'{key} {OVERFLOWS} 1 - {MAX_LENGTH_USERS_NAME} {CHARACTERS}.'
         )
     
     return errors
@@ -91,7 +91,7 @@ def return_teacher_email_errors(email, teacher_id):
     elif len(email) > MAX_LENGTH_EMAIL:
         errors[KEY_EMAIL_ENTRY] = (
             f'{KEY_EMAIL_ENTRY} {OVERFLOWS}'
-            f' 0 - {MAX_LENGTH_EMAIL} {CHARACTERS}'
+            f' 1 - {MAX_LENGTH_EMAIL} {CHARACTERS}'
         )
 
     elif "@" not in email:

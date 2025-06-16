@@ -4,7 +4,6 @@ from app.validators.constants import (
     MIN_CAPACITY, MAX_CAPACITY, MAX_NAME_LENGTH,
     MUST_BE_INT, MUST_BE_STRING, MUST_BE_STRING_OR_INT,
     MUST_BE, OVERFLOWS, CHARACTERS, ALREADY_EXISTS,
-    KEY_CAPACITY_JSON
 )
 
 def validate_classroom_data_and_return_errors(data, classroom_id=None):
@@ -57,7 +56,7 @@ def return_classroom_name_errors(name, classroom_id):
         errors[KEY_NAME_ENTRY] = f'{KEY_NAME_ENTRY} {MUST_BE}'
     elif len(name) > MAX_NAME_LENGTH:
         errors[KEY_NAME_ENTRY] = (
-            f'{KEY_NAME_ENTRY} {OVERFLOWS} 0 - {MAX_NAME_LENGTH} {CHARACTERS}'
+            f'{KEY_NAME_ENTRY} {OVERFLOWS} 1 - {MAX_NAME_LENGTH} {CHARACTERS}'
         )
     else:
         existing_classroom = Classroom.query.filter_by(

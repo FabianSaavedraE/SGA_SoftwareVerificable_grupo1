@@ -5,7 +5,6 @@ from flask import flash
 
 from app import db
 from app.models import Student, Schedule, CourseSection, StudentCourses
-from app.validators.student_validator import normalize_entry_year
 from app.validators.data_load_validators import (
     validate_json_has_required_key, validate_entry_has_required_keys,
     validate_entry_can_be_loaded
@@ -34,13 +33,12 @@ def get_student(student_id):
     return student
 
 def create_student(data):
-    entry_year = normalize_entry_year(data.get('entry_year'))
 
     new_student = Student(
         first_name = data.get('first_name'),
         last_name = data.get('last_name'),
         email = data.get('email'),
-        entry_year=entry_year
+        entry_year=data.get('entry_year')
     )
 
     db.session.add(new_student)
@@ -55,9 +53,7 @@ def update_student(student, data):
     student.first_name = data.get('first_name', student.first_name)
     student.last_name = data.get('last_name', student.last_name)
     student.email = data.get('email', student.email)
-    student.entry_year = normalize_entry_year(
-        data.get('entry_year', student.entry_year)
-    )
+    student.entry_year = data.get('entry_year', student.entry_year)
 
     db.session.commit()
     return student
@@ -131,11 +127,12 @@ def create_students_from_json(data):
 
 def transform_json_entry_into_processable_student_format(student):
     name = student.get('nombre', '')
-    name_parts = name.strip().split()
     data = {
-            'first_name' : name_parts[0],
+            'first_name' : name.split()[0] if isinstance(name, str) else name,
             'last_name' : (
-                ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+                ' '.join(name.split()[1:]) if
+                (isinstance(name, str) and len(name.split()) > 1)
+                else ('')
             ),
             'email' : student.get('correo'),
             'entry_year' : int(student.get('anio_ingreso'))

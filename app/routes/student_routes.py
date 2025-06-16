@@ -7,7 +7,7 @@ from app.controllers.student_controller import (
     delete_student, create_students_from_json, export_student_report_to_excel
 )
 from app.validators.student_validator import (
-    validate_student_data
+    validate_student_data_and_return_errors
 )
 
 from app.validators.data_load_validators import(
@@ -28,7 +28,7 @@ def get_students_view():
 def create_student_view():
     if request.method == 'POST':
         data = request.form
-        errors = validate_student_data(data)
+        errors = validate_student_data_and_return_errors(data)
     
         if errors:
             return render_template('students/create.html', errors=errors)
@@ -50,7 +50,7 @@ def update_student_view(student_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_student_data(data, student_id)
+        errors = validate_student_data_and_return_errors(data, student_id)
 
         if errors:
             return render_template(
