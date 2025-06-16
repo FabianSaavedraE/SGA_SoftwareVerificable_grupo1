@@ -21,7 +21,7 @@ def validate_classroom_data_and_return_errors(data, classroom_id=None):
 def return_classroom_typing_errors(data):
     errors = {}
     name = data.get(KEY_NAME_ENTRY) or ''
-    capacity = data.get(KEY_CAPACITY_JSON) or ''
+    capacity = data.get(KEY_CAPACITY_ENTRY) or ''
     id = data.get(KEY_ID_ENTRY) or ''
 
     if not (isinstance(id, int) or (id == '')):
@@ -39,7 +39,7 @@ def return_classroom_typing_errors(data):
 
 def return_classroom_attribute_errors(data, classroom_id):
     name = (data.get(KEY_NAME_ENTRY) or '').strip()
-    capacity = data.get(KEY_CAPACITY_JSON) or ''
+    capacity = data.get(KEY_CAPACITY_ENTRY) or ''
     if isinstance(capacity, str):
         capacity = capacity.strip()
 
