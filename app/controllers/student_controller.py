@@ -4,8 +4,13 @@ import pandas as pd
 
 from app import db
 from app.models import CourseSection, Schedule, Student, StudentCourses
-from app.validators.student_validator import normalize_entry_year
+from app.validators.data_load_validators import (
+    validate_entry_can_be_loaded,
+    validate_entry_has_required_keys,
+    validate_json_has_required_key,
+)
 
+STUDENT_JSON_KEY = 'alumnos'
 CLOSED_STATE = 'Closed'
 REPORT_COLUMNS = [
     'Curso',
@@ -14,6 +19,17 @@ REPORT_COLUMNS = [
     'Sección',
     'Nota Final',
     'Estado',
+]
+
+KEY_ID_ENTRY = 'id'
+KEY_NAME_ENTRY = 'nombre'
+KEY_MAIL_ENTRY = 'correo'
+KEY_YEAR_ENTRY = 'anio_ingreso'
+KEYS_NEEDED_FOR_STUDENT_JSON = [
+    KEY_ID_ENTRY,
+    KEY_MAIL_ENTRY,
+    KEY_NAME_ENTRY,
+    KEY_YEAR_ENTRY,
 ]
 
 
@@ -28,13 +44,11 @@ def get_student(student_id):
 
 
 def create_student(data):
-    entry_year = normalize_entry_year(data.get('entry_year'))
-
     new_student = Student(
         first_name=data.get('first_name'),
         last_name=data.get('last_name'),
         email=data.get('email'),
-        entry_year=entry_year,
+        entry_year=data.get('entry_year'),
     )
 
     db.session.add(new_student)
@@ -50,9 +64,7 @@ def update_student(student, data):
     student.first_name = data.get('first_name', student.first_name)
     student.last_name = data.get('last_name', student.last_name)
     student.email = data.get('email', student.email)
-    student.entry_year = normalize_entry_year(
-        data.get('entry_year', student.entry_year)
-    )
+    student.entry_year = data.get('entry_year', student.entry_year)
 
     db.session.commit()
     return student
@@ -98,20 +110,45 @@ def get_conflicting_schedules(timeslots_id, students_id, current_section_id):
 
 
 def create_students_from_json(data):
+    if not validate_json_has_required_key(data, STUDENT_JSON_KEY):
+        return None
+
     students = data.get('alumnos', [])
+
+    # Validation cicle  (Will break if an entry it's not valid ----------------
+    for student in students:
+        if not validate_entry_has_required_keys(
+            student, KEYS_NEEDED_FOR_STUDENT_JSON
+        ):
+            return None
+
+        if not validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_student_format(student),
+            'student',
+        ):
+            return None
+
+    # Creation cicle (Will only execute if ALL validations pass) -----------
+    # (Thus, two for cicles are needed) ------------------------------------
     for student in students:
         student_data = transform_json_entry_into_processable_student_format(
             student
         )
-        create_student(student_data)
+        if student_data:
+            create_student(student_data)
+        else:
+            break
 
 
 def transform_json_entry_into_processable_student_format(student):
     name = student.get('nombre', '')
-    name_parts = name.strip().split()
     data = {
-        'first_name': name_parts[0],
-        'last_name': (' '.join(name_parts[1:]) if len(name_parts) > 1 else ''),
+        'first_name': name.split()[0] if isinstance(name, str) else name,
+        'last_name': (
+            ' '.join(name.split()[1:])
+            if (isinstance(name, str) and len(name.split()) > 1)
+            else ('')
+        ),
         'email': student.get('correo'),
         'entry_year': int(student.get('anio_ingreso')),
     }

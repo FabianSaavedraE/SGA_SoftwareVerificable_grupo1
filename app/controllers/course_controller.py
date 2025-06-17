@@ -8,9 +8,28 @@ from app.controllers.course_section_controller import (
     close_all_sections_for_course,
 )
 from app.models import Course
+from app.validators.constants import (
+    CODE_LENGTH,
+    COURSE_CODE_PREFIX,
+    KEY_CODE_JSON,
+    KEY_COURSE_JSON,
+    KEY_CREDITS_JSON,
+    KEY_DESCRIPTION_JSON,
+    KEY_ID_ENTRY,
+)
+from app.validators.data_load_validators import (
+    flash_custom_error,
+    validate_entry_can_be_loaded,
+    validate_entry_has_required_keys,
+    validate_json_has_required_key,
+)
 
-COURSE_CODE_PREFIX = 'ICC'
-CODE_LENGTH = 4
+KEYS_REQUIRED_JSON = [
+    KEY_DESCRIPTION_JSON,
+    KEY_CODE_JSON,
+    KEY_ID_ENTRY,
+    KEY_CREDITS_JSON,
+]
 
 
 def get_all_courses():
@@ -97,11 +116,29 @@ def transform_code_to_valid_format(data):
 
 
 def create_courses_from_json(data):
+    if not validate_json_has_required_key(data, KEY_COURSE_JSON):
+        return None
+
+    # Validation cicle  (Will break if an entry it's not valid ----------------
     courses = data.get('cursos', [])
     for course in courses:
+        if not validate_entry_has_required_keys(course, KEYS_REQUIRED_JSON):
+            return None
+
+        is_valid_entry = validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_course_format(course),
+            'course',
+        )
+
+        if not is_valid_entry:
+            return None
+
+    # Creation cicle (Will only execute if ALL validations pass) -----------
+    # (Thus, two for cicles are needed) ------------------------------------
+    for course in courses:
+        # No need to check, if this executes, attributes exists and are valid
         id = course.get('id')
         prerequisites = course.get('requisitos')
-
         course_data = transform_json_entry_into_processable_course_format(
             course
         )
@@ -148,7 +185,17 @@ def handle_course_with_existing_id(id):
 
 
 def generate_prerequisites(id, prerequisites):
+    # Since the creation of prerequisites is sequential in the JSON file, there
+    # is no simple way to avoid the creation of failed prerequisite JSON files
+    # Since it's a mistake that can be fixed in the front_end, this solution
+    # only avoids page collapsing, yet does not provide real work
     for prerequisite in prerequisites:
         course = Course.query.filter_by(code=prerequisite).first()
-        prerequisite_id = course.id
-        create_course_prerequisite(id, prerequisite_id)
+        if not course:
+            flash_custom_error(
+                f'prerequisito {prerequisite} no existe,'
+                f' curso creado sin prerequisito dado.'
+            )
+        else:
+            prerequisite_id = course.id
+            create_course_prerequisite(id, prerequisite_id)

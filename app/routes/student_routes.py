@@ -17,7 +17,12 @@ from app.controllers.student_controller import (
     get_student,
     update_student,
 )
-from app.validators.student_validator import validate_student_data
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file,
+)
+from app.validators.student_validator import (
+    validate_student_data_and_return_errors,
+)
 
 student_bp = Blueprint('students', __name__, url_prefix='/students')
 
@@ -35,7 +40,7 @@ def get_students_view():
 def create_student_view():
     if request.method == 'POST':
         data = request.form
-        errors = validate_student_data(data)
+        errors = validate_student_data_and_return_errors(data)
 
         if errors:
             return render_template('students/create.html', errors=errors)
@@ -58,7 +63,7 @@ def update_student_view(student_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_student_data(data, student_id)
+        errors = validate_student_data_and_return_errors(data, student_id)
 
         if errors:
             return render_template(
@@ -87,14 +92,11 @@ def upload_students_json():
     if not file:
         return redirect(url_for('students.get_students_view'))
 
-    import json
+    data = validate_json_file_and_return_processed_file(file)
 
-    try:
-        data = json.load(file)
-    except Exception:
-        return redirect(url_for('students.get_students_view'))
+    if data:
+        create_students_from_json(data)
 
-    create_students_from_json(data)
     return redirect(url_for('students.get_students_view'))
 
 

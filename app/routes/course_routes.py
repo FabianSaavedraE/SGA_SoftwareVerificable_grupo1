@@ -8,7 +8,12 @@ from app.controllers.course_controller import (
     get_course,
     update_course,
 )
-from app.validators.course_validator import validate_course_data
+from app.validators.course_validator import (
+    validate_course_data_and_return_errors,
+)
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file,
+)
 
 course_bp = Blueprint('courses', __name__, url_prefix='/courses')
 
@@ -32,7 +37,7 @@ def show_course_view(course_id):
 def create_course_view():
     if request.method == 'POST':
         data = request.form
-        errors = validate_course_data(data)
+        errors = validate_course_data_and_return_errors(data)
 
         if errors:
             return render_template(
@@ -53,7 +58,9 @@ def update_course_view(course_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_course_data(data, course_id=course_id)
+        errors = validate_course_data_and_return_errors(
+            data, course_id=course_id
+        )
 
         if errors:
             return render_template(
@@ -82,14 +89,9 @@ def upload_courses_json():
     if not file:
         return redirect(url_for('courses.get_courses_view'))
 
-    import json
+    data = validate_json_file_and_return_processed_file(file)
 
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print('Error leyendo JSON:', e)
-        return redirect(url_for('courses.get_courses_view'))
-
-    create_courses_from_json(data)
+    if data:
+        create_courses_from_json(data)
 
     return redirect(url_for('courses.get_courses_view'))

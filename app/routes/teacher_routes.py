@@ -8,7 +8,12 @@ from app.controllers.teacher_controller import (
     get_teacher,
     update_teacher,
 )
-from app.validators.teacher_validator import validate_teacher_data
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file,
+)
+from app.validators.teacher_validator import (
+    validate_teacher_data_and_return_errors,
+)
 
 teacher_bp = Blueprint('teachers', __name__, url_prefix='/teachers')
 
@@ -23,7 +28,7 @@ def get_teachers_view():
 def create_teacher_view():
     if request.method == 'POST':
         data = request.form
-        errors = validate_teacher_data(data)
+        errors = validate_teacher_data_and_return_errors(data)
 
         if errors:
             return render_template('teachers/create.html', errors=errors)
@@ -42,7 +47,7 @@ def update_teacher_view(teacher_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_teacher_data(data, teacher_id)
+        errors = validate_teacher_data_and_return_errors(data, teacher_id)
 
         if errors:
             return render_template(
@@ -71,12 +76,8 @@ def upload_teachers_json():
     if not file:
         return redirect(url_for('teachers.get_teachers_view'))
 
-    import json
+    data = validate_json_file_and_return_processed_file(file)
 
-    try:
-        data = json.load(file)
-    except Exception:
-        return redirect(url_for('teachers.get_teachers_view'))
-
-    create_teachers_from_json(data)
+    if data:
+        create_teachers_from_json(data)
     return redirect(url_for('teachers.get_teachers_view'))

@@ -15,11 +15,24 @@
             Lista de Salas
         </div>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                {{ message }}
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
         <div class="box">
 
             <form action="{{ url_for('classrooms.upload_classrooms_json') }}" method="POST"
                 enctype="multipart/form-data">
-                <label for="jsonFile" class="top-button">Cargar cursos desde JSON</label>
+                <label for="jsonFile" class="top-button">Cargar salas desde JSON</label>
                 <input type="file" id="jsonFile" name="jsonFile" accept=".json" style="display:none;"
                     onchange="this.form.submit()">
             </form>
@@ -59,8 +72,6 @@
             <a href="/" class="go-back">Volver al inicio</a>
 
         </div>
-
-    </div>
 </body>
 
 </html>

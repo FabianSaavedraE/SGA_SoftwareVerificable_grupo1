@@ -8,7 +8,12 @@ from app.controllers.classroom_controller import (
     get_classroom,
     update_classroom,
 )
-from app.validators.classroom_validator import validate_classroom_data
+from app.validators.classroom_validator import (
+    validate_classroom_data_and_return_errors,
+)
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file,
+)
 
 classroom_bp = Blueprint('classrooms', __name__, url_prefix='/classrooms')
 
@@ -23,7 +28,7 @@ def get_classrooms_view():
 def create_classroom_view():
     if request.method == 'POST':
         data = request.form
-        errors = validate_classroom_data(data)
+        errors = validate_classroom_data_and_return_errors(data)
 
         if errors:
             return render_template('classrooms/create.html', errors=errors)
@@ -46,7 +51,7 @@ def update_classroom_view(classroom_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_classroom_data(data, classroom_id)
+        errors = validate_classroom_data_and_return_errors(data, classroom_id)
 
         if errors:
             return render_template(
@@ -75,14 +80,9 @@ def upload_classrooms_json():
     if not file:
         return redirect(url_for('classrooms.get_classrooms_view'))
 
-    import json
+    data = validate_json_file_and_return_processed_file(file)
 
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print('Error leyendo JSON:', e)
-        return redirect(url_for('classrooms.get_classrooms_view'))
-
-    create_classroom_from_json(data)
+    if data:
+        create_classroom_from_json(data)
 
     return redirect(url_for('classrooms.get_classrooms_view'))

@@ -9,7 +9,12 @@ from app.controllers.course_instance_controller import (
     get_course_instance,
     update_course_instance,
 )
-from app.validators.course_instance_validator import validate_course_instance
+from app.validators.course_instance_validator import (
+    validate_course_instance_and_return_errors,
+)
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file,
+)
 
 course_instance_bp = Blueprint(
     'course_instances', __name__, url_prefix='/course_instances'
@@ -51,7 +56,7 @@ def create_course_instance_view(course_id):
     error = None
     if request.method == 'POST':
         data = build_course_instance_data(request.form, course_id)
-        errors = validate_course_instance(data)
+        errors = validate_course_instance_and_return_errors(data)
 
         if errors:
             return render_template(
@@ -80,7 +85,9 @@ def update_course_instance_view(course_instance_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_course_instance(data, course_instance_id)
+        errors = validate_course_instance_and_return_errors(
+            data, course_instance_id
+        )
 
         if errors:
             return render_template(
@@ -107,15 +114,10 @@ def upload_course_instances_json():
     if not file:
         return redirect(url_for('course_instances.get_course_instances_view'))
 
-    import json
+    data = validate_json_file_and_return_processed_file(file)
 
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print('Error leyendo JSON:', e)
-        return redirect(url_for('course_instances.get_course_instances_view'))
-
-    create_course_instances_from_json(data)
+    if data:
+        create_course_instances_from_json(data)
 
     return redirect(url_for('course_instances.get_course_instances_view'))
 

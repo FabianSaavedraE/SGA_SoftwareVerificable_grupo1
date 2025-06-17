@@ -8,6 +8,9 @@ from app.controllers.student_evaluation_controller import (
     get_student_evaluation,
     update_student_evaluation,
 )
+from app.validators.data_load_validators import (
+    validate_json_file_and_return_processed_file,
+)
 from app.validators.student_evaluation_validator import (
     validate_student_evaluation_data,
 )
@@ -65,15 +68,10 @@ def upload_student_evaluation_json():
     if not file:
         return redirect(url_for('course_sections.get_sections_view'))
 
-    import json
+    data = validate_json_file_and_return_processed_file(file)
 
-    try:
-        data = json.load(file)
-    except Exception as e:
-        print('Error leyendo JSON:', e)
-        return redirect(url_for('course_sections.get_sections_view'))
-
-    create_student_evaluation_json(data)
+    if data:
+        create_student_evaluation_json(data)
 
     return redirect(url_for('course_sections.get_sections_view'))
 

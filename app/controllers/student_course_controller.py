@@ -1,9 +1,11 @@
 from app import db
 from app.models import StudentCourses
+from app.validators.data_load_validators import validate_json_has_required_key
 
 APPROVED = 'Aprobado'
 FAILED = 'Reprobado'
 APPROVED_GRADE = 4
+STUDENT_COURSES_JSON_KEY = 'alumnos_seccion'
 
 
 def get_student_course(student_id, course_section_id):
@@ -73,14 +75,15 @@ def delete_student_course(student_id, course_section_id):
 
 
 def create_student_courses_from_json(data):
-    student_courses = data.get('alumnos_seccion', [])
-    for student_course in student_courses:
-        student_course_data = (
-            transform_json_entry_into_processable_student_course_format(
-                student_course
+    if validate_json_has_required_key(data, STUDENT_COURSES_JSON_KEY):
+        student_courses = data.get('alumnos_seccion', [])
+        for student_course in student_courses:
+            student_course_data = (
+                transform_json_entry_into_processable_student_course_format(
+                    student_course
+                )
             )
-        )
-        create_student_course(student_course_data)
+            create_student_course(student_course_data)
 
 
 def transform_json_entry_into_processable_student_course_format(

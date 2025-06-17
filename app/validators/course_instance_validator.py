@@ -1,50 +1,173 @@
 from datetime import datetime
 
-from app.controllers.course_instance_controller import get_course_instance
-from app.models import CourseInstance
+from app.models import Course
+from app.validators.constants import (
+    DOESNT_EXIST,
+    KEY_COURSE_ID_ENTRY,
+    KEY_ID_ENTRY,
+    KEY_INSTANCE_COURSE_ID_JSON,
+    KEY_INSTANCE_ID_ENTRY,
+    KEY_SEMESTER_ENTRY,
+    KEY_YEAR_ENTRY,
+    KEY_YEAR_JSON,
+    MIN_VALID_ENTRY_YEAR,
+    MUST_BE,
+    MUST_BE_INT,
+    MUST_BE_STRING_OR_INT,
+    OVERFLOWS,
+)
 
-MIN_YEAR = 1980
+
+def validate_course_instance_and_return_errors(data, course_instance_id=None):
+    typing_errors = return_instance_typing_errors(data)
+
+    # Since typing errors are exclusive to JSON load, should return inmediatly.
+    if typing_errors:
+        return typing_errors
+
+    attribute_errors = return_instance_attributes_errors(data)
+    return attribute_errors
 
 
-def validate_course_instance(data, course_instance_id=None):
+def return_instance_typing_errors(instance):
     errors = {}
+    year = instance.get(KEY_YEAR_ENTRY) or ''
+    semester = instance.get(KEY_SEMESTER_ENTRY) or ''
+    course_id = instance.get(KEY_INSTANCE_COURSE_ID_JSON) or ''
+    instance_id = instance.get(KEY_ID_ENTRY) or ''
 
-    year = get_stripped_field(data, 'year')
-    semester = get_stripped_field(data, 'semester')
-    course_id = get_stripped_field(data, 'course_id')
+    if not (isinstance(year, str) or isinstance(year, int)):
+        errors[KEY_YEAR_ENTRY] = f'{KEY_YEAR_ENTRY} {MUST_BE_STRING_OR_INT}'
 
-    validate_year(year, errors)
-    validate_semester(semester, errors)
-    validate_course_instance_uniqueness(
-        year, semester, course_instance_id, course_id, errors
-    )
+    if not (isinstance(semester, str) or isinstance(semester, int)):
+        errors[KEY_SEMESTER_ENTRY] = (
+            f'{KEY_SEMESTER_ENTRY} {MUST_BE_STRING_OR_INT}'
+        )
+
+    if not (
+        isinstance(course_id, int)
+        or course_id == ''
+        or isinstance(course_id, str)
+    ):
+        errors[KEY_INSTANCE_COURSE_ID_JSON] = (
+            f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE_STRING_OR_INT}'
+        )
+
+    if not (isinstance(instance_id, int) or instance_id == ''):
+        errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'
 
     return errors
 
 
-def get_stripped_field(data, field):
-    return (str(data.get(field) or '')).strip()
+def return_instance_attributes_errors(instance):
+    errors = {}
+
+    year = instance.get(KEY_YEAR_ENTRY) or ''
+    semester = instance.get(KEY_SEMESTER_ENTRY) or ''
+    course_id = instance.get(KEY_COURSE_ID_ENTRY) or ''
+    instance_id = instance.get(KEY_INSTANCE_ID_ENTRY) or ''
+
+    year_errors = return_instance_year_errors(year)
+    semester_errors = return_instance_semester_errors(semester)
+    course_id_errors = return_instance_course_id_errors(course_id)
+
+    errors.update(year_errors)
+    errors.update(semester_errors)
+    errors.update(course_id_errors)
+
+    return errors
 
 
-def validate_year(year, errors):
+def return_instance_year_errors(year):
+    errors = {}
+
     if not year:
-        errors['year'] = 'El año es obligatorio.'
-    elif not is_valid_year(year):
-        errors['year'] = (
-            f'El año debe estar entre {MIN_YEAR} y {datetime.now().year}'
+        errors[KEY_YEAR_ENTRY] = f'{KEY_YEAR_ENTRY} {MUST_BE}'
+        return errors
+
+    if isinstance(year, str):
+        try:
+            year = int(year)
+        except:
+            errors[KEY_YEAR_ENTRY] = f'{KEY_YEAR_ENTRY} {MUST_BE_INT}'
+            return errors
+
+    if not (MIN_VALID_ENTRY_YEAR <= year <= int(datetime.now().year)):
+        errors[KEY_YEAR_ENTRY] = (
+            f'{KEY_YEAR_ENTRY} {OVERFLOWS}'
+            f' {MIN_VALID_ENTRY_YEAR} - {datetime.now().year} {KEY_YEAR_JSON}s'
         )
 
+    return errors
 
-def validate_semester(semester, errors):
+
+def return_instance_semester_errors(semester):
+    errors = {}
+
     if not semester:
-        errors['semester'] = 'El semestre es obligatorio.'
+        errors[KEY_SEMESTER_ENTRY] = f'{KEY_SEMESTER_ENTRY} {MUST_BE}'
+        return errors
+
+    if isinstance(semester, str):
+        try:
+            semester = int(semester)
+        except:
+            errors[KEY_SEMESTER_ENTRY] = f'{KEY_SEMESTER_ENTRY} {MUST_BE_INT}'
+            return errors
+
+    if semester not in [1, 2]:
+        errors[KEY_SEMESTER_ENTRY] = f'{KEY_SEMESTER_ENTRY} {OVERFLOWS} 1-2'
+
+    return errors
 
 
-def validate_course_instance_uniqueness(
+def return_instance_course_id_errors(course_id):
+    errors = {}
+    if not course_id:
+        errors[KEY_INSTANCE_COURSE_ID_JSON] = (
+            f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE}'
+        )
+        return errors
+    if isinstance(course_id, str):
+        try:
+            course_id = int(course_id)
+        except:
+            errors[KEY_INSTANCE_COURSE_ID_JSON] = (
+                f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE_INT}'
+            )
+            return errors
+
+    if not Course.query.get(course_id):
+        errors[KEY_INSTANCE_COURSE_ID_JSON] = (
+            f'{KEY_INSTANCE_COURSE_ID_JSON} {course_id} {DOESNT_EXIST}'
+        )
+
+    return errors
+
+
+def return_instance_id_errors(instance_id):
+    errors = {}
+
+    if not instance_id:
+        errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE}'
+        return errors
+
+    if isinstance(instance_id, str):
+        try:
+            instance_id = int(instance_id)
+        except:
+            errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'
+
+    return errors
+
+
+"""
+Chiara don't know what this does, please fix!
+def validate_course_instance_uniqueness_and_return_errors(
     year, semester, course_instance_id, course_id, errors
 ):
     if not course_id and course_instance_id:
-        course_instance = get_course_instance(course_instance_id)
+        course_instance = CourseInstance.query.get(course_instance_id)
         if course_instance:
             course_id = course_instance.course_id
 
@@ -62,8 +185,12 @@ def validate_course_instance_uniqueness(
                 f'Ya existe una instancia de este curso para '
                 f'{year}-{semester}.'
             )
+"""
 
 
-def is_valid_year(year):
-    current_year = datetime.now().year
-    return MIN_YEAR <= int(year) <= int(current_year)
+def get_stripped_field(data, field):
+    return (str(data.get(field) or '')).strip()
+
+
+# def get_stripped_field(data, field):
+#     return (str(data.get(field) or '')).strip()

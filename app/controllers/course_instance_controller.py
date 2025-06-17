@@ -2,6 +2,24 @@ from sqlalchemy import func
 
 from app import db
 from app.models import CourseInstance
+from app.validators.constants import (
+    KEY_COURSE_ID_JSON,
+    KEY_ID_ENTRY,
+    KEY_INSTANCE_JSON,
+    KEY_SEMESTER_JSON,
+    KEY_YEAR_JSON,
+)
+from app.validators.data_load_validators import (
+    validate_entry_can_be_loaded,
+    validate_entry_has_required_keys,
+)
+
+KEYS_NEEDED_FOR_INSTANCE_JSON = [
+    KEY_INSTANCE_JSON,
+    KEY_SEMESTER_JSON,
+    KEY_YEAR_JSON,
+]
+KEYS_NEEDED_FOR_INSTANCE_ENTRY = [KEY_COURSE_ID_JSON, KEY_ID_ENTRY]
 
 
 def get_all_course_instances():
@@ -59,10 +77,33 @@ def delete_course_instance(course_instance):
 
 
 def create_course_instances_from_json(data):
-    year = data.get('año')
-    semester = data.get('semestre')
-    instances = data.get('instancias', [])
+    if not validate_entry_has_required_keys(
+        data, KEYS_NEEDED_FOR_INSTANCE_JSON
+    ):
+        return None
 
+    year = data.get(KEY_YEAR_JSON)
+    semester = data.get(KEY_SEMESTER_JSON)
+    instances = data.get(KEY_INSTANCE_JSON, [])
+
+    # First cicle, checks validations ------------------------------------------
+    for instance in instances:
+        if not validate_entry_has_required_keys(
+            instance, KEYS_NEEDED_FOR_INSTANCE_ENTRY
+        ):
+            return None
+
+        is_instance_valid = validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_course_instance_format(
+                year, semester, instance
+            ),
+            'instance',
+        )
+
+        if not is_instance_valid:
+            return None
+
+    # Second cicle, after validation of every entry creates --------------------
     for instance in instances:
         instance_id = instance.get('id')
         instance_data = (

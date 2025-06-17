@@ -1,5 +1,20 @@
 from app import db
 from app.models import Classroom, Schedule
+from app.validators.data_load_validators import (
+    validate_entry_can_be_loaded,
+    validate_entry_has_required_keys,
+    validate_json_has_required_key,
+)
+
+CLASSROOM_JSON_KEY = 'salas'
+KEY_ID_ENTRY = 'id'
+KEY_NAME_ENTRY = 'nombre'
+KEY_CAPACITY_ENTRY = 'capacidad'
+KEYS_NEEDED_FOR_CLASSROOM_JSON = [
+    KEY_ID_ENTRY,
+    KEY_NAME_ENTRY,
+    KEY_CAPACITY_ENTRY,
+]
 
 
 def get_all_classrooms():
@@ -12,18 +27,20 @@ def get_classroom(classroom_id):
 
 
 def create_classroom(data):
-    classroom_id = data.get('id')
-    new_classroom = Classroom(
-        name=data.get('name'), capacity=data.get('capacity')
-    )
+    if data:
+        classroom_id = data.get('id')
+        new_classroom = Classroom(
+            name=data.get('name'), capacity=data.get('capacity')
+        )
 
-    if classroom_id is not None:
-        new_classroom.id = classroom_id
+        if classroom_id is not None:
+            new_classroom.id = classroom_id
 
-    db.session.add(new_classroom)
-    db.session.commit()
+        db.session.add(new_classroom)
+        db.session.commit()
 
-    return new_classroom
+        return new_classroom
+    return None
 
 
 def update_classroom(classroom, data):
@@ -47,19 +64,45 @@ def delete_classroom(classroom):
 
 
 def create_classroom_from_json(data):
+    if not validate_json_has_required_key(data, CLASSROOM_JSON_KEY):
+        return None
+
     classrooms = data.get('salas', [])
+
+    # Validation cicle  (Will break if an entry it's not valid ----------------
+    for classroom in classrooms:
+        if not validate_entry_has_required_keys(
+            classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
+        ):
+            return None
+
+        if not validate_entry_can_be_loaded(
+            (transform_json_entry_into_classroom_format(classroom)),
+            'classroom',
+        ):
+            return None
+
+    # Creation cicle (Will only execute if ALL validations pass) --------------
+    # (Thus, two for cicles are needed) ---------------------------------------
     for classroom in classrooms:
         classroom_data = transform_json_entry_into_classroom_format(classroom)
-        create_classroom(classroom_data)
+        if classroom_data:
+            create_classroom(classroom_data)
+        else:
+            break
 
 
 def transform_json_entry_into_classroom_format(classroom):
-    data = {
-        'id': classroom.get('id'),
-        'name': classroom.get('nombre'),
-        'capacity': classroom.get('capacidad'),
-    }
-    return data
+    if validate_entry_has_required_keys(
+        classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
+    ):
+        data = {
+            'id': classroom.get('id'),
+            'name': classroom.get('nombre'),
+            'capacity': classroom.get('capacidad'),
+        }
+        return data
+    return None
 
 
 def get_available_classrooms_for_block(block, num_students):

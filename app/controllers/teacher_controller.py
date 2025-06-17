@@ -2,6 +2,17 @@ from collections import defaultdict
 
 from app import db
 from app.models import CourseSection, Schedule, Teacher
+from app.validators.data_load_validators import (
+    validate_entry_can_be_loaded,
+    validate_entry_has_required_keys,
+    validate_json_has_required_key,
+)
+
+TEACHERS_JSON_KEY = 'profesores'
+KEY_ID_ENTRY = 'id'
+KEY_NAME_ENTRY = 'nombre'
+KEY_MAIL_ENTRY = 'correo'
+KEYS_NEEDED_FOR_TEACHER_JSON = [KEY_ID_ENTRY, KEY_MAIL_ENTRY, KEY_NAME_ENTRY]
 
 
 def get_all_teachers():
@@ -45,24 +56,6 @@ def delete_teacher(teacher):
     db.session.delete(teacher)
     db.session.commit()
     return True
-
-
-def create_teachers_from_json(data):
-    teachers = data.get('profesores', [])
-    for teacher in teachers:
-        name = teacher.get('nombre', '')
-        name_parts = name.strip().split()
-        first_name = name_parts[0]
-        last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-
-        new_teacher = Teacher(
-            first_name=first_name,
-            last_name=last_name,
-            email=teacher.get('correo'),
-        )
-        db.session.add(new_teacher)
-
-    db.session.commit()
 
 
 def is_teacher_available_for_timeslot(section, block):
@@ -116,20 +109,43 @@ def validate_teacher_overload(ranked_sections, timeslots):
 
 
 def create_teachers_from_json(data):
+    if not validate_json_has_required_key(data, TEACHERS_JSON_KEY):
+        return None
+
     teachers = data.get('profesores', [])
+
+    # Validation cicle  (Will break if an entry it's not valid -----------------
+    for teacher in teachers:
+        if not validate_entry_has_required_keys(
+            teacher, KEYS_NEEDED_FOR_TEACHER_JSON
+        ):
+            return None
+
+        if not validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_teacher_format(teacher),
+            'teacher',
+        ):
+            return None
+
+    # Creation cicle (Will only execute if ALL validations pass) -----------
+    # (Thus, two for cicles are needed) ------------------------------------
     for teacher in teachers:
         teacher_data = transform_json_entry_into_processable_teacher_format(
             teacher
         )
-        create_teacher(teacher_data)
+        if teacher_data:
+            create_teacher(teacher_data)
+        else:
+            break
 
 
 def transform_json_entry_into_processable_teacher_format(teacher):
     name = teacher.get('nombre', '')
-    name_parts = name.strip().split()
     data = {
-        'first_name': name_parts[0],
-        'last_name': ' '.join(name_parts[1:]) if len(name_parts) > 1 else '',
+        'first_name': name.split()[0] if isinstance(name, str) else name,
+        'last_name': ' '.join(name.split()[1:])
+        if (isinstance(name, str) and len(name.split()) > 1)
+        else (''),
         'email': teacher.get('correo'),
     }
     return data
