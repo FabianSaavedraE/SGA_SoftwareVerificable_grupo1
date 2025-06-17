@@ -2,10 +2,19 @@ from datetime import datetime
 
 from app.models import CourseInstance
 from app.controllers.course_instance_controller import get_course_instance
-
+from app.validators.constants import(
+    KEY_YEAR_ENTRY,  KEY_INSTANCE_COURSE_ID_ENTRY, KEY_SEMESTER_ENTRY,
+    KEY_ID_ENTRY
+)
 MIN_YEAR = 1980
 
-def validate_course_instance(data, course_instance_id=None):
+'''
+      'year' : year,
+        'semester' : semester,
+        'instance_id' : instance.get('id'),
+        'course_id' : instance.get('curso_id')
+'''
+def validate_course_instance_and_return_errors(data, course_instance_id=None):
     errors = {}
 
     year = get_stripped_field(data, 'year')
@@ -19,6 +28,16 @@ def validate_course_instance(data, course_instance_id=None):
     )
 
     return errors
+
+def return_instance_typing_errors(instance, course_instance_id):
+    year = instance.get(KEY_YEAR_ENTRY) or ''
+    semester = instance.get(KEY_SEMESTER_ENTRY) or ''
+    course_id = instance.get(KEY_INSTANCE_COURSE_ID_ENTRY) or ''
+    instance_id = instance.get(KEY_ID_ENTRY) or ''
+
+    if not(isinstance(year,str) or isinstance(year,int)):
+
+
 
 def get_stripped_field(data, field):
     return (str(data.get(field) or '')).strip()

@@ -3,9 +3,17 @@ from sqlalchemy import func
 from app import db
 from app.models import CourseInstance
 
-from app.validators.data_load_validators import validate_json_has_required_key
+from app.validators.data_load_validators import (
+    validate_json_has_required_key, validate_entry_has_required_keys,
+    validate_entry_can_be_loaded
+    )
+from app.validators.constants import (
+    KEY_INSTANCE_JSON, KEY_SEMESTER_JSON, KEY_YEAR_JSON
+)
 
-KEY_INSTANCE_JSON = "instancias"
+KEYS_NEEDED_FOR_INSTANCE_JSON = (
+    [KEY_INSTANCE_JSON, KEY_SEMESTER_JSON, KEY_YEAR_JSON]
+)
 
 def get_all_course_instances():
     course_instances = CourseInstance.query.all()
@@ -56,23 +64,39 @@ def delete_course_instance(course_instance):
     return True
 
 def create_course_instances_from_json(data):
-    if validate_json_has_required_key(data, KEY_INSTANCE_JSON):
-        year = data.get('año')
-        semester = data.get('semestre')
-        instances = data.get('instancias', [])
 
-        for instance in instances:
-            instance_id = instance.get('id')
-            instance_data = (
-                transform_json_entry_into_processable_course_instance_format(
-                    year, semester, instance
-                )
+    if not validate_entry_has_required_keys(
+        data, KEYS_NEEDED_FOR_INSTANCE_JSON
+        ):
+        return None
+
+
+    year = data.get(KEY_YEAR_JSON)
+    semester = data.get(KEY_SEMESTER_JSON)
+    instances = data.get(KEY_INSTANCE_JSON, [])
+
+    for instance in instances:
+        is_instance_valid = validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_course_instance_format(
+                year, semester, instance), 'instance'
+        )
+
+        if not is_instance_valid:
+            return None
+        
+    for instance in instances:
+        #After validation
+        instance_id = instance.get('id')
+
+        instance_data = (
+            transform_json_entry_into_processable_course_instance_format(
+                year, semester, instance)
             )
-            
-            if check_if_course_instancewith_id_exists(instance_id):
-                handle_course_instance_with_existing_id(instance_id)
-            
-            create_course_instance(instance_data)
+        
+        if check_if_course_instance_with_id_exists(instance_id):
+            handle_course_instance_with_existing_id(instance_id)
+        
+        create_course_instance(instance_data)
         
 def transform_json_entry_into_processable_course_instance_format(
     year, semester, instance
@@ -85,7 +109,7 @@ def transform_json_entry_into_processable_course_instance_format(
     }
     return(data)
 
-def check_if_course_instancewith_id_exists(id):
+def check_if_course_instance_with_id_exists(id):
     course_instance = CourseInstance.query.filter_by(id=id).first()
     if course_instance:
         return True

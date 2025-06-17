@@ -15,6 +15,7 @@ CLOSED_STATE = 'Closed'
 REPORT_COLUMNS = (
     ['Curso', 'Año', 'Semestre', 'Sección', 'Nota Final', 'Estado']
 )
+
 KEY_ID_ENTRY = "id"
 KEY_NAME_ENTRY = "nombre"
 KEY_MAIL_ENTRY = "correo"

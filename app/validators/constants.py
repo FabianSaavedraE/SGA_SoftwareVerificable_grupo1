@@ -31,6 +31,14 @@ KEY_CODE_ENTRY = 'code'
 KEY_CREDITS_ENTRY = 'credits'
 KEY_COURSE_ID_ENTRY = 'course_id'
 
+#Instance constants -----------------------------------------------------------
+KEY_INSTANCE_JSON = "instancias"
+KEY_SEMESTER_JSON = "semestre"
+KEY_YEAR_JSON = "año"
+KEY_YEAR_ENTRY = "year"
+KEY_SEMESTER_ENTRY = "semester"
+KEY_INSTANCE_COURSE_ID_ENTRY = "curso"
+
 #Type checking text alerts ----------------------------------------------------
 
 MUST_BE_STRING = 'debe ser un string.'
@@ -52,3 +60,4 @@ KEY_COURSE_JSON = "cursos"
 #Abreviations -----------------------------------------------------------------
 COURSE_CODE_PREFIX = 'ICC'
 CODE_LENGTH = 4
+

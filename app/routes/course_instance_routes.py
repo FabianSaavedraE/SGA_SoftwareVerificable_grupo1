@@ -9,7 +9,7 @@ from app.controllers.course_instance_controller import (
 )
 
 from app.controllers.course_controller import get_course
-from app.validators.course_instance_validator import validate_course_instance
+from app.validators.course_instance_validator import validate_course_instance_and_return_errors
 
 from app.validators.data_load_validators import(
      validate_json_file_and_return_processed_file
@@ -52,7 +52,7 @@ def create_course_instance_view(course_id):
     error = None
     if request.method == 'POST':
         data = build_course_instance_data(request.form, course_id)
-        errors = validate_course_instance(data)
+        errors = validate_course_instance_and_return_errors(data)
 
         if errors:
             return render_template(
@@ -79,7 +79,7 @@ def update_course_instance_view(course_instance_id):
 
     if request.method == 'POST':
         data = request.form
-        errors = validate_course_instance(data, course_instance_id)
+        errors = validate_course_instance_and_return_errors(data, course_instance_id)
 
         if errors:
             return render_template(

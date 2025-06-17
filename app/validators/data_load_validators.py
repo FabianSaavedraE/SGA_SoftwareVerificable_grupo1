@@ -10,12 +10,16 @@ from app.validators.classroom_validator import (
 from app.validators.course_validator import (
     validate_course_data_and_return_errors
 )
+from app.validators.course_instance_validator import(
+    validate_course_instance_and_return_errors
+)
 
 VALIDATORS = {
     'student': validate_student_data_and_return_errors,
     'teacher': validate_teacher_data_and_return_errors,
     'classroom': validate_classroom_data_and_return_errors,
-    'course' : validate_course_data_and_return_errors
+    'course' : validate_course_data_and_return_errors,
+    'instance': validate_course_instance_and_return_errors
 }
   
 #Functions that validate the data loading process -----------------------------
