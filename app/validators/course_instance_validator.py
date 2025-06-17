@@ -38,9 +38,14 @@ def return_instance_typing_errors(instance):
         f'{KEY_SEMESTER_ENTRY} {MUST_BE_STRING_OR_INT}'
         )
     
-    if not(isinstance(course_id,int) or course_id == ""):
+    if not(
+        isinstance(course_id,int) 
+        or course_id == ""
+        or isinstance(course_id,str)
+        ):
+
         errors[KEY_INSTANCE_COURSE_ID_JSON] = (
-            f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE_INT}'
+            f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE_STRING_OR_INT}'
         )
 
     if not(isinstance(instance_id,int) or instance_id == ""):
@@ -61,12 +66,10 @@ def return_instance_attributes_errors(instance):
     year_errors = return_instance_year_errors(year)
     semester_errors = return_instance_semester_errors(semester)
     course_id_errors = return_instance_course_id_errors(course_id)
-    instance_id_errors = return_instance_id_errors(instance_id)
 
     errors.update(year_errors)
     errors.update(semester_errors)
     errors.update(course_id_errors)
-    errors.update(instance_id_errors)
     
     return errors
 
@@ -75,6 +78,7 @@ def return_instance_year_errors(year):
 
     if not year:
         errors[KEY_YEAR_ENTRY] = f'{KEY_YEAR_ENTRY} {MUST_BE}'
+        return errors
 
     if isinstance(year,str):
         try:
@@ -96,12 +100,14 @@ def return_instance_semester_errors(semester):
     
     if not semester:
         errors[KEY_SEMESTER_ENTRY] = f'{KEY_SEMESTER_ENTRY} {MUST_BE}'
+        return errors
 
     if isinstance(semester,str):
         try:
             semester = int(semester)
         except:
             errors[KEY_SEMESTER_ENTRY] = f'{KEY_SEMESTER_ENTRY} {MUST_BE_INT}'
+            return errors
 
     if semester not in [1,2]:
         errors[KEY_SEMESTER_ENTRY] = f'{KEY_SEMESTER_ENTRY} {OVERFLOWS} 1-2'
@@ -110,12 +116,11 @@ def return_instance_semester_errors(semester):
 
 def return_instance_course_id_errors(course_id):
     errors = {}
-
     if not course_id:
         errors[KEY_INSTANCE_COURSE_ID_JSON] = (
             f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE}'
         )
-
+        return errors
     if isinstance(course_id, str):
         try:
             course_id = int(course_id)
@@ -123,6 +128,7 @@ def return_instance_course_id_errors(course_id):
             errors[KEY_INSTANCE_COURSE_ID_JSON] = (
                 f'{KEY_INSTANCE_COURSE_ID_JSON} {MUST_BE_INT}'
             )
+            return errors
     
     if not Course.query.get(course_id):
         errors[KEY_INSTANCE_COURSE_ID_JSON] = (
@@ -134,11 +140,12 @@ def return_instance_course_id_errors(course_id):
 
 def return_instance_id_errors(instance_id):
     errors = {}
-
+    
     if not instance_id:
         errors[KEY_ID_ENTRY] = (
             f'{KEY_ID_ENTRY} {MUST_BE}'
         )
+        return errors
     
     if isinstance(instance_id, str):
         try:

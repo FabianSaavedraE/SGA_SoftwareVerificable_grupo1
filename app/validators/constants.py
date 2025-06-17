@@ -39,6 +39,7 @@ KEY_YEAR_JSON = "año"
 KEY_YEAR_ENTRY = "year"
 KEY_SEMESTER_ENTRY = "semester"
 KEY_INSTANCE_ID_ENTRY = "instance_id"
+KEY_COURSE_ID_JSON = "curso_id"
 
 #Type checking text alerts ----------------------------------------------------
 

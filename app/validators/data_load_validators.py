@@ -44,17 +44,16 @@ def validate_json_has_required_key(json_data, key):
     
 def validate_entry_has_required_keys(entry, keys :list): #Keys list should be
     #aggregated when one calls the funcion like this: [arg1, arg2, arg3...]
-    has_all_keys = True
     for key in keys:
-        has_all_keys = (
-            has_all_keys and validate_json_has_required_key(entry,key)
-        )
-    if has_all_keys == False:
-         flash('ERROR al crear JSON, faltan argumentos para inicializar '
-                      'una instancia correctamente en la linea  '
-                      f'{entry}', 'error')
+        if not entry.get(key) or (
+            isinstance(entry.get(key), str) and not entry.get(key).strip()
+            ):
+            flash(f'ERROR al crear JSON: falta argumento {key} al inicializar'
+                        'una instancia correctamente en la linea  '
+                        f'{entry}', 'error')
+            return False
          #Generalized flash message to understand WHERE the lacking atribute is
-    return has_all_keys
+    return True
 
 def validate_entry_can_be_loaded(entry, type :str):
     validator = VALIDATORS.get(type)
