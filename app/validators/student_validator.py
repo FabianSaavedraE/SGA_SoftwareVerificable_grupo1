@@ -58,8 +58,6 @@ def return_student_attribute_errors(data, student_id):
     email = get_stripped_field(data, KEY_EMAIL_ENTRY)
     entry_year = data.get(KEY_ENTRY_YEAR, '')
 
-
-    
     first_name_errors = return_student_name_errors(
         KEY_FIRST_NAME_ENTRY, first_name
     )
@@ -122,8 +120,6 @@ def return_student_email_errors(email, student_id):
     return errors
 
 def return_entry_year_errors(entry_year):
-    print("CHECKING FOR ENTRY YEAR!")
-    print(entry_year)
     errors = {}
 
     if not entry_year:
@@ -132,8 +128,6 @@ def return_entry_year_errors(entry_year):
     if isinstance(entry_year, str):
         try:
             entry_year = int(entry_year)
-            print("SUCCESSFULLY INTED!")
-            print(entry_year)
         except:
             errors[KEY_ENTRY_YEAR] = (
                 f'{KEY_ENTRY_YEAR} {MUST_BE_INT}'

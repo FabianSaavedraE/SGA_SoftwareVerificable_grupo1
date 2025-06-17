@@ -8,11 +8,20 @@ from app.controllers.course_section_controller import (
 from app.controllers.course_prerequisites_controllers import (
     create_course_prerequisite
 )
-from app.validators.data_load_validators import validate_json_has_required_key
+from app.validators.data_load_validators import (
+    validate_json_has_required_key, validate_entry_can_be_loaded,
+    validate_entry_has_required_keys
+    )
 
-COURSE_CODE_PREFIX = 'ICC'
-CODE_LENGTH = 4
-KEY_COURSE_JSON = "cursos"
+from app.validators.constants import (
+    KEY_DESCRIPTION_JSON, KEY_CODE_JSON, KEY_ID_ENTRY, KEY_CREDITS_JSON,
+    KEY_COURSE_JSON, COURSE_CODE_PREFIX, CODE_LENGTH
+    )
+
+
+KEYS_REQUIRED_JSON = (
+    [KEY_DESCRIPTION_JSON, KEY_CODE_JSON, KEY_ID_ENTRY, KEY_CREDITS_JSON]
+)
 
 def get_all_courses():
     courses = Course.query.all()
@@ -89,25 +98,44 @@ def transform_code_to_valid_format(data):
     return f"{COURSE_CODE_PREFIX}{raw_code}"
 
 def create_courses_from_json(data):   
-    if validate_json_has_required_key(data, KEY_COURSE_JSON):
-        courses = data.get('cursos', [])
-        for course in courses:
-            id = course.get('id')
-            prerequisites = course.get('requisitos')
-            
-            course_data = transform_json_entry_into_processable_course_format(
-                course
-            )
+    if not validate_json_has_required_key(data, KEY_COURSE_JSON):
+        return None
+    
+    #Validation cicle  (Will break if an entry it's not valid -----------------
+    courses = data.get('cursos', [])
+    for course in courses:
+        if not validate_entry_has_required_keys(
+            course, KEYS_REQUIRED_JSON
+        ):
+            return None
         
-            if check_if_course_with_id_exists(id): 
-                handle_course_with_existing_id(id)
-            
-            create_course(course_data)
+        is_valid_entry = validate_entry_can_be_loaded(
+            transform_json_entry_into_processable_course_format(course),
+            "course"
+        )
 
-            if prerequisites != []:
-                generate_prerequisites(id, prerequisites)
+        if not is_valid_entry:
+            return None
+              
+    #Creation cicle (Will only execute if ALL validations pass) -----------
+    #(Thus, two for cicles are needed) ------------------------------------
+    for course in courses:
+        #No need to check, if this executes, atributes exists and are valid
+        id = course.get('id')
+        prerequisites = course.get('requisitos')
+        course_data = transform_json_entry_into_processable_course_format(
+            course
+        )
 
-        db.session.commit()
+        if check_if_course_with_id_exists(id): 
+            handle_course_with_existing_id(id)
+
+        create_course(course_data)
+
+        if prerequisites != []:
+            generate_prerequisites(id, prerequisites)
+
+    db.session.commit()
 
 def transform_json_entry_into_processable_course_format(course):
     data = {

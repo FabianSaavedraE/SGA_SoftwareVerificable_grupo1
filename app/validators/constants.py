@@ -22,6 +22,15 @@ MAX_CAPACITY = 400
 KEY_CAPACITY_JSON = 'capacidad'
 KEY_CAPACITY_ENTRY = 'capacity'
 
+#Course constants -------------------------------------------------------------
+MAX_DESCRIPTION_LENGTH = 100
+MIN_CREDITS_VALUE =1
+MAX_CREDITS_VALUE = 4
+KEY_DESCRIPTION_ENTRY = 'description'
+KEY_CODE_ENTRY = 'code'
+KEY_CREDITS_ENTRY = 'credits'
+KEY_COURSE_ID_ENTRY = 'course_id'
+
 #Type checking text alerts ----------------------------------------------------
 
 MUST_BE_STRING = 'debe ser un string.'
@@ -30,5 +39,15 @@ MUST_BE_STRING_OR_INT = 'debe ser un string o un int'
 MUST_BE = 'es obligatorio'
 MUST_CONTAIN = 'debe contener'
 OVERFLOWS = 'cae fuera del rango establecido de'
-CHARACTERS = 'caractéres'
+CHARACTERS = 'caracteres'
 ALREADY_EXISTS = 'ya existe en la base de datos'
+
+#JSON files KEYS --------------------------------------------------------------
+KEY_DESCRIPTION_JSON = 'descripcion'
+KEY_CODE_JSON = 'codigo'
+KEY_CREDITS_JSON = 'creditos'
+KEY_COURSE_JSON = "cursos"
+
+#Abreviations -----------------------------------------------------------------
+COURSE_CODE_PREFIX = 'ICC'
+CODE_LENGTH = 4
