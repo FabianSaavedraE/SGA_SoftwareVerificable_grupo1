@@ -34,10 +34,11 @@ KEY_COURSE_ID_ENTRY = 'course_id'
 #Instance constants -----------------------------------------------------------
 KEY_INSTANCE_JSON = "instancias"
 KEY_SEMESTER_JSON = "semestre"
+KEY_INSTANCE_COURSE_ID_JSON = "curso"
 KEY_YEAR_JSON = "año"
 KEY_YEAR_ENTRY = "year"
 KEY_SEMESTER_ENTRY = "semester"
-KEY_INSTANCE_COURSE_ID_ENTRY = "curso"
+KEY_INSTANCE_ID_ENTRY = "instance_id"
 
 #Type checking text alerts ----------------------------------------------------
 
