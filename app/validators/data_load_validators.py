@@ -62,3 +62,6 @@ def validate_entry_can_be_loaded(entry, type :str):
                       'error')
             return False
     return True
+
+def flash_custom_error(error):
+    flash(f'ERROR {error}', error)

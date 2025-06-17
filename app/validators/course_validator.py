@@ -126,3 +126,13 @@ def return_credits_errors(credits):
                 )
 
     return errors
+
+def validate_and_return_prerequisite_if_course_exists(prerequisite):
+    course = Course.query.filter_by(code = prerequisite).first()
+    if course:
+        return course
+    return False
+    
+
+
+    
