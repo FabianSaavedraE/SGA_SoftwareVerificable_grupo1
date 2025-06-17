@@ -5,7 +5,7 @@ from app.models import CourseInstance
 
 from app.validators.data_load_validators import validate_json_has_required_key
 
-KEY_INSTANCE_JSON = "instancia"
+KEY_INSTANCE_JSON = "instancias"
 
 def get_all_course_instances():
     course_instances = CourseInstance.query.all()
