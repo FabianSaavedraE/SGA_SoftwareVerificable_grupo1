@@ -97,6 +97,7 @@ def create_course_instances_from_json(data):
     #Second cicle, after validation of every entry creates -------------------- 
     for instance in instances:
 
+        instance_id = instance.get('id')
         instance_data = (
             transform_json_entry_into_processable_course_instance_format(
                 year, semester, instance)

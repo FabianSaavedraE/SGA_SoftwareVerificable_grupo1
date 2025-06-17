@@ -6,8 +6,6 @@ from app.validators.constants import (
 )
 
 def validate_teacher_data_and_return_errors(data, teacher_id=None):
-    print("Validating entry:")
-    print(data)
     typing_errors = return_teacher_typing_errors(data)
 
     #Since typing errors are exclusive to JSON load, should return inmediatly.

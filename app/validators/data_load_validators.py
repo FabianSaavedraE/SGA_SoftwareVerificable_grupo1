@@ -13,13 +13,18 @@ from app.validators.course_validator import (
 from app.validators.course_instance_validator import(
     validate_course_instance_and_return_errors
 )
-
+from app.validators.course_section_json_validator import(
+    validate_section_entry_from_json_and_return_errors,
+    validate_evaluations_entry_from_json_and_return_errors,
+)
 VALIDATORS = {
     'student': validate_student_data_and_return_errors,
     'teacher': validate_teacher_data_and_return_errors,
     'classroom': validate_classroom_data_and_return_errors,
     'course' : validate_course_data_and_return_errors,
-    'instance': validate_course_instance_and_return_errors
+    'instance': validate_course_instance_and_return_errors,
+    'section': validate_section_entry_from_json_and_return_errors,
+    'evaluations': validate_evaluations_entry_from_json_and_return_errors,
 }
   
 #Functions that validate the data loading process -----------------------------
@@ -49,7 +54,7 @@ def validate_entry_has_required_keys(entry, keys :list): #Keys list should be
             isinstance(entry.get(key), str) and not entry.get(key).strip()
             ):
             flash(f'ERROR al crear JSON: falta argumento {key} al inicializar'
-                        'una instancia correctamente en la linea  '
+                        ' una instancia correctamente en la linea  '
                         f'{entry}', 'error')
             return False
          #Generalized flash message to understand WHERE the lacking atribute is
@@ -64,6 +69,8 @@ def validate_entry_can_be_loaded(entry, type :str):
                 flash(f'ERROR para linea {entry}: En {key}: {errors[key]}',
                       'error')
             return False
+
+    print("\n\n")
     return True
 
 def flash_custom_error(error):

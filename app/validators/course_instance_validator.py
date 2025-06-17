@@ -32,7 +32,7 @@ def return_instance_typing_errors(instance):
         errors[KEY_YEAR_ENTRY] = (
         f'{KEY_YEAR_ENTRY} {MUST_BE_STRING_OR_INT}'
         )
-    
+
     if not(isinstance(semester,str) or isinstance(semester,int)):
         errors[KEY_SEMESTER_ENTRY] = (
         f'{KEY_SEMESTER_ENTRY} {MUST_BE_STRING_OR_INT}'

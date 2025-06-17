@@ -11,7 +11,36 @@ from app.controllers.final_grades_controller import calculate_final_grades
 from app.controllers.course_instance_controller import (
     get_course_instance_by_parameters
 )
-from app.validators.data_load_validators import validate_json_has_required_key
+from app.validators.data_load_validators import (
+    validate_json_has_required_key, validate_entry_has_required_keys,
+    validate_entry_can_be_loaded
+)
+
+from app.validators.constants import (
+    KEY_COURSE_INSTANCE_JSON, KEY_TEACHER_ID_JSON, KEY_EVALUATION_JSON,
+    KEY_EVALUATION_TYPE_JSON, KEY_TOPIC_COMBINATION_JSON, KEY_TOPIC_NAME_JSON,
+    KEY_TOPIC_VALUE_JSON, KEY_TOPIC_JSON, KEY_TOPIC_QUANTITY_JSON,
+    KEY_TOPIC_TYPE_JSON, KEY_TOPIC_VALUES_JSON, KEY_MANDATORY_EVALUATIONS_JSON,
+    KEY_ID_ENTRY
+)
+
+#Since the JSON structure for loading comprises multiple dictionaries, a lot
+#of constants need to be correctly validated, hence the many lists creation:
+
+KEYS_NEEDED_FOR_SECTION_ENTRY = (
+    [KEY_ID_ENTRY, KEY_COURSE_INSTANCE_JSON, KEY_TEACHER_ID_JSON,
+    KEY_EVALUATION_JSON]
+)
+KEYS_NEEDED_FOR_EVALUATION_ENTRY= (
+    [KEY_TOPIC_TYPE_JSON, KEY_TOPIC_COMBINATION_JSON,KEY_TOPIC_JSON]
+)
+KEYS_NEEDED_FOR_TOPIC_COMBINATION = (
+    [KEY_ID_ENTRY, KEY_TOPIC_NAME_JSON, KEY_TOPIC_VALUE_JSON]
+)
+KEYS_NEEDED_FOR_TOPIC= (
+    [KEY_ID_ENTRY, KEY_TOPIC_QUANTITY_JSON, KEY_TOPIC_TYPE_JSON,
+    KEY_TOPIC_VALUES_JSON, KEY_MANDATORY_EVALUATIONS_JSON]
+)
 
 KEY_COURSE_SECTIONS_JSON = "secciones"
 NRC_LENGTH = 4
@@ -96,37 +125,95 @@ def delete_section(course_section):
     db.session.commit()
     return True
 
-def create_course_sections_from_json(data): 
-    if validate_json_has_required_key(data, KEY_COURSE_SECTIONS_JSON):
-        course_sections = data.get('secciones', [])
-        for course_section in course_sections:
-            section_id = course_section.get('id')
-            evaluations = course_section.get('evaluacion')
-            evaluation_instances = evaluations.get('combinacion_topicos')
-            evaluation_instances_topics = evaluations.get('topicos')
+def create_course_sections_from_json(data):
+    if not validate_json_has_required_key(data, KEY_COURSE_SECTIONS_JSON):
+        return None
 
-            # overall_ponderation_type is required to have the name of the type 
-            # with the first letter capitalized.
-            overall_ponderation_type = capitalize_first_character(
-                evaluations.get('tipo')
-            ) 
+    course_sections = data.get('secciones', [])
 
-            course_section_data = (
-                transform_json_entry_into_processable_course_sections_format(
-                    course_section, overall_ponderation_type, section_id
-                )
+    #First cicle validates all entries ----------------------------------------
+
+    #Since the structure of the JSON is composed of many dictionaries inside
+    #dictionaries, this function CAN'T be refactored into simpler code: All
+    #validation processes will be convoluted due to the ammount of validations
+
+    for course_section in course_sections:
+
+        #First dictionary:
+        if not validate_entry_has_required_keys(
+            course_section, KEYS_NEEDED_FOR_SECTION_ENTRY
+            ):
+            return None
+        
+        if not validate_entry_can_be_loaded(
+            course_section, 'section'
+        ):
+            return None
+        
+        #Second dictionary:
+        evaluations = course_section.get(KEY_EVALUATION_JSON)
+        if not validate_entry_has_required_keys(
+            evaluations, KEYS_NEEDED_FOR_EVALUATION_ENTRY
+        ):
+            return None
+
+        if not validate_entry_can_be_loaded(
+            evaluations, 'evaluations'
+        ):
+            return None
+        
+        #Third dictionary:
+        evaluation_instances = evaluations.get(KEY_TOPIC_COMBINATION_JSON)
+        for evaluation_instance in evaluation_instances:
+            if not validate_entry_has_required_keys(
+                evaluation_instance, KEYS_NEEDED_FOR_TOPIC_COMBINATION
+            ):
+                return None
+        
+        #Fourth dictionary:
+        evaluation_instances_topics = evaluations.get(KEY_TOPIC_JSON)
+        for key in evaluation_instances_topics.keys():
+            if not validate_entry_has_required_keys(
+                evaluation_instances_topics[key], KEYS_NEEDED_FOR_TOPIC
+            ):
+                return None
+            
+        #Final validation of contents once structure is secured
+        if not validate_entry_can_be_loaded(
+            evaluations, 'evaluations'
+        ):
+            return None
+        
+        
+    #After all it's validated, can proceed with creation ----------------------
+    for course_section in course_sections:
+        section_id = course_section.get(KEY_ID_ENTRY)
+        evaluations = course_section.get(KEY_EVALUATION_JSON)
+        evaluation_instances = evaluations.get(KEY_TOPIC_COMBINATION_JSON)
+        evaluation_instances_topics = evaluations.get(KEY_TOPIC_JSON)
+
+        # overall_ponderation_type is required to have the name of the type 
+        # with the first letter capitalized.
+        overall_ponderation_type = capitalize_first_character(
+            evaluations.get('tipo')
+        ) 
+
+        course_section_data = (
+            transform_json_entry_into_processable_course_sections_format(
+                course_section, overall_ponderation_type, section_id
             )
+        )
 
-            if check_if_course_section_with_id_exists(section_id): 
-                handle_course_section_with_existing_id(section_id)
+        if check_if_course_section_with_id_exists(section_id): 
+            handle_course_section_with_existing_id(section_id)
 
-            create_section(course_section_data)
+        create_section(course_section_data)
 
-            add_evaluation_topics_and_evaluations_to_section(
-                section_id, evaluation_instances, evaluation_instances_topics
-            )
+        add_evaluation_topics_and_evaluations_to_section(
+            section_id, evaluation_instances, evaluation_instances_topics
+        )
 
-        db.session.commit()
+    db.session.commit()
 
 def transform_json_entry_into_processable_course_sections_format(
     course_section, overall_ponderation_type, section_id
