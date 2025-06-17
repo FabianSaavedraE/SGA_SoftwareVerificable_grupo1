@@ -4,7 +4,7 @@ from app import db
 from app.models import CourseInstance
 
 from app.validators.data_load_validators import (
-    validate_json_has_required_key, validate_entry_has_required_keys,
+    validate_json_has_required_key,
     validate_entry_can_be_loaded
     )
 from app.validators.constants import (
@@ -65,8 +65,23 @@ def delete_course_instance(course_instance):
 
 def create_course_instances_from_json(data):
 
-    if not validate_entry_has_required_keys(
-        data, KEYS_NEEDED_FOR_INSTANCE_JSON
+
+    #Due to a circular import and the fact that the JSON has 3 main keys,
+    #the general purpose function can't be called, so the individual one
+    #has to be called 3 times.
+
+    if not validate_json_has_required_key(
+        data, KEY_INSTANCE_JSON
+        ):
+        return None
+
+    if not validate_json_has_required_key(
+        data, KEY_YEAR_JSON
+        ):
+        return None
+
+    if not validate_json_has_required_key(
+        data, KEY_SEMESTER_JSON
         ):
         return None
 

@@ -49,7 +49,7 @@ MUST_CONTAIN = 'debe contener'
 OVERFLOWS = 'cae fuera del rango establecido de'
 CHARACTERS = 'caracteres'
 ALREADY_EXISTS = 'ya existe en la base de datos'
-DOESNT_EXISTS = 'no existe en la base de datos'
+DOESNT_EXIST = 'no existe en la base de datos'
 
 #JSON files KEYS --------------------------------------------------------------
 KEY_DESCRIPTION_JSON = 'descripcion'
