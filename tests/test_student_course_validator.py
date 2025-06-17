@@ -1,25 +1,42 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from app.validators import student_course_validator as validator
+from app.validators.constants import (
+    DOESNT_EXIST,
+    KEY_SECTION_ENTRY,
+    KEY_SECTION_ID_JSON,
+    KEY_STUDENT_ENTRY,
+    KEY_STUDENT_ID_JSON,
+    MUST_BE_INT,
+)
 
 
-@patch('app.validators.student_course_validator.has_approved_course')
-def test_has_met_prerequisites_fails(mock_has_approved):
-    course = MagicMock(prerequisites=[MagicMock(prerequisite=MagicMock(id=1))])
-    section = MagicMock(course_instance=MagicMock(course=course))
-    mock_has_approved.return_value = False
-    result, message = validator.has_met_prerequisites(1, section)
-
-    assert not result
-    assert 'no ha aprobado' in message
+def make_base_data(student_id="1", section_id="1"):
+    return {
+        KEY_STUDENT_ID_JSON: student_id,
+        KEY_SECTION_ID_JSON: section_id,
+    }
 
 
-@patch('app.validators.student_course_validator.has_approved_course')
-def test_has_met_prerequisites_succeeds(mock_has_approved):
-    course = MagicMock(prerequisites=[MagicMock(prerequisite=MagicMock(id=1))])
-    section = MagicMock(course_instance=MagicMock(course=course))
-    mock_has_approved.return_value = True
-    result, message = validator.has_met_prerequisites(1, section)
+def test_typing_errors_returned():
+    data = make_base_data(student_id="abc", section_id=None)
+    errors = validator.validate_student_course_and_return_errors(data)
 
-    assert result
-    assert message is None
+    assert KEY_STUDENT_ENTRY in errors
+    assert KEY_SECTION_ENTRY in errors
+    assert MUST_BE_INT in errors[KEY_STUDENT_ENTRY]
+
+
+@patch(
+    "app.validators.student_course_validator.get_student", return_value=None
+)
+@patch(
+    "app.validators.student_course_validator.get_section", return_value=None
+)
+def test_attribute_errors_for_nonexistent_records(mock_section, mock_student):
+    data = make_base_data()
+    errors = validator.validate_student_course_and_return_errors(data)
+
+    assert KEY_STUDENT_ENTRY in errors
+    assert KEY_SECTION_ENTRY in errors
+    assert DOESNT_EXIST in errors[KEY_STUDENT_ENTRY]

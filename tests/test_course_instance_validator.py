@@ -1,102 +1,115 @@
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from app.validators import course_instance_validator as validator
+from app.validators.constants import (
+    KEY_INSTANCE_COURSE_ID_ENTRY,
+    KEY_INSTANCE_JSON,
+    KEY_SEMESTER_ENTRY,
+    KEY_YEAR_ENTRY,
+)
+
+
+@pytest.fixture(autouse=True)
+def patch_models():
+    with (
+        patch(
+            "app.validators.course_instance_validator.Course"
+        ) as mock_course,
+        patch(
+            "app.validators.course_instance_validator.CourseInstance"
+        ) as mock_instance,
+    ):
+        yield mock_course, mock_instance
 
 
 def test_get_stripped_field_returns_stripped_string():
-    data = {'year': ' 2020 '}
-    result = validator.get_stripped_field(data, 'year')
-
-    assert result == '2020'
-
-
-def test_validate_year_missing():
-    errors = {}
-    validator.validate_year('', errors)
-
-    assert 'year' in errors
+    data = {"year": " 2020 "}
+    result = validator.get_stripped_field(data, "year")
+    assert result == "2020"
 
 
-def test_validate_year_invalid_low():
-    errors = {}
-    validator.validate_year('1970', errors)
-
-    assert 'year' in errors
-
-
-def test_validate_year_invalid_high():
-    errors = {}
-    future_year = str(datetime.now().year + 1)
-    validator.validate_year(future_year, errors)
-
-    assert 'year' in errors
+def test_attribute_errors_invalid_semester(patch_models):
+    patch_models[0].query.get.return_value = True
+    data = {
+        KEY_YEAR_ENTRY: "2023",
+        KEY_SEMESTER_ENTRY: "3",
+        KEY_INSTANCE_COURSE_ID_ENTRY: "1",
+    }
+    errors = validator.return_instance_attributes_errors(data)
+    assert KEY_SEMESTER_ENTRY in errors
 
 
-def test_validate_year_valid():
-    errors = {}
-    current_year = str(datetime.now().year)
-    validator.validate_year(current_year, errors)
-
-    assert 'year' not in errors
-
-
-def test_validate_semester_missing():
-    errors = {}
-    validator.validate_semester('', errors)
-
-    assert 'semester' in errors
+def test_attribute_errors_nonexistent_course(patch_models):
+    patch_models[0].query.get.return_value = None
+    data = {
+        KEY_YEAR_ENTRY: "2023",
+        KEY_SEMESTER_ENTRY: "1",
+        KEY_INSTANCE_COURSE_ID_ENTRY: "99",
+    }
+    errors = validator.return_instance_attributes_errors(data)
+    assert KEY_INSTANCE_COURSE_ID_ENTRY in errors
 
 
-@patch('app.validators.course_instance_validator.get_course_instance')
-@patch('app.validators.course_instance_validator.CourseInstance')
-def test_validate_course_instance_uniqueness_exists(
-    mock_course_instance_model, mock_get_course_instance
-):
-    errors = {}
-    mock_get_course_instance.return_value = MagicMock(course_id=1)
-    query = mock_course_instance_model.query.filter_by.return_value
-    query.filter.return_value.first.return_value = MagicMock()
+def test_validate_course_instance_uniqueness_conflict(patch_models):
+    mock_course, mock_instance = patch_models
+    mock_course.query.get.return_value = MagicMock(
+        __str__=lambda self: "Course X"
+    )
 
-    validator.validate_course_instance_uniqueness('2023', '1', 1, None, errors)
+    query = mock_instance.query.filter_by.return_value
+    filtered = query.filter.return_value
+    filtered.first.return_value = MagicMock()
 
-    assert 'exists' in errors
+    data = {
+        KEY_YEAR_ENTRY: "2024",
+        KEY_SEMESTER_ENTRY: "1",
+        KEY_INSTANCE_COURSE_ID_ENTRY: "1",
+    }
+    errors = validator.validate_course_instance_uniqueness_and_return_errors(
+        data, course_instance_id=999
+    )
 
-
-@patch('app.validators.course_instance_validator.get_course_instance')
-@patch('app.validators.course_instance_validator.CourseInstance')
-def test_validate_course_instance_uniqueness_no_conflict(
-    mock_course_instance_model, mock_get_course_instance
-):
-    errors = {}
-    mock_get_course_instance.return_value = MagicMock(course_id=1)
-    query = mock_course_instance_model.query.filter_by.return_value
-    query.filter.return_value.first.return_value = None
-
-    validator.validate_course_instance_uniqueness('2023', '1', 1, None, errors)
-
-    assert 'exists' not in errors
+    assert KEY_INSTANCE_JSON in errors
 
 
-@patch('app.validators.course_instance_validator.CourseInstance')
-@patch('app.validators.course_instance_validator.get_course_instance')
-def test_validate_course_instance_all_validations(
-    mock_get_course_instance, mock_course_instance_model
-):
-    data = {'year': '2023', 'semester': '1', 'course_id': '2'}
+def test_validate_course_instance_uniqueness_no_conflict(patch_models):
+    mock_course, mock_instance = patch_models
+    mock_course.query.get.return_value = MagicMock()
 
-    mock_get_course_instance.return_value = MagicMock(course_id=2)
-    query = mock_course_instance_model.query.filter_by()
-    query = query.filter()
-    query.first.return_value = None
+    query = mock_instance.query.filter_by.return_value
+    filtered = query.filter.return_value
+    filtered.first.return_value = None
 
-    errors = validator.validate_course_instance(data)
+    data = {
+        KEY_YEAR_ENTRY: "2024",
+        KEY_SEMESTER_ENTRY: "1",
+        KEY_INSTANCE_COURSE_ID_ENTRY: "1",
+    }
+    errors = validator.validate_course_instance_uniqueness_and_return_errors(
+        data, course_instance_id=999
+    )
 
+    assert KEY_INSTANCE_JSON not in errors
+
+
+def test_validate_course_instance_and_return_errors_all_valid(patch_models):
+    mock_course, mock_instance = patch_models
+    mock_course.query.get.return_value = MagicMock()
+
+    query = mock_instance.query.filter_by.return_value
+    filtered = query.filter.return_value
+    filtered.first.return_value = None
+
+    data = {
+        KEY_YEAR_ENTRY: str(datetime.now().year),
+        KEY_SEMESTER_ENTRY: "1",
+        KEY_INSTANCE_COURSE_ID_ENTRY: "1",
+    }
+
+    errors = validator.validate_course_instance_and_return_errors(
+        data, course_instance_id=None
+    )
     assert errors == {}
-
-
-def test_is_valid_year():
-    current_year = datetime.now().year
-    assert validator.is_valid_year(str(current_year))
-    assert not validator.is_valid_year('1970')
-    assert not validator.is_valid_year(str(current_year + 1))

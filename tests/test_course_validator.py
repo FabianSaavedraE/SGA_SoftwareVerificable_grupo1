@@ -1,72 +1,94 @@
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from app.validators import course_validator as validator
+from app.validators.constants import (
+    ALREADY_EXISTS,
+    KEY_CODE_ENTRY,
+    KEY_CREDITS_ENTRY,
+    KEY_DESCRIPTION_ENTRY,
+    KEY_NAME_ENTRY,
+)
 
 
-def test_validate_text_field_empty():
-    errors = {}
-    validator.validate_text_field('name', '', 10, errors)
-
-    assert 'name' in errors
-
-
-def test_validate_text_field_too_long():
-    errors = {}
-    validator.validate_text_field('description', 'x' * 101, 100, errors)
-
-    assert 'description' in errors
-
-
-@patch('app.validators.course_validator.Course')
-def test_validate_course_code_duplicate(mock_course_model):
-    errors = {}
-    mock_instance = MagicMock()
-    mock_instance.id = 2
+@patch("app.validators.course_validator.Course")
+def test_validate_course_data_duplicate_code(mock_course_model):
+    existing_course = MagicMock(id=2)
     mock_course_model.query.filter_by.return_value.first.return_value = (
-        mock_instance
+        existing_course
     )
 
-    validator.validate_course_code('1234', 1, errors)
+    valid_data = {
+        KEY_NAME_ENTRY: "Diseño de Software Verificable",
+        KEY_DESCRIPTION_ENTRY: "Descripción Verificables",
+        KEY_CODE_ENTRY: "1234",
+        KEY_CREDITS_ENTRY: "3",
+    }
 
-    assert 'code' in errors
-    assert 'ya está en uso' in errors['code']
+    errors = validator.validate_course_data_and_return_errors(
+        valid_data, course_id=1
+    )
+
+    assert KEY_CODE_ENTRY in errors
+    assert ALREADY_EXISTS in errors[KEY_CODE_ENTRY]
 
 
-@patch('app.validators.course_validator.Course')
-def test_validate_course_code_valid(mock_course_model):
-    errors = {}
+@patch("app.validators.course_validator.Course")
+def test_validate_course_data_valid_input(mock_course_model):
     mock_course_model.query.filter_by.return_value.first.return_value = None
-    validator.validate_course_code('1234', None, errors)
+
+    valid_data = {
+        KEY_NAME_ENTRY: "Diseño de Software Verificable",
+        KEY_DESCRIPTION_ENTRY: "Descripción Verificables",
+        KEY_CODE_ENTRY: "1234",
+        KEY_CREDITS_ENTRY: "3",
+    }
+
+    errors = validator.validate_course_data_and_return_errors(valid_data)
 
     assert errors == {}
 
 
-def test_validate_credits_non_integer():
-    errors = {}
-    validator.validate_credits('abc', errors)
-
-    assert 'credits' in errors
-
-
-def test_validate_credits_out_of_bounds():
-    errors = {}
-    validator.validate_credits('0', errors)
-    assert 'credits' in errors
-
-    errors = {}
-    validator.validate_credits('5', errors)
-    assert 'credits' in errors
+@pytest.mark.parametrize(
+    "field, value, max_length",
+    [
+        (KEY_NAME_ENTRY, "", 100),
+        (KEY_DESCRIPTION_ENTRY, "x" * 101, 100),
+    ],
+)
+def test_return_text_field_errors(field, value, max_length):
+    result = validator.return_text_field_errors(field, value)
+    assert field in result
 
 
-def test_validate_course_data_valid():
-    data = {
-        'name': 'Algoritmos',
-        'description': 'Curso básico',
-        'code': '1234',
-        'credits': '3',
-    }
-    with patch('app.validators.course_validator.Course') as mock_model:
-        mock_model.query.filter_by.return_value.first.return_value = None
-        errors = validator.validate_course_data(data)
+@pytest.mark.parametrize(
+    "input_credits",
+    ["abc", "0", "5"],
+)
+def test_return_credits_errors_invalid(input_credits):
+    result = validator.return_credits_errors(input_credits)
+    assert KEY_CREDITS_ENTRY in result
 
-        assert errors == {}
+
+@patch("app.validators.course_validator.Course")
+def test_validate_and_return_prerequisite_if_course_exists(mock_course_model):
+    course = MagicMock()
+    mock_course_model.query.filter_by.return_value.first.return_value = course
+
+    result = validator.validate_and_return_prerequisite_if_course_exists(
+        "1234"
+    )
+    assert result == course
+
+
+@patch("app.validators.course_validator.Course")
+def test_validate_and_return_prerequisite_if_course_does_not_exist(
+    mock_course_model,
+):
+    mock_course_model.query.filter_by.return_value.first.return_value = None
+
+    result = validator.validate_and_return_prerequisite_if_course_exists(
+        "9999"
+    )
+    assert result is False
