@@ -51,11 +51,23 @@ KEY_STATE_ENTRY = "inscrito"
 KEY_PREREQUISITE = "prerrequisito"
 NOT_COMPLETED_PREREQUISITES = "El alumno no ha aprobado todos los requisitos."
 
+# Student Evaluations constants
+KEY_TOPIC_ID_JSON = "topico_id"
+KEY_TOPIC_ID_ENTRY = "evaluation_type_id"
+KEY_INSTANCE_ID_JSON = "instancia"
+KEY_INSTANCE_ID_ENTRY = "evaluation_id"
+KEY_GRADE_JSON = "nota"
+KEY_GRADE_ENTRY = "grade"
+KEY_EVALUATION_TYPE = "topico"
+NOT_ENROLLED_IN_SECTION = (
+    "no pertenece a la sección del curso correspondiente a esta evaluación"
+)
 
 # Type checking text alerts ---------------------------------------------------
 
 MUST_BE_STRING = "debe ser un string."
 MUST_BE_INT = "debe ser un int"
+MUST_BE_FLOAT = "debe ser un número."
 MUST_BE_STRING_OR_INT = "debe ser un string o un int"
 MUST_BE = "es obligatorio"
 MUST_CONTAIN = "debe contener"
@@ -63,6 +75,9 @@ OVERFLOWS = "cae fuera del rango establecido de"
 CHARACTERS = "caracteres"
 ALREADY_EXISTS = "ya existe en la base de datos"
 DOESNT_EXIST = "no existe en la base de datos"
+DUPLICATED = "duplicado"
+FORMAT_ERROR = "Error de formato, no es JSON."
+FORMAT_KEY = "formato"
 
 # JSON files KEYS -------------------------------------------------------------
 KEY_DESCRIPTION_JSON = "descripcion"

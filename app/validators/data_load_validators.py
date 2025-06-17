@@ -14,6 +14,9 @@ from app.validators.course_validator import (
 from app.validators.student_course_validator import (
     validate_student_course_and_return_errors,
 )
+from app.validators.student_evaluation_validator import (
+    validate_student_evaluation_data,
+)
 from app.validators.student_validator import (
     validate_student_data_and_return_errors,
 )
@@ -28,6 +31,7 @@ VALIDATORS = {
     "course": validate_course_data_and_return_errors,
     "instance": validate_course_instance_and_return_errors,
     "student_course": validate_student_course_and_return_errors,
+    "student_evaluation": validate_student_evaluation_data,
 }
 
 # Functions that validate the data loading process ----------------------------
