@@ -22,7 +22,7 @@ from app.validators.constants import (
 def validate_course_instance_and_return_errors(data, course_instance_id=None):
     typing_errors = return_instance_typing_errors(data)
 
-    # Since typing errors are exclusive to JSON load, should return immediately.
+    # Since typing errors are exclusive to JSON load, should return immediately
     if typing_errors:
         return typing_errors
 
@@ -104,7 +104,7 @@ def return_instance_year_errors(year):
     if isinstance(year, str):
         try:
             year = int(year)
-        except:
+        except ValueError:
             errors[KEY_YEAR_ENTRY] = f"{KEY_YEAR_ENTRY} {MUST_BE_INT}"
             return errors
 
@@ -126,7 +126,7 @@ def return_instance_semester_errors(semester):
     if isinstance(semester, str):
         try:
             semester = int(semester)
-        except:
+        except ValueError:
             errors[KEY_SEMESTER_ENTRY] = f"{KEY_SEMESTER_ENTRY} {MUST_BE_INT}"
 
     if semester not in [1, 2]:
@@ -146,7 +146,7 @@ def return_instance_course_id_errors(course_id):
     if isinstance(course_id, str):
         try:
             course_id = int(course_id)
-        except:
+        except ValueError:
             errors[KEY_INSTANCE_COURSE_ID_ENTRY] = (
                 f"{KEY_INSTANCE_COURSE_ID_ENTRY} {MUST_BE_INT}"
             )

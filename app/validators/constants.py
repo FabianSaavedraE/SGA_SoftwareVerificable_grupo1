@@ -40,6 +40,18 @@ KEY_SEMESTER_ENTRY = "semester"
 KEY_INSTANCE_COURSE_ID_ENTRY = "course_id"
 KEY_INSTANCE_COURSE_ID_JSON = "curso_id"
 
+# Student Course constants ----------------------------------------------------
+KEY_STUDENT_ENTRY = "alumno"
+KEY_SECTION_ENTRY = "sección"
+KEY_STUDENT_ID_JSON = "alumno_id"
+KEY_STUDENT_ID_ENTRY = "student_id"
+KEY_SECTION_ID_JSON = "seccion_id"
+KEY_SECTION_ID_ENTRY = "course_section_id"
+KEY_STATE_ENTRY = "inscrito"
+KEY_PREREQUISITE = "prerrequisito"
+NOT_COMPLETED_PREREQUISITES = "El alumno no ha aprobado todos los requisitos."
+
+
 # Type checking text alerts ---------------------------------------------------
 
 MUST_BE_STRING = "debe ser un string."

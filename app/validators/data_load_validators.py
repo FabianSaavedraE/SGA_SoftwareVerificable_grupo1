@@ -11,6 +11,9 @@ from app.validators.course_instance_validator import (
 from app.validators.course_validator import (
     validate_course_data_and_return_errors,
 )
+from app.validators.student_course_validator import (
+    validate_student_course_and_return_errors,
+)
 from app.validators.student_validator import (
     validate_student_data_and_return_errors,
 )
@@ -24,6 +27,7 @@ VALIDATORS = {
     "classroom": validate_classroom_data_and_return_errors,
     "course": validate_course_data_and_return_errors,
     "instance": validate_course_instance_and_return_errors,
+    "student_course": validate_student_course_and_return_errors,
 }
 
 # Functions that validate the data loading process ----------------------------
@@ -50,20 +54,21 @@ def validate_json_has_required_key(json_data, key):
 
 
 def validate_entry_has_required_keys(entry, keys: list):  # Keys list should be
-    # aggregated when one calls the funcion like this: [arg1, arg2, arg3...]
+    # aggregated when one calls the function like this: [arg1, arg2, arg3...]
     has_all_keys = True
     for key in keys:
         has_all_keys = has_all_keys and validate_json_has_required_key(
             entry, key
         )
-    if has_all_keys == False:
+    if not has_all_keys:
         flash(
             "ERROR al crear JSON, faltan argumentos para inicializar "
             "una instancia correctamente en la linea  "
             f"{entry}",
             "error",
         )
-        # Generalized flash message to understand WHERE the lacking attribute is
+        # Generalized flash message to understand WHERE the lacking attribute
+        # is
     return has_all_keys
 
 
