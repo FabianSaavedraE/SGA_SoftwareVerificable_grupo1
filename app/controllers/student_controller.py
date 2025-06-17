@@ -10,21 +10,21 @@ from app.validators.data_load_validators import (
     validate_json_has_required_key,
 )
 
-STUDENT_JSON_KEY = 'alumnos'
-CLOSED_STATE = 'Closed'
+STUDENT_JSON_KEY = "alumnos"
+CLOSED_STATE = "Closed"
 REPORT_COLUMNS = [
-    'Curso',
-    'Año',
-    'Semestre',
-    'Sección',
-    'Nota Final',
-    'Estado',
+    "Curso",
+    "Año",
+    "Semestre",
+    "Sección",
+    "Nota Final",
+    "Estado",
 ]
 
-KEY_ID_ENTRY = 'id'
-KEY_NAME_ENTRY = 'nombre'
-KEY_MAIL_ENTRY = 'correo'
-KEY_YEAR_ENTRY = 'anio_ingreso'
+KEY_ID_ENTRY = "id"
+KEY_NAME_ENTRY = "nombre"
+KEY_MAIL_ENTRY = "correo"
+KEY_YEAR_ENTRY = "anio_ingreso"
 KEYS_NEEDED_FOR_STUDENT_JSON = [
     KEY_ID_ENTRY,
     KEY_MAIL_ENTRY,
@@ -45,10 +45,10 @@ def get_student(student_id):
 
 def create_student(data):
     new_student = Student(
-        first_name=data.get('first_name'),
-        last_name=data.get('last_name'),
-        email=data.get('email'),
-        entry_year=data.get('entry_year'),
+        first_name=data.get("first_name"),
+        last_name=data.get("last_name"),
+        email=data.get("email"),
+        entry_year=data.get("entry_year"),
     )
 
     db.session.add(new_student)
@@ -61,10 +61,10 @@ def update_student(student, data):
     if not student:
         return None
 
-    student.first_name = data.get('first_name', student.first_name)
-    student.last_name = data.get('last_name', student.last_name)
-    student.email = data.get('email', student.email)
-    student.entry_year = data.get('entry_year', student.entry_year)
+    student.first_name = data.get("first_name", student.first_name)
+    student.last_name = data.get("last_name", student.last_name)
+    student.email = data.get("email", student.email)
+    student.entry_year = data.get("entry_year", student.entry_year)
 
     db.session.commit()
     return student
@@ -81,17 +81,15 @@ def delete_student(student):
 
 def are_students_available_for_timeslot(section, block):
     timeslot_ids = [timeslot.id for timeslot in block]
-    students = section['section'].students
+    students = section["section"].students
 
     if not students:
         return True
 
     student_ids = [student.id for student in students]
-    current_section_id = section['section'].id
+    current_section_id = section["section"].id
 
-    conflicts = get_conflicting_schedules(
-        timeslot_ids, student_ids, current_section_id
-    )
+    conflicts = get_conflicting_schedules(timeslot_ids, student_ids, current_section_id)
 
     return len(conflicts) == 0
 
@@ -113,27 +111,23 @@ def create_students_from_json(data):
     if not validate_json_has_required_key(data, STUDENT_JSON_KEY):
         return None
 
-    students = data.get('alumnos', [])
+    students = data.get("alumnos", [])
 
     # Validation cicle  (Will break if an entry it's not valid ----------------
     for student in students:
-        if not validate_entry_has_required_keys(
-            student, KEYS_NEEDED_FOR_STUDENT_JSON
-        ):
+        if not validate_entry_has_required_keys(student, KEYS_NEEDED_FOR_STUDENT_JSON):
             return None
 
         if not validate_entry_can_be_loaded(
             transform_json_entry_into_processable_student_format(student),
-            'student',
+            "student",
         ):
             return None
 
     # Creation cicle (Will only execute if ALL validations pass) -----------
     # (Thus, two for cicles are needed) ------------------------------------
     for student in students:
-        student_data = transform_json_entry_into_processable_student_format(
-            student
-        )
+        student_data = transform_json_entry_into_processable_student_format(student)
         if student_data:
             create_student(student_data)
         else:
@@ -141,16 +135,16 @@ def create_students_from_json(data):
 
 
 def transform_json_entry_into_processable_student_format(student):
-    name = student.get('nombre', '')
+    name = student.get("nombre", "")
     data = {
-        'first_name': name.split()[0] if isinstance(name, str) else name,
-        'last_name': (
-            ' '.join(name.split()[1:])
+        "first_name": name.split()[0] if isinstance(name, str) else name,
+        "last_name": (
+            " ".join(name.split()[1:])
             if (isinstance(name, str) and len(name.split()) > 1)
-            else ('')
+            else ("")
         ),
-        'email': student.get('correo'),
-        'entry_year': int(student.get('anio_ingreso')),
+        "email": student.get("correo"),
+        "entry_year": int(student.get("anio_ingreso")),
     }
     return data
 
@@ -162,7 +156,7 @@ def export_student_report_to_excel(student):
     if excel_buffer is None:
         return None
 
-    filename = f'{student.first_name}_{student.last_name}_reporte_notas.xlsx'
+    filename = f"{student.first_name}_{student.last_name}_reporte_notas.xlsx"
     return excel_buffer, filename
 
 
@@ -180,16 +174,16 @@ def generate_closed_course_records(student):
 
         closed_courses.append(
             {
-                'Curso': course.name,
-                'Año': instance.year,
-                'Semestre': instance.semester,
-                'Sección': section.nrc,
-                'Nota Final': enrollment.final_grade,
-                'Estado': enrollment.state,
+                "Curso": course.name,
+                "Año": instance.year,
+                "Semestre": instance.semester,
+                "Sección": section.nrc,
+                "Nota Final": enrollment.final_grade,
+                "Estado": enrollment.state,
             }
         )
 
-    return sorted(closed_courses, key=lambda r: (r['Año'], r['Semestre']))
+    return sorted(closed_courses, key=lambda r: (r["Año"], r["Semestre"]))
 
 
 def convert_records_to_excel(records):

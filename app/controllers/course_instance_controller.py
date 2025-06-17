@@ -12,6 +12,7 @@ from app.validators.constants import (
 from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
+    validate_json_has_required_key,
 )
 
 KEYS_NEEDED_FOR_INSTANCE_JSON = [
@@ -41,11 +42,11 @@ def get_course_instance_by_parameters(year, semester):
 
 
 def create_course_instance(data):
-    instance_id = data.get('instance_id')
+    instance_id = data.get("instance_id")
     new_course_instance = CourseInstance(
-        year=data.get('year'),
-        semester=data.get('semester'),
-        course_id=data.get('course_id'),
+        year=data.get("year"),
+        semester=data.get("semester"),
+        course_id=data.get("course_id"),
     )
     db.session.add(new_course_instance)
     db.session.commit()
@@ -60,8 +61,8 @@ def update_course_instance(course_instance, data):
     if not course_instance:
         return None
 
-    course_instance.year = data.get('year', course_instance.year)
-    course_instance.semester = data.get('semester', course_instance.semester)
+    course_instance.year = data.get("year", course_instance.year)
+    course_instance.semester = data.get("semester", course_instance.semester)
 
     db.session.commit()
     return course_instance
@@ -77,9 +78,17 @@ def delete_course_instance(course_instance):
 
 
 def create_course_instances_from_json(data):
-    if not validate_entry_has_required_keys(
-        data, KEYS_NEEDED_FOR_INSTANCE_JSON
-    ):
+    # Due to a circular import and the fact that the JSON has 3 main keys,
+    # the general purpose function can't be called, so the individual one
+    # has to be called 3 times.
+
+    if not validate_json_has_required_key(data, KEY_INSTANCE_JSON):
+        return None
+
+    if not validate_json_has_required_key(data, KEY_YEAR_JSON):
+        return None
+
+    if not validate_json_has_required_key(data, KEY_SEMESTER_JSON):
         return None
 
     year = data.get(KEY_YEAR_JSON)
@@ -97,19 +106,21 @@ def create_course_instances_from_json(data):
             transform_json_entry_into_processable_course_instance_format(
                 year, semester, instance
             ),
-            'instance',
+            "instance",
         )
 
         if not is_instance_valid:
             return None
 
+    for instance in instances:
+        # After validation
+        instance_id = instance.get("id")
+
     # Second cicle, after validation of every entry creates --------------------
     for instance in instances:
-        instance_id = instance.get('id')
-        instance_data = (
-            transform_json_entry_into_processable_course_instance_format(
-                year, semester, instance
-            )
+        instance_id = instance.get("id")
+        instance_data = transform_json_entry_into_processable_course_instance_format(
+            year, semester, instance
         )
 
         if check_if_course_instance_with_id_exists(instance_id):
@@ -122,10 +133,10 @@ def transform_json_entry_into_processable_course_instance_format(
     year, semester, instance
 ):
     data = {
-        'year': year,
-        'semester': semester,
-        'instance_id': instance.get('id'),
-        'course_id': instance.get('curso_id'),
+        "year": year,
+        "semester": semester,
+        "instance_id": instance.get("id"),
+        "course_id": instance.get("curso_id"),
     }
     return data
 

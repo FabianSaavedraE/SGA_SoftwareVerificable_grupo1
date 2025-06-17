@@ -17,128 +17,112 @@ from app.validators.data_load_validators import (
 )
 
 course_instance_bp = Blueprint(
-    'course_instances', __name__, url_prefix='/course_instances'
+    "course_instances", __name__, url_prefix="/course_instances"
 )
 
 
-@course_instance_bp.route('/', methods=['GET'])
+@course_instance_bp.route("/", methods=["GET"])
 def get_course_instances_view():
     course_instances = get_all_course_instances()
     for course_instance in course_instances:
         print(course_instance)
     return render_template(
-        'course_instances/index.html', course_instances=course_instances
+        "course_instances/index.html", course_instances=course_instances
     )
 
 
-@course_instance_bp.route('/<int:course_instance_id>/show', methods=['GET'])
+@course_instance_bp.route("/<int:course_instance_id>/show", methods=["GET"])
 def show_course_instance_view(course_instance_id):
     course_instance = get_course_instance(course_instance_id)
     if not course_instance:
         return redirect(
-            url_for(
-                'courses.show_course_view', course_id=course_instance.course.id
-            )
+            url_for("courses.show_course_view", course_id=course_instance.course.id)
         )
 
     return render_template(
-        'course_instances/show.html', course_instance=course_instance
+        "course_instances/show.html", course_instance=course_instance
     )
 
 
-@course_instance_bp.route('/create/<int:course_id>', methods=['GET', 'POST'])
+@course_instance_bp.route("/create/<int:course_id>", methods=["GET", "POST"])
 def create_course_instance_view(course_id):
     course = get_course(course_id)
 
     if not course:
-        return redirect(url_for('courses.get_course_view'))
+        return redirect(url_for("courses.get_course_view"))
 
     error = None
-    if request.method == 'POST':
+    if request.method == "POST":
         data = build_course_instance_data(request.form, course_id)
         errors = validate_course_instance_and_return_errors(data)
 
         if errors:
             return render_template(
-                'course_instances/create.html', course=course, errors=errors
+                "course_instances/create.html", course=course, errors=errors
             )
 
         create_course_instance(data)
-        return redirect(
-            url_for('courses.show_course_view', course_id=course_id)
-        )
+        return redirect(url_for("courses.show_course_view", course_id=course_id))
 
-    return render_template(
-        'course_instances/create.html', course=course, error=error
-    )
+    return render_template("course_instances/create.html", course=course, error=error)
 
 
-@course_instance_bp.route('/<int:course_instance_id>', methods=['GET', 'POST'])
+@course_instance_bp.route("/<int:course_instance_id>", methods=["GET", "POST"])
 def update_course_instance_view(course_instance_id):
     course_instance = get_course_instance(course_instance_id)
     if not course_instance:
         return redirect(
-            url_for(
-                'courses.show_course_view', course_id=course_instance.course.id
-            )
+            url_for("courses.show_course_view", course_id=course_instance.course.id)
         )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         data = request.form
-        errors = validate_course_instance_and_return_errors(
-            data, course_instance_id
-        )
+        errors = validate_course_instance_and_return_errors(data, course_instance_id)
 
         if errors:
             return render_template(
-                'course_instances/edit.html',
+                "course_instances/edit.html",
                 course_instance=course_instance,
                 errors=errors,
             )
 
         update_course_instance(course_instance, data)
         return redirect(
-            url_for(
-                'courses.show_course_view', course_id=course_instance.course.id
-            )
+            url_for("courses.show_course_view", course_id=course_instance.course.id)
         )
 
     return render_template(
-        'course_instances/edit.html', course_instance=course_instance
+        "course_instances/edit.html", course_instance=course_instance
     )
 
 
-@course_instance_bp.route('/upload-json', methods=['POST'])
+@course_instance_bp.route("/upload-json", methods=["POST"])
 def upload_course_instances_json():
-    file = request.files.get('jsonFile')
+    file = request.files.get("jsonFile")
     if not file:
-        return redirect(url_for('course_instances.get_course_instances_view'))
+        return redirect(url_for("course_instances.get_course_instances_view"))
 
     data = validate_json_file_and_return_processed_file(file)
 
     if data:
         create_course_instances_from_json(data)
 
-    return redirect(url_for('course_instances.get_course_instances_view'))
+    return redirect(url_for("course_instances.get_course_instances_view"))
 
 
 @course_instance_bp.route(
-    '/delete/<int:course_instance_id>/<int:course_id>', methods=['POST']
+    "/delete/<int:course_instance_id>/<int:course_id>", methods=["POST"]
 )
 def delete_course_instance_view(course_instance_id, course_id):
     course_instance = get_course_instance(course_instance_id)
     if course_instance:
         delete_course_instance(course_instance)
-        return redirect(
-            url_for('courses.show_course_view', course_id=course_id)
-        )
+        return redirect(url_for("courses.show_course_view", course_id=course_id))
 
-    return render_template(
-        url_for('courses.show_course_view', course_id=course_id)
-    )
+    return render_template(url_for("courses.show_course_view", coures_id=course_id))
 
 
 def build_course_instance_data(form_data, course_id):
     data = form_data.to_dict()
-    data['course_id'] = course_id
+    data["course_id"] = course_id
     return data

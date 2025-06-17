@@ -21,6 +21,7 @@
         <form
             action="{{ url_for('course_instances.update_course_instance_view', course_instance_id=course_instance.id) }}"
             method="POST">
+            <input type="hidden" name="course_id" value="{{ course_instance.course.id }}">
             <div>
                 <label for="year">Año:</label>
                 <input type="text" id="year" name="year" value="{{ course_instance.year }}">
@@ -40,8 +41,8 @@
             <p class="form-error">{{errors.semester}}</p>
             {% endif %}
 
-            {% if errors and errors.exists %}
-            <p class="form-error">{{errors.exists}}</p>
+            {% if errors and errors.instancias %}
+            <p class="form-error">{{errors.instancias}}</p>
             {% endif %}
 
             <button type="submit" class="btn-back">Actualizar Instancia</button>
