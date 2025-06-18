@@ -1,4 +1,5 @@
 from collections import defaultdict
+from sqlalchemy import func
 
 import app.validators.constants as constants
 from app import db
@@ -31,11 +32,17 @@ def get_teacher(teacher_id):
 
 def create_teacher(data):
     """Create a new teacher from data."""
+    teacher_id = data.get('teacher_id')
+    
     new_teacher = Teacher(
         first_name=data.get("first_name"),
         last_name=data.get("last_name"),
         email=data.get("email"),
     )
+    
+    if teacher_id is not None:
+        new_teacher.id = teacher_id
+    
     db.session.add(new_teacher)
     db.session.commit()
 
@@ -150,9 +157,14 @@ def create_teachers_from_json(data):
 
     # Create teachers if all validations pass
     for teacher in teachers:
+        id = teacher.get('id')
         teacher_data = transform_json_entry_into_processable_teacher_format(
             teacher
         )
+        
+        if check_if_teacher_with_id_exists(id):
+            handle_teacher_with_existing_id(id)
+        
         if teacher_data:
             create_teacher(teacher_data)
         else:
@@ -168,5 +180,23 @@ def transform_json_entry_into_processable_teacher_format(teacher):
         if (isinstance(name, str) and len(name.split()) > 1)
         else (""),
         "email": teacher.get("correo"),
+        "teacher_id": teacher.get("id")
     }
     return data
+
+
+def check_if_teacher_with_id_exists(id):
+    teacher = Teacher.query.filter_by(id=id).first()
+    if teacher:
+        return True
+    else:
+        return False
+    
+    
+def handle_teacher_with_existing_id(id):
+    teacher = Teacher.query.filter_by(id=id).first()
+    max_id = db.session.query(func.max(Teacher.id)).scalar() or 0
+    new_id = max_id + 1
+
+    teacher.id = new_id
+    db.session.commit()
