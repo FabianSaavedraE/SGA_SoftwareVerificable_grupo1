@@ -110,3 +110,6 @@ Para verificar errores de estilo con Ruff, ejecutar el siguiente comando:
 ```
 ruff check .
 ```
+
+
+Basándonos en la guía "PEP 8 – Style Guide for Python Code", se decidieron agregar docstrings para la documentación de todos los módulos, funciones, clases y métodos públicos.
