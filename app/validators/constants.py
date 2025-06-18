@@ -10,6 +10,9 @@ MAX_LENGTH_USERS_NAME = 50
 KEY_USER_NAME = "nombre"
 MIN_VALID_ENTRY_YEAR = 1980
 MAX_VALID_ENTRY_YEAR = 2025
+KEY_MAIL_ENTRY = "correo"
+KEY_ENTRY_YEAR_JSON = "anio_ingreso"
+TEACHER_JSON_KEY = 'profesores'
 
 # General use constants -------------------------------------------------------
 MAX_NAME_LENGTH = 20
@@ -21,6 +24,8 @@ MIN_CAPACITY = 1
 MAX_CAPACITY = 400
 KEY_CAPACITY_JSON = "capacidad"
 KEY_CAPACITY_ENTRY = "capacity"
+CLASSROOM_JSON_KEY = 'salas'
+KEY_CLASSROOM_NAME = 'nombre'
 
 # Course constants ------------------------------------------------------------
 MAX_DESCRIPTION_LENGTH = 100
@@ -107,7 +112,15 @@ KEY_CODE_JSON = "codigo"
 KEY_CREDITS_JSON = "creditos"
 KEY_COURSE_JSON = "cursos"
 
-# Abbreviations ----------------------------------------------------------------
+# Abbreviations ---------------------------------------------------------------
 COURSE_CODE_PREFIX = "ICC"
 CODE_LENGTH = 4
 PERCENTAGE = "porcentaje"
+
+# Couser Controller JSON ------------------------------------------------------
+
+APPROVED = "Aprobado"
+FAILED = "Reprobado"
+APPROVED_GRADE = 4
+STUDENT_COURSES_JSON_KEY = "alumnos_seccion"
+KEYS_NEEDED_FOR_STUDENT_COURSE_JSON = ["seccion_id", "alumno_id"]

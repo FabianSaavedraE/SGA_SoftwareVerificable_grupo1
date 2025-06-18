@@ -30,9 +30,9 @@ def validate_classroom_data_and_return_errors(data, classroom_id=None):
 
 def return_classroom_typing_errors(data):
     errors = {}
-    name = data.get(KEY_NAME_ENTRY) or ''
-    capacity = data.get(KEY_CAPACITY_ENTRY) or ''
-    id = data.get(KEY_ID_ENTRY) or ''
+    name = data.get(KEY_NAME_ENTRY) if data else ''
+    capacity = data.get(KEY_CAPACITY_ENTRY) if data else ''
+    id = data.get(KEY_ID_ENTRY) if data else ''
 
     if not (isinstance(id, int) or (id == '')):
         errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'

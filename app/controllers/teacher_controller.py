@@ -6,13 +6,11 @@ from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
     validate_json_has_required_key,
+    flash_custom_error
 )
 
-TEACHERS_JSON_KEY = 'profesores'
-KEY_ID_ENTRY = 'id'
-KEY_NAME_ENTRY = 'nombre'
-KEY_MAIL_ENTRY = 'correo'
-KEYS_NEEDED_FOR_TEACHER_JSON = [KEY_ID_ENTRY, KEY_MAIL_ENTRY, KEY_NAME_ENTRY]
+from app.validators.constants import *
+KEYS_NEEDED_FOR_TEACHER_JSON = [KEY_ID_ENTRY, KEY_MAIL_ENTRY, KEY_USER_NAME]
 
 
 def get_all_teachers():
@@ -109,7 +107,7 @@ def validate_teacher_overload(ranked_sections, timeslots):
 
 
 def create_teachers_from_json(data):
-    if not validate_json_has_required_key(data, TEACHERS_JSON_KEY):
+    if not validate_json_has_required_key(data, TEACHER_JSON_KEY):
         return None
 
     teachers = data.get('profesores', [])
@@ -126,6 +124,12 @@ def create_teachers_from_json(data):
             'teacher',
         ):
             return None
+        
+        if get_teacher(teacher.get(KEY_ID_ENTRY)):
+            flash_custom_error(f'{teacher}: {KEY_ID_ENTRY} {ALREADY_EXISTS}')
+
+            return None
+
 
     # Creation cicle (Will only execute if ALL validations pass) -----------
     # (Thus, two for cicles are needed) ------------------------------------

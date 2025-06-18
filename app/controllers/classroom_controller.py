@@ -4,18 +4,15 @@ from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
     validate_json_has_required_key,
+    flash_custom_error
 )
+from app.validators.constants import *
 
-CLASSROOM_JSON_KEY = 'salas'
-KEY_ID_ENTRY = 'id'
-KEY_NAME_ENTRY = 'nombre'
-KEY_CAPACITY_ENTRY = 'capacidad'
 KEYS_NEEDED_FOR_CLASSROOM_JSON = [
     KEY_ID_ENTRY,
-    KEY_NAME_ENTRY,
-    KEY_CAPACITY_ENTRY,
+    KEY_CLASSROOM_NAME,
+    KEY_CAPACITY_JSON,
 ]
-
 
 def get_all_classrooms():
     return Classroom.query.all()
@@ -72,7 +69,7 @@ def create_classroom_from_json(data):
     # Validation cicle  (Will break if an entry it's not valid ----------------
     for classroom in classrooms:
         if not validate_entry_has_required_keys(
-            classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
+            classroom, KEYS_NEEDED_FOR_CLASSROOM_JSON
         ):
             return None
 
@@ -80,6 +77,11 @@ def create_classroom_from_json(data):
             (transform_json_entry_into_classroom_format(classroom)),
             'classroom',
         ):
+            return None
+        
+        if get_classroom(classroom.get(KEY_ID_ENTRY)):
+            flash_custom_error(f'{classroom}: {KEY_ID_ENTRY} {ALREADY_EXISTS}')
+
             return None
 
     # Creation cicle (Will only execute if ALL validations pass) --------------
@@ -93,16 +95,12 @@ def create_classroom_from_json(data):
 
 
 def transform_json_entry_into_classroom_format(classroom):
-    if validate_entry_has_required_keys(
-        classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
-    ):
-        data = {
-            'id': classroom.get('id'),
-            'name': classroom.get('nombre'),
-            'capacity': classroom.get('capacidad'),
-        }
-        return data
-    return None
+    data = {
+        'id': classroom.get('id'),
+        'name': classroom.get('nombre'),
+        'capacity': classroom.get('capacidad'),
+    }
+    return data
 
 
 def get_available_classrooms_for_block(block, num_students):

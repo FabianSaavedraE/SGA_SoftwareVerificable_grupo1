@@ -8,20 +8,13 @@ from app.controllers.course_section_controller import (
     close_all_sections_for_course,
 )
 from app.models import Course
-from app.validators.constants import (
-    CODE_LENGTH,
-    COURSE_CODE_PREFIX,
-    KEY_CODE_JSON,
-    KEY_COURSE_JSON,
-    KEY_CREDITS_JSON,
-    KEY_DESCRIPTION_JSON,
-    KEY_ID_ENTRY,
-)
+from app.validators.constants import *
 from app.validators.data_load_validators import (
     flash_custom_error,
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
     validate_json_has_required_key,
+    flash_custom_error
 )
 
 KEYS_REQUIRED_JSON = [
@@ -129,22 +122,23 @@ def create_courses_from_json(data):
             transform_json_entry_into_processable_course_format(course),
             'course',
         )
-
         if not is_valid_entry:
+            return None
+        
+        if get_course(course.get(KEY_ID_ENTRY)):
+            flash_custom_error(f'{course}: {KEY_ID_ENTRY} {ALREADY_EXISTS}')
+
             return None
 
     # Creation cicle (Will only execute if ALL validations pass) -----------
     # (Thus, two for cicles are needed) ------------------------------------
     for course in courses:
         # No need to check, if this executes, attributes exists and are valid
-        id = course.get('id')
+        id = course.get(KEY_ID_ENTRY)
         prerequisites = course.get('requisitos')
         course_data = transform_json_entry_into_processable_course_format(
             course
         )
-
-        if check_if_course_with_id_exists(id):
-            handle_course_with_existing_id(id)
 
         create_course(course_data)
 
@@ -165,24 +159,6 @@ def transform_json_entry_into_processable_course_format(course):
         'course_id': course.get('id'),
     }
     return data
-
-
-def check_if_course_with_id_exists(id):
-    course = Course.query.filter_by(id=id).first()
-    if course:
-        return True
-    else:
-        return False
-
-
-def handle_course_with_existing_id(id):
-    course = Course.query.filter_by(id=id).first()
-    max_id = db.session.query(func.max(Course.id)).scalar() or 0
-    new_id = max_id + 1
-
-    course.id = new_id
-    db.session.commit()
-
 
 def generate_prerequisites(id, prerequisites):
     # Since the creation of prerequisites is sequential in the JSON file, there

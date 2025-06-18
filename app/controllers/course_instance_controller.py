@@ -2,17 +2,11 @@ from sqlalchemy import func
 
 from app import db
 from app.models import CourseInstance
-from app.validators.constants import (
-    KEY_COURSE_ID_JSON,
-    KEY_ID_ENTRY,
-    KEY_INSTANCE_JSON,
-    KEY_SEMESTER_JSON,
-    KEY_YEAR_JSON,
-)
+from app.validators.constants import *
 from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
-    validate_json_has_required_key,
+    flash_custom_error
 )
 
 KEYS_NEEDED_FOR_INSTANCE_JSON = [
@@ -82,13 +76,9 @@ def create_course_instances_from_json(data):
     # the general purpose function can't be called, so the individual one
     # has to be called 3 times.
 
-    if not validate_json_has_required_key(data, KEY_INSTANCE_JSON):
-        return None
-
-    if not validate_json_has_required_key(data, KEY_YEAR_JSON):
-        return None
-
-    if not validate_json_has_required_key(data, KEY_SEMESTER_JSON):
+    if not validate_entry_has_required_keys(
+        data, KEYS_NEEDED_FOR_INSTANCE_JSON
+    ):
         return None
 
     year = data.get(KEY_YEAR_JSON)
@@ -109,22 +99,24 @@ def create_course_instances_from_json(data):
             "instance",
         )
 
+        if get_course_instance(instance.get(KEY_ID_ENTRY)):
+            flash_custom_error(f'{instance}: {KEY_ID_ENTRY} {ALREADY_EXISTS}')
+
+            return None
+        
         if not is_instance_valid:
             return None
 
     for instance in instances:
         # After validation
-        instance_id = instance.get("id")
+        instance_id = instance.get(KEY_ID_ENTRY)
 
     # Second cicle, after validation of every entry creates --------------------
     for instance in instances:
-        instance_id = instance.get("id")
+        instance_id = instance.get(KEY_ID_ENTRY)
         instance_data = transform_json_entry_into_processable_course_instance_format(
             year, semester, instance
         )
-
-        if check_if_course_instance_with_id_exists(instance_id):
-            handle_course_instance_with_existing_id(instance_id)
 
         create_course_instance(instance_data)
 
@@ -139,20 +131,3 @@ def transform_json_entry_into_processable_course_instance_format(
         "course_id": instance.get("curso_id"),
     }
     return data
-
-
-def check_if_course_instance_with_id_exists(id):
-    course_instance = CourseInstance.query.filter_by(id=id).first()
-    if course_instance:
-        return True
-    else:
-        return False
-
-
-def handle_course_instance_with_existing_id(id):
-    course_instance = CourseInstance.query.filter_by(id=id).first()
-    max_id = db.session.query(func.max(CourseInstance.id)).scalar() or 0
-    new_id = max_id + 1
-
-    course_instance.id = new_id
-    db.session.commit()

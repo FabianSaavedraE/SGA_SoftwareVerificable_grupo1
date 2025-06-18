@@ -9,24 +9,12 @@ from app.controllers.evaluation_controller import create_evaluation
 from app.controllers.evaluation_type_controller import create_evaluation_type
 from app.controllers.final_grades_controller import calculate_final_grades
 from app.models import CourseInstance, CourseSection
-from app.validators.constants import (
-    KEY_COURSE_INSTANCE_JSON,
-    KEY_EVALUATION_JSON,
-    KEY_ID_ENTRY,
-    KEY_MANDATORY_EVALUATIONS_JSON,
-    KEY_TEACHER_ID_JSON,
-    KEY_TOPIC_COMBINATION_JSON,
-    KEY_TOPIC_JSON,
-    KEY_TOPIC_NAME_JSON,
-    KEY_TOPIC_QUANTITY_JSON,
-    KEY_TOPIC_TYPE_JSON,
-    KEY_TOPIC_VALUE_JSON,
-    KEY_TOPIC_VALUES_JSON,
-)
+from app.validators.constants import *
 from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
     validate_json_has_required_key,
+    flash_custom_error
 )
 
 # Since the JSON structure for loading comprises multiple dictionaries, a lot
@@ -176,7 +164,14 @@ def create_course_sections_from_json(data):
             course_section, KEYS_NEEDED_FOR_SECTION_ENTRY
         ):
             return None
+        
+        if get_section(course_section.get(KEY_ID_ENTRY)):
+            flash_custom_error(
+                f'{course_section}: {KEY_ID_ENTRY} {ALREADY_EXISTS}'
+                )
 
+            return None
+        
         if not validate_entry_can_be_loaded(course_section, "section"):
             return None
 
@@ -227,9 +222,6 @@ def create_course_sections_from_json(data):
             )
         )
 
-        if check_if_course_section_with_id_exists(section_id):
-            handle_course_section_with_existing_id(section_id)
-
         create_section(course_section_data)
 
         add_evaluation_topics_and_evaluations_to_section(
@@ -251,24 +243,6 @@ def transform_json_entry_into_processable_course_sections_format(
         "state": "Open",  # As default, since isn't given in JSON files and assumed to be Open.
     }
     return data
-
-
-def check_if_course_section_with_id_exists(id):
-    course_section = CourseSection.query.filter_by(id=id).first()
-    if course_section:
-        return True
-    else:
-        return False
-
-
-def handle_course_section_with_existing_id(id):
-    course_section = CourseSection.query.filter_by(id=id).first()
-    max_id = db.session.query(func.max(CourseSection.id)).scalar() or 0
-    new_id = max_id + 1
-
-    course_section.id = new_id
-    db.session.commit()
-
 
 def capitalize_first_character(text):
     if not text:

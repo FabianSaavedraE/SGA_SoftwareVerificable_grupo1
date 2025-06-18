@@ -8,7 +8,9 @@ from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
     validate_json_has_required_key,
+    flash_custom_error
 )
+from app.validators.constants import *
 
 STUDENT_JSON_KEY = "alumnos"
 CLOSED_STATE = "Closed"
@@ -21,15 +23,11 @@ REPORT_COLUMNS = [
     "Estado",
 ]
 
-KEY_ID_ENTRY = "id"
-KEY_NAME_ENTRY = "nombre"
-KEY_MAIL_ENTRY = "correo"
-KEY_YEAR_ENTRY = "anio_ingreso"
 KEYS_NEEDED_FOR_STUDENT_JSON = [
     KEY_ID_ENTRY,
     KEY_MAIL_ENTRY,
-    KEY_NAME_ENTRY,
-    KEY_YEAR_ENTRY,
+    KEY_USER_NAME,
+    KEY_ENTRY_YEAR_JSON
 ]
 
 
@@ -122,6 +120,11 @@ def create_students_from_json(data):
             transform_json_entry_into_processable_student_format(student),
             "student",
         ):
+            return None
+        
+        if get_student(student.get(KEY_ID_ENTRY)):
+            flash_custom_error(f'{student}: {KEY_ID_ENTRY} {ALREADY_EXISTS}')
+
             return None
 
     # Creation cicle (Will only execute if ALL validations pass) -----------

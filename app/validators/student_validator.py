@@ -19,7 +19,6 @@ from app.validators.constants import (
     OVERFLOWS,
 )
 
-
 def validate_student_data_and_return_errors(data, student_id=None):
     typing_errors = return_student_typing_errors(data)
 
@@ -65,9 +64,11 @@ def return_student_attribute_errors(data, student_id):
     email = get_stripped_field(data, KEY_EMAIL_ENTRY)
     entry_year = data.get(KEY_ENTRY_YEAR, "")
 
-    first_name_errors = return_student_name_errors(KEY_FIRST_NAME_ENTRY, first_name)
+    first_name_errors = return_student_name_errors(KEY_FIRST_NAME_ENTRY,
+                                                   first_name)
 
-    last_name_errors = return_student_name_errors(KEY_LAST_NAME_ENTRY, last_name)
+    last_name_errors = return_student_name_errors(KEY_LAST_NAME_ENTRY,
+                                                  last_name)
 
     email_errors = return_student_email_errors(email, student_id)
     entry_year_errors = return_entry_year_errors(entry_year)
@@ -86,7 +87,8 @@ def return_student_name_errors(key, name):
         errors[key] = f"{key} {MUST_BE}"
 
     elif len(name) > MAX_LENGTH_USERS_NAME:
-        errors[key] = f"{key} {OVERFLOWS} 0 - {MAX_LENGTH_USERS_NAME} {CHARACTERS}."
+        errors[key] = f"{key} {OVERFLOWS} 0 - "
+        f"{MAX_LENGTH_USERS_NAME} {CHARACTERS}."
 
     return errors
 
@@ -99,7 +101,8 @@ def return_student_email_errors(email, student_id):
 
     elif len(email) > MAX_LENGTH_EMAIL or len(email) <= 1:
         errors[KEY_EMAIL_ENTRY] = (
-            f"{KEY_EMAIL_ENTRY} {OVERFLOWS} 1 - {MAX_LENGTH_EMAIL} {CHARACTERS}"
+            f"{KEY_EMAIL_ENTRY} {OVERFLOWS} 1 - "
+            f"{MAX_LENGTH_EMAIL} {CHARACTERS}"
         )
 
     elif "@" not in email:
@@ -135,7 +138,6 @@ def return_entry_year_errors(entry_year):
         )
 
     return errors
-
 
 def get_stripped_field(data, field_name):
     return (str(data.get(field_name) or "")).strip()

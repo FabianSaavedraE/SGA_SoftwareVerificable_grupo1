@@ -5,12 +5,7 @@ from app.validators.data_load_validators import (
     validate_entry_has_required_keys,
     validate_json_has_required_key,
 )
-
-APPROVED = "Aprobado"
-FAILED = "Reprobado"
-APPROVED_GRADE = 4
-STUDENT_COURSES_JSON_KEY = "alumnos_seccion"
-KEYS_NEEDED_FOR_STUDENT_COURSE_JSON = ["seccion_id", "alumno_id"]
+from app.validators.constants import *
 
 
 def get_student_course(student_id, course_section_id):
@@ -84,6 +79,7 @@ def create_student_courses_from_json(data):
     student_courses = data.get(STUDENT_COURSES_JSON_KEY, [])
 
     for student_course in student_courses:
+
         if not validate_entry_has_required_keys(
             student_course, KEYS_NEEDED_FOR_STUDENT_COURSE_JSON
         ):
