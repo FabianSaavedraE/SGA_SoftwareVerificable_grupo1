@@ -20,16 +20,18 @@ from app.validators.constants import (
 
 
 def validate_course_instance_and_return_errors(data, course_instance_id=None):
+    """Validate course instance data and returns any errors."""
     typing_errors = return_instance_typing_errors(data)
 
-    # Since typing errors are exclusive to JSON load, should return immediately
     if typing_errors:
         return typing_errors
 
     attribute_errors = return_instance_attributes_errors(data)
     if not attribute_errors:
-        uniqueness_errors = validate_course_instance_uniqueness_and_return_errors(
-            data, course_instance_id
+        uniqueness_errors = (
+            validate_course_instance_uniqueness_and_return_errors(
+                data, course_instance_id
+            )
         )
         attribute_errors.update(uniqueness_errors)
 
@@ -37,6 +39,7 @@ def validate_course_instance_and_return_errors(data, course_instance_id=None):
 
 
 def return_instance_typing_errors(instance):
+    """Check for typing errors in course instance data."""
     errors = {}
     year = instance.get(KEY_YEAR_ENTRY) or ""
     semester = instance.get(KEY_SEMESTER_ENTRY) or ""
@@ -51,7 +54,9 @@ def return_instance_typing_errors(instance):
         errors[KEY_YEAR_ENTRY] = f"{KEY_YEAR_ENTRY} {MUST_BE_STRING_OR_INT}"
 
     if not (isinstance(semester, str) or isinstance(semester, int)):
-        errors[KEY_SEMESTER_ENTRY] = f"{KEY_SEMESTER_ENTRY} {MUST_BE_STRING_OR_INT}"
+        errors[KEY_SEMESTER_ENTRY] = (
+            f"{KEY_SEMESTER_ENTRY} {MUST_BE_STRING_OR_INT}"
+        )
 
     if not (isinstance(course_id, int) or course_id == ""):
         errors[KEY_INSTANCE_COURSE_ID_ENTRY] = (
@@ -65,6 +70,7 @@ def return_instance_typing_errors(instance):
 
 
 def return_instance_attributes_errors(instance):
+    """Check for attribute-related errors in course instance data."""
     errors = {}
 
     year = instance.get(KEY_YEAR_ENTRY) or ""
@@ -92,6 +98,7 @@ def return_instance_attributes_errors(instance):
 
 
 def return_instance_year_errors(year):
+    """Validate the year of a course instance."""
     errors = {}
 
     if not year:
@@ -114,6 +121,7 @@ def return_instance_year_errors(year):
 
 
 def return_instance_semester_errors(semester):
+    """Validate the semester of a course instance."""
     errors = {}
 
     if not semester:
@@ -132,6 +140,7 @@ def return_instance_semester_errors(semester):
 
 
 def return_instance_course_id_errors(course_id):
+    """Validate the course ID of a course instance."""
     errors = {}
     if not course_id:
         errors[KEY_INSTANCE_COURSE_ID_ENTRY] = (
@@ -155,6 +164,7 @@ def return_instance_course_id_errors(course_id):
 
 
 def return_instance_id_errors(instance_id, required=True):
+    """Validate the ID of a course instance."""
     errors = {}
 
     if not instance_id:
@@ -170,7 +180,10 @@ def return_instance_id_errors(instance_id, required=True):
     return errors
 
 
-def validate_course_instance_uniqueness_and_return_errors(data, course_instance_id):
+def validate_course_instance_uniqueness_and_return_errors(
+    data, course_instance_id
+):
+    """Validate the uniqueness of a course instance."""
     errors = {}
 
     year = data.get(KEY_YEAR_ENTRY)
@@ -193,10 +206,13 @@ def validate_course_instance_uniqueness_and_return_errors(data, course_instance_
     )
 
     if existing_instance:
-        errors[KEY_INSTANCE_JSON] = f"{course} {year} - {semester} {ALREADY_EXISTS}"
+        errors[KEY_INSTANCE_JSON] = (
+            f"{course} {year} - {semester} {ALREADY_EXISTS}"
+        )
 
     return errors
 
 
 def get_stripped_field(data, field):
+    """Return a stripped string from form data."""
     return (str(data.get(field) or "")).strip()

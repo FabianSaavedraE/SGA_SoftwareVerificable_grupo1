@@ -43,7 +43,7 @@ KEY_COURSE_ID_JSON = "curso_id"
 KEY_INSTANCE_COURSE_ID_ENTRY = "course_id"
 KEY_INSTANCE_COURSE_ID_JSON = "curso_id"
 
-# Section constants ------------------------------------------------------------
+# Section constants -----------------------------------------------------------
 
 KEY_COURSE_INSTANCE_JSON = "instancia_curso"
 KEY_TEACHER_ID_JSON = "profesor_id"
@@ -107,7 +107,7 @@ KEY_CODE_JSON = "codigo"
 KEY_CREDITS_JSON = "creditos"
 KEY_COURSE_JSON = "cursos"
 
-# Abbreviations ----------------------------------------------------------------
+# Abbreviations ---------------------------------------------------------------
 COURSE_CODE_PREFIX = "ICC"
 CODE_LENGTH = 4
 PERCENTAGE = "porcentaje"

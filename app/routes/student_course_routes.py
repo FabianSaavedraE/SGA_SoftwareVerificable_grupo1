@@ -20,8 +20,11 @@ student_course_bp = Blueprint(
 )
 
 
-@student_course_bp.route("/create/<int:course_section_id>", methods=["GET", "POST"])
+@student_course_bp.route(
+    "/create/<int:course_section_id>", methods=["GET", "POST"]
+)
 def create_student_course_view(course_section_id):
+    """Handle creating a new student-course enrollment."""
     section = get_section(course_section_id)
     if not section:
         return redirect(
@@ -71,6 +74,7 @@ def create_student_course_view(course_section_id):
     "/<int:student_id>/<int:course_section_id>", methods=["GET", "POST"]
 )
 def update_student_course_view(student_id, course_section_id):
+    """Handle updating an existing student-course enrollment."""
     student_course = get_student_course(student_id, course_section_id)
     if not student_course:
         return redirect(
@@ -91,11 +95,14 @@ def update_student_course_view(student_id, course_section_id):
             )
         )
 
-    return render_template("student_courses/edit.html", student_course=student_course)
+    return render_template(
+        "student_courses/edit.html", student_course=student_course
+    )
 
 
 @student_course_bp.route("/upload-json", methods=["POST"])
 def upload_student_courses_json():
+    """Handle uploading a JSON file to create student-course enrollments."""
     file = request.files.get("jsonFile")
     if not file:
         return redirect(url_for("course_sections.get_sections_view"))
@@ -112,6 +119,7 @@ def upload_student_courses_json():
     "/delete/<int:student_id>/<int:course_section_id>", methods=["POST"]
 )
 def delete_student_course_view(student_id, course_section_id):
+    """Handle deleting a student-course enrollment."""
     student_course = get_student_course(student_id, course_section_id)
     if student_course:
         delete_student_course(student_id, course_section_id)
@@ -129,6 +137,7 @@ def delete_student_course_view(student_id, course_section_id):
 
 
 def build_student_course_data(form_data, course_section_id):
+    """Build student course data from form data and section ID."""
     data = form_data.to_dict()
     data["course_section_id"] = course_section_id
     data["state"] = "Inscrito"
@@ -136,6 +145,7 @@ def build_student_course_data(form_data, course_section_id):
 
 
 def get_students_by_query(query):
+    """Retrieve students from the database based on a query string."""
     return Student.query.filter(
         or_(
             Student.first_name.ilike(f"%{query}%"),

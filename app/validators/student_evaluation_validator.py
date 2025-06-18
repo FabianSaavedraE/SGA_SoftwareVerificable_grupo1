@@ -26,6 +26,7 @@ MIN_GRADE = 1.0
 def validate_student_evaluation_data(
     data, original_student_id=None, original_evaluation_id=None
 ):
+    """Validate student evaluation data for creation or update."""
     errors = {}
     errors.update(validate_typing(data))
 
@@ -52,6 +53,7 @@ def validate_student_evaluation_data(
 
 
 def validate_typing(data):
+    """Validate the data types for evaluation fields."""
     errors = {}
     normalized_data = get_normalized_data(data)
 
@@ -65,7 +67,9 @@ def validate_typing(data):
 
     evaluation_id = parse_int(normalized_data[KEY_INSTANCE_ID_ENTRY])
     if evaluation_id is None:
-        errors[KEY_INSTANCE_ID_ENTRY] = f"{KEY_INSTANCE_ID_ENTRY} {MUST_BE_INT}"
+        errors[KEY_INSTANCE_ID_ENTRY] = (
+            f"{KEY_INSTANCE_ID_ENTRY} {MUST_BE_INT}"
+        )
 
     grade = parse_float(normalized_data[KEY_GRADE_ENTRY])
     if grade is None:
@@ -75,6 +79,7 @@ def validate_typing(data):
 
 
 def validate_attributes(data):
+    """Validate existence of related entities and grade range."""
     errors = {}
     normalized_data = get_normalized_data(data)
 
@@ -94,7 +99,9 @@ def validate_attributes(data):
             f"{DOESNT_EXIST}"
         )
 
-    evaluation = get_entity_by_id(Evaluation, normalized_data[KEY_INSTANCE_ID_ENTRY])
+    evaluation = get_entity_by_id(
+        Evaluation, normalized_data[KEY_INSTANCE_ID_ENTRY]
+    )
     if not evaluation:
         errors[KEY_INSTANCE_ID_JSON] = (
             f"{KEY_INSTANCE_ID_JSON} {normalized_data[KEY_INSTANCE_ID_ENTRY]} "
@@ -109,6 +116,7 @@ def validate_attributes(data):
 
 
 def validate_grade(grade):
+    """Validate if a grade is within the acceptable range."""
     grade = parse_float(grade)
     if grade < MIN_GRADE or grade > MAX_GRADE:
         return f"{KEY_GRADE_JSON} {OVERFLOWS} {MIN_GRADE} y {MAX_GRADE}"
@@ -117,10 +125,7 @@ def validate_grade(grade):
 
 
 def validate_student_exists_in_evaluation_course(data):
-    """
-    Validates if student is enrolled in the course section associated with
-    the evaluation type.
-    """
+    """Check if the student is enrolled in the evaluation's course section."""
     errors = {}
     normalized_data = get_normalized_data(data)
 
@@ -132,7 +137,9 @@ def validate_student_exists_in_evaluation_course(data):
     if not student or not evaluation_type:
         return errors
 
-    student_section_ids = {sc.course_section_id for sc in student.student_courses}
+    student_section_ids = {
+        sc.course_section_id for sc in student.student_courses
+    }
     eval_section_id = evaluation_type.course_section_id
 
     if eval_section_id not in student_section_ids:
@@ -144,7 +151,10 @@ def validate_student_exists_in_evaluation_course(data):
     return errors
 
 
-def validate_uniqueness(data, original_student_id=None, original_evaluation_id=None):
+def validate_uniqueness(
+    data, original_student_id=None, original_evaluation_id=None
+):
+    """Ensure a student's evaluation entry is unique."""
     errors = {}
     normalized_data = get_normalized_data(data)
 
@@ -157,7 +167,9 @@ def validate_uniqueness(data, original_student_id=None, original_evaluation_id=N
         (normalized_data[KEY_STUDENT_ID_ENTRY] != original_student_id)
         or (normalized_data[KEY_INSTANCE_ID_ENTRY] != original_evaluation_id)
     ):
-        student = get_entity_by_id(Student, normalized_data[KEY_STUDENT_ID_ENTRY])
+        student = get_entity_by_id(
+            Student, normalized_data[KEY_STUDENT_ID_ENTRY]
+        )
         evaluation = get_entity_by_id(
             Evaluation, normalized_data[KEY_INSTANCE_ID_ENTRY]
         )
@@ -172,6 +184,7 @@ def validate_uniqueness(data, original_student_id=None, original_evaluation_id=N
 
 
 def parse_int(value):
+    """Safely converts a value to an integer."""
     try:
         return int(value)
     except (ValueError, TypeError):
@@ -179,6 +192,7 @@ def parse_int(value):
 
 
 def parse_float(value):
+    """Safely converts a value to a float."""
     try:
         return float(value)
     except (ValueError, TypeError):
@@ -186,6 +200,7 @@ def parse_float(value):
 
 
 def get_normalized_data(data):
+    """Normalize input data by extracting relevant IDs and grade."""
     return {
         KEY_STUDENT_ID_ENTRY: (
             (data.get(KEY_STUDENT_ID_JSON) if data else "")
@@ -211,4 +226,5 @@ def get_normalized_data(data):
 
 
 def get_entity_by_id(model, id_value):
+    """Retrieve a database entity by its ID."""
     return model.query.get(id_value)

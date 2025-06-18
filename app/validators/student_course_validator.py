@@ -17,6 +17,7 @@ from app.validators.constants import (
 
 
 def validate_student_course_and_return_errors(data, student_course_id=None):
+    """Validate student course data and returns any errors."""
     errors = {}
 
     typing_errors = validate_typing(data)
@@ -37,6 +38,7 @@ def validate_student_course_and_return_errors(data, student_course_id=None):
 
 
 def validate_typing(data):
+    """Validate the data types for student and section IDs."""
     errors = {}
 
     student_id, section_id = get_student_and_section_ids(data)
@@ -53,6 +55,7 @@ def validate_typing(data):
 
 
 def validate_attributes(data):
+    """Validate the existence of student and section attributes."""
     errors = {}
 
     student_id, section_id = get_student_and_section_ids(data)
@@ -60,15 +63,20 @@ def validate_attributes(data):
     section = get_section(section_id)
 
     if not student:
-        errors[KEY_STUDENT_ENTRY] = f"{KEY_STUDENT_ENTRY} {student_id} {DOESNT_EXIST}"
+        errors[KEY_STUDENT_ENTRY] = (
+            f"{KEY_STUDENT_ENTRY} {student_id} {DOESNT_EXIST}"
+        )
 
     if not section:
-        errors[KEY_SECTION_ENTRY] = f"{KEY_SECTION_ENTRY} {section_id} {DOESNT_EXIST}"
+        errors[KEY_SECTION_ENTRY] = (
+            f"{KEY_SECTION_ENTRY} {section_id} {DOESNT_EXIST}"
+        )
 
     return errors
 
 
 def validate_uniqueness(data, student_course_id=None):
+    """Check for uniqueness of a student's course enrollment."""
     errors = {}
 
     student_id, section_id = get_student_and_section_ids(data)
@@ -76,7 +84,9 @@ def validate_uniqueness(data, student_course_id=None):
         student_id=student_id, course_section_id=section_id
     ).first()
 
-    if existing and (not student_course_id or existing.id != student_course_id):
+    if existing and (
+        not student_course_id or existing.id != student_course_id
+    ):
         student = get_student(student_id)
         section = get_section(section_id)
         if student and section:
@@ -89,6 +99,7 @@ def validate_uniqueness(data, student_course_id=None):
 
 
 def check_prerequisites(data):
+    """Verify if a student meets course prerequisites."""
     student_id, section_id = get_student_and_section_ids(data)
     section = get_section(section_id)
 
@@ -106,6 +117,7 @@ def check_prerequisites(data):
 
 
 def has_approved_course(student_id, course_id):
+    """Check if a student has approved a specific course."""
     return (
         db.session.query(StudentCourses)
         .join(CourseSection)
@@ -120,12 +132,18 @@ def has_approved_course(student_id, course_id):
 
 
 def get_student_and_section_ids(data):
-    student_id = data.get(KEY_STUDENT_ID_JSON) or data.get(KEY_STUDENT_ID_ENTRY)
-    section_id = data.get(KEY_SECTION_ID_JSON) or data.get(KEY_SECTION_ID_ENTRY)
+    """Extract student and section IDs from input data."""
+    student_id = data.get(KEY_STUDENT_ID_JSON) or data.get(
+        KEY_STUDENT_ID_ENTRY
+    )
+    section_id = data.get(KEY_SECTION_ID_JSON) or data.get(
+        KEY_SECTION_ID_ENTRY
+    )
     return student_id, section_id
 
 
 def parse_int(value):
+    """Safely converts a value to an integer."""
     try:
         return int(value)
     except (ValueError, TypeError):
@@ -133,8 +151,10 @@ def parse_int(value):
 
 
 def get_section(section_id):
+    """Retrieve a CourseSection by its ID."""
     return CourseSection.query.get(section_id)
 
 
 def get_student(student_id):
+    """Retrieve a Student by their ID."""
     return Student.query.get(student_id)

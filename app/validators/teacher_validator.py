@@ -17,9 +17,9 @@ from app.validators.constants import (
 
 
 def validate_teacher_data_and_return_errors(data, teacher_id=None):
+    """Validate teacher data and returns any found errors."""
     typing_errors = return_teacher_typing_errors(data)
 
-    # Since typing errors are exclusive to JSON load, should return inmediatly.
     if typing_errors:
         return typing_errors
 
@@ -28,35 +28,37 @@ def validate_teacher_data_and_return_errors(data, teacher_id=None):
 
 
 def return_teacher_typing_errors(data):
+    """Return typing errors found in teacher data."""
     errors = {}
-    first_name = data.get(KEY_FIRST_NAME_ENTRY, '')
-    last_name = data.get(KEY_LAST_NAME_ENTRY, '')
-    email = data.get(KEY_EMAIL_ENTRY, '')
-    id = data.get(KEY_ID_ENTRY, '')
+    first_name = data.get(KEY_FIRST_NAME_ENTRY, "")
+    last_name = data.get(KEY_LAST_NAME_ENTRY, "")
+    email = data.get(KEY_EMAIL_ENTRY, "")
+    id = data.get(KEY_ID_ENTRY, "")
 
     if not isinstance(first_name, str):
         errors[KEY_FIRST_NAME_ENTRY] = (
-            f'{KEY_FIRST_NAME_ENTRY} {MUST_BE_STRING}'
+            f"{KEY_FIRST_NAME_ENTRY} {MUST_BE_STRING}"
         )
 
     if not isinstance(last_name, str):
-        errors[KEY_LAST_NAME_ENTRY] = f'{KEY_LAST_NAME_ENTRY} {MUST_BE_STRING}'
+        errors[KEY_LAST_NAME_ENTRY] = f"{KEY_LAST_NAME_ENTRY} {MUST_BE_STRING}"
 
     if not isinstance(email, str):
-        errors[KEY_EMAIL_ENTRY] = f'{KEY_EMAIL_ENTRY} {MUST_BE_STRING}'
+        errors[KEY_EMAIL_ENTRY] = f"{KEY_EMAIL_ENTRY} {MUST_BE_STRING}"
 
-    if not (isinstance(id, int) or (id == '')):
-        errors[KEY_ID_ENTRY] = f'{KEY_ID_ENTRY} {MUST_BE_INT}'
+    if not (isinstance(id, int) or (id == "")):
+        errors[KEY_ID_ENTRY] = f"{KEY_ID_ENTRY} {MUST_BE_INT}"
 
     return errors
 
 
 def return_teacher_attribute_errors(data, teacher_id):
+    """Return attribute errors in teacher data."""
     errors = {}
 
-    first_name = data.get(KEY_FIRST_NAME_ENTRY, '').strip()
-    last_name = data.get(KEY_LAST_NAME_ENTRY, '').strip()
-    email = data.get(KEY_EMAIL_ENTRY, '').strip()
+    first_name = data.get(KEY_FIRST_NAME_ENTRY, "").strip()
+    last_name = data.get(KEY_LAST_NAME_ENTRY, "").strip()
+    email = data.get(KEY_EMAIL_ENTRY, "").strip()
 
     first_name_errors = return_teacher_name_errors(
         KEY_FIRST_NAME_ENTRY, first_name
@@ -76,39 +78,41 @@ def return_teacher_attribute_errors(data, teacher_id):
 
 
 def return_teacher_name_errors(key, name):
+    """Validate a teacher's name and returns any errors."""
     errors = {}
 
-    if not name or name == '' or name == '':
-        errors[key] = f'{key} {MUST_BE}'
+    if not name or name == "" or name == "":
+        errors[key] = f"{key} {MUST_BE}"
 
     elif len(name) > MAX_LENGTH_USERS_NAME:
         errors[key] = (
-            f'{key} {OVERFLOWS} 1 - {MAX_LENGTH_USERS_NAME} {CHARACTERS}.'
+            f"{key} {OVERFLOWS} 1 - {MAX_LENGTH_USERS_NAME} {CHARACTERS}."
         )
 
     return errors
 
 
 def return_teacher_email_errors(email, teacher_id):
+    """Validate teacher email and returns related errors."""
     errors = {}
 
     if not email:
-        errors[KEY_EMAIL_ENTRY] = f'{KEY_EMAIL_ENTRY} {MUST_BE}'
+        errors[KEY_EMAIL_ENTRY] = f"{KEY_EMAIL_ENTRY} {MUST_BE}"
 
     elif len(email) > MAX_LENGTH_EMAIL:
         errors[KEY_EMAIL_ENTRY] = (
-            f'{KEY_EMAIL_ENTRY} {OVERFLOWS}'
-            f' 1 - {MAX_LENGTH_EMAIL} {CHARACTERS}'
+            f"{KEY_EMAIL_ENTRY} {OVERFLOWS}"
+            f" 1 - {MAX_LENGTH_EMAIL} {CHARACTERS}"
         )
 
-    elif '@' not in email:
-        errors[KEY_EMAIL_ENTRY] = f'{KEY_EMAIL_ENTRY} {MUST_CONTAIN} @'
+    elif "@" not in email:
+        errors[KEY_EMAIL_ENTRY] = f"{KEY_EMAIL_ENTRY} {MUST_CONTAIN} @"
 
     else:
         existing_teacher = Teacher.query.filter_by(email=email).first()
         if existing_teacher and (
             teacher_id is None or existing_teacher.id != teacher_id
         ):
-            errors[KEY_EMAIL_ENTRY] = f'{KEY_EMAIL_ENTRY} {ALREADY_EXISTS}'
+            errors[KEY_EMAIL_ENTRY] = f"{KEY_EMAIL_ENTRY} {ALREADY_EXISTS}"
 
     return errors
