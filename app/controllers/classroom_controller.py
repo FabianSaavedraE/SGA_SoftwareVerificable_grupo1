@@ -6,10 +6,10 @@ from app.validators.data_load_validators import (
     validate_json_has_required_key,
 )
 
-CLASSROOM_JSON_KEY = 'salas'
-KEY_ID_ENTRY = 'id'
-KEY_NAME_ENTRY = 'nombre'
-KEY_CAPACITY_ENTRY = 'capacidad'
+CLASSROOM_JSON_KEY = "salas"
+KEY_ID_ENTRY = "id"
+KEY_NAME_ENTRY = "nombre"
+KEY_CAPACITY_ENTRY = "capacidad"
 KEYS_NEEDED_FOR_CLASSROOM_JSON = [
     KEY_ID_ENTRY,
     KEY_NAME_ENTRY,
@@ -18,19 +18,22 @@ KEYS_NEEDED_FOR_CLASSROOM_JSON = [
 
 
 def get_all_classrooms():
+    """Return all classrooms."""
     return Classroom.query.all()
 
 
 def get_classroom(classroom_id):
+    """Return a classroom by its ID."""
     classroom = Classroom.query.get(classroom_id)
     return classroom
 
 
 def create_classroom(data):
+    """Create a classroom with the given data."""
     if data:
-        classroom_id = data.get('id')
+        classroom_id = data.get("id")
         new_classroom = Classroom(
-            name=data.get('name'), capacity=data.get('capacity')
+            name=data.get("name"), capacity=data.get("capacity")
         )
 
         if classroom_id is not None:
@@ -44,17 +47,19 @@ def create_classroom(data):
 
 
 def update_classroom(classroom, data):
+    """Update an existing classroom with the new data."""
     if not classroom:
         return None
 
-    classroom.name = data.get('name', classroom.name)
-    classroom.capacity = data.get('capacity', classroom.capacity)
+    classroom.name = data.get("name", classroom.name)
+    classroom.capacity = data.get("capacity", classroom.capacity)
 
     db.session.commit()
     return classroom
 
 
 def delete_classroom(classroom):
+    """Delete the given classroom."""
     if not classroom:
         return False
 
@@ -64,12 +69,13 @@ def delete_classroom(classroom):
 
 
 def create_classroom_from_json(data):
+    """Create classrooms from JSON data after validating format."""
     if not validate_json_has_required_key(data, CLASSROOM_JSON_KEY):
         return None
 
-    classrooms = data.get('salas', [])
+    classrooms = data.get("salas", [])
 
-    # Validation cicle  (Will break if an entry it's not valid ----------------
+    # Validation loop for each classroom
     for classroom in classrooms:
         if not validate_entry_has_required_keys(
             classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
@@ -78,12 +84,11 @@ def create_classroom_from_json(data):
 
         if not validate_entry_can_be_loaded(
             (transform_json_entry_into_classroom_format(classroom)),
-            'classroom',
+            "classroom",
         ):
             return None
 
-    # Creation cicle (Will only execute if ALL validations pass) --------------
-    # (Thus, two for cicles are needed) ---------------------------------------
+    # Creation loop, runs only if all validations pass
     for classroom in classrooms:
         classroom_data = transform_json_entry_into_classroom_format(classroom)
         if classroom_data:
@@ -93,19 +98,21 @@ def create_classroom_from_json(data):
 
 
 def transform_json_entry_into_classroom_format(classroom):
+    """Transform a classroom JSON entry into the expected model format."""
     if validate_entry_has_required_keys(
         classroom, [KEY_CAPACITY_ENTRY, KEY_NAME_ENTRY, KEY_ID_ENTRY]
     ):
         data = {
-            'id': classroom.get('id'),
-            'name': classroom.get('nombre'),
-            'capacity': classroom.get('capacidad'),
+            "id": classroom.get("id"),
+            "name": classroom.get("nombre"),
+            "capacity": classroom.get("capacidad"),
         }
         return data
     return None
 
 
 def get_available_classrooms_for_block(block, num_students):
+    """Return classrooms available for a time block and number of students."""
     timeslot_ids = [timeslot.id for timeslot in block]
     all_classrooms = get_all_classrooms()
 

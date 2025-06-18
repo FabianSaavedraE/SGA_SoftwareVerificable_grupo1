@@ -4,7 +4,9 @@ import pandas as pd
 from sqlalchemy import func
 
 from app import db
-from app.controllers.course_instance_controller import get_course_instance_by_parameters
+from app.controllers.course_instance_controller import (
+    get_course_instance_by_parameters,
+)
 from app.controllers.evaluation_controller import create_evaluation
 from app.controllers.evaluation_type_controller import create_evaluation_type
 from app.controllers.final_grades_controller import calculate_final_grades
@@ -62,11 +64,13 @@ REPORT_COLUMNS = ["Estudiante", "Email", "Nota Final", "Estado"]
 
 
 def get_all_sections():
+    """Return all course sections."""
     sections = CourseSection.query.all()
     return sections
 
 
 def get_all_course_sections(course_instance_id):
+    """Return all sections for a given course instance."""
     sections = CourseSection.query.filter_by(
         course_instance_id=course_instance_id
     ).all()
@@ -74,6 +78,7 @@ def get_all_course_sections(course_instance_id):
 
 
 def get_course_sections_by_parameters(year, semester):
+    """Return sections for courses matching year and semester."""
     course_instances = get_course_instance_by_parameters(year, semester)
     sections = []
 
@@ -85,11 +90,13 @@ def get_course_sections_by_parameters(year, semester):
 
 
 def get_section(course_section_id):
+    """Return a section by its ID."""
     course_section = CourseSection.query.get(course_section_id)
     return course_section
 
 
 def create_section(data):
+    """Create and save a new course section."""
     raw_nrc = data.get("nrc", "").zfill(NRC_LENGTH)
     nrc = f"NRC{raw_nrc}"
     section_id = data.get("section_id")
@@ -108,12 +115,11 @@ def create_section(data):
     db.session.add(new_section)
     db.session.commit()
 
-    print("NEW COURSE SECTION ID:", new_section.id)
-
     return new_section
 
 
 def update_section(course_section, data):
+    """Update fields of a course section."""
     if not course_section:
         return None
 
@@ -139,6 +145,7 @@ def update_section(course_section, data):
 
 
 def delete_section(course_section):
+    """Delete a course section."""
     if not course_section:
         return False
 
@@ -148,6 +155,7 @@ def delete_section(course_section):
 
 
 def create_course_sections_from_json(data):
+    """Create multiple course sections from JSON data."""
     if validate_json_has_required_key(data, KEY_COURSE_SECTIONS_JSON):
         course_sections = data.get("secciones", [])
         for course_section in course_sections:
@@ -210,7 +218,7 @@ def create_course_sections_from_json(data):
         if not validate_entry_can_be_loaded(evaluations, "evaluations"):
             return None
 
-    # After all it's validated, can proceed with creation ---------------------
+    # After all is validated, can proceed with creation ----------------------
     for course_section in course_sections:
         section_id = course_section.get(KEY_ID_ENTRY)
         evaluations = course_section.get(KEY_EVALUATION_JSON)
@@ -219,7 +227,9 @@ def create_course_sections_from_json(data):
 
         # overall_ponderation_type is required to have the name of the type
         # with the first letter capitalized.
-        overall_ponderation_type = capitalize_first_character(evaluations.get("tipo"))
+        overall_ponderation_type = capitalize_first_character(
+            evaluations.get("tipo")
+        )
 
         course_section_data = (
             transform_json_entry_into_processable_course_sections_format(
@@ -242,18 +252,20 @@ def create_course_sections_from_json(data):
 def transform_json_entry_into_processable_course_sections_format(
     course_section, overall_ponderation_type, section_id
 ):
+    """Format JSON data into dict for course section creation."""
     data = {
         "section_id": section_id,
         "nrc": str(section_id),
         "overall_ponderation_type": overall_ponderation_type,
         "course_instance_id": course_section.get("instancia_curso"),
         "teacher_id": course_section.get("profesor_id"),
-        "state": "Open",  # As default, since isn't given in JSON files and assumed to be Open.
+        "state": "Open",
     }
     return data
 
 
 def check_if_course_section_with_id_exists(id):
+    """Check if a course section with the given ID exists."""
     course_section = CourseSection.query.filter_by(id=id).first()
     if course_section:
         return True
@@ -262,6 +274,7 @@ def check_if_course_section_with_id_exists(id):
 
 
 def handle_course_section_with_existing_id(id):
+    """If section ID exists, assign a new ID."""
     course_section = CourseSection.query.filter_by(id=id).first()
     max_id = db.session.query(func.max(CourseSection.id)).scalar() or 0
     new_id = max_id + 1
@@ -271,6 +284,7 @@ def handle_course_section_with_existing_id(id):
 
 
 def capitalize_first_character(text):
+    """Capitalize the first letter of a string."""
     if not text:
         return text
     return text[0].upper() + text[1:]
@@ -279,12 +293,12 @@ def capitalize_first_character(text):
 def add_evaluation_topics_and_evaluations_to_section(
     id, evaluation_instances, evaluation_instances_topics
 ):
-    """
-    Due to the nature of multiple values in a topic, it's not possible to
-    refactor this function further to make it more readable / simple.
-    So, the following comments are to separate into chunks to make it
-    more readable.
-    """
+    """Add evaluation types and evaluations to a section."""
+    # Due to the nature of multiple values in a topic, it's not possible to
+    # refactor this function further to make it more readable / simple.
+    # So, the following comments are to separate into chunks to make it
+    # more readable.
+
     for evaluation_instance in evaluation_instances:
         evaluation_instance_id = evaluation_instance.get("id")
         topic = evaluation_instances_topics.get(str(evaluation_instance_id))
@@ -323,6 +337,7 @@ def add_evaluation_topics_and_evaluations_to_section(
 def transform_json_entry_into_processable_evaluation_type_format(
     id, evaluation_instance, evaluation_instance_id, topic
 ):
+    """Format JSON data for evaluation type creation."""
     evaluation_instance_name = evaluation_instance.get("nombre")
     evaluation_ponderation = evaluation_instance.get("valor")
     data = {
@@ -337,12 +352,15 @@ def transform_json_entry_into_processable_evaluation_type_format(
 
 
 def has_section_been_closed(old_state, new_state):
-    """Returns True if state went from 'Open' to 'Closed'"""
+    """Return True if state changed from 'Open' to 'Closed'."""
     return old_state == "Open" and new_state == "Closed"
 
 
 def close_all_sections_for_course(course_id):
-    course_instances = CourseInstance.query.filter_by(course_id=course_id).all()
+    """Close all open sections for a course and calculate final grades."""
+    course_instances = CourseInstance.query.filter_by(
+        course_id=course_id
+    ).all()
 
     for course_instance in course_instances:
         course_sections = get_all_course_sections(course_instance.id)
@@ -355,6 +373,7 @@ def close_all_sections_for_course(course_id):
 
 
 def export_section_report_to_excel(course_section):
+    """Generate Excel report for a section if it is closed."""
     if course_section.state == "Open":
         return None
 
@@ -369,13 +388,16 @@ def export_section_report_to_excel(course_section):
 
 
 def generate_section_report(course_section):
+    """Generate report data for a course section."""
     student_courses = course_section.student_courses
 
     data = []
     for course in student_courses:
         student = course.student
         student_name = f"{student.first_name} {student.last_name}"
-        final_grade = course.final_grade if course.final_grade is not None else "N/A"
+        final_grade = (
+            course.final_grade if course.final_grade is not None else "N/A"
+        )
         state = course.state
 
         data.append(
@@ -391,6 +413,7 @@ def generate_section_report(course_section):
 
 
 def convert_data_to_excel(data):
+    """Convert report data to an Excel file in memory."""
     if not data:
         return None
 

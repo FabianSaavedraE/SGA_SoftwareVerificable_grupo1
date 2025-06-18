@@ -13,12 +13,13 @@ from app.models import Schedule
 
 
 def assign_sections(sections, timeslots, index=0):
+    """Assign time blocks and classrooms to all sections recursively."""
     if index == len(sections):
         return True
 
     section_data = sections[index]
-    section = section_data['section']
-    num_students = section_data['num_students']
+    section = section_data["section"]
+    num_students = section_data["num_students"]
 
     possible_blocks = generate_valid_block(section_data, timeslots)
     for block, _ in possible_blocks:
@@ -42,6 +43,7 @@ def assign_sections(sections, timeslots, index=0):
 
 
 def assign_section(section, block, classroom):
+    """Assign a section to a block and classroom in the schedule."""
     for timeslot in block:
         new_schedule = Schedule(
             section_id=section.id,
@@ -54,11 +56,12 @@ def assign_section(section, block, classroom):
 
 
 def unassign_section(section, block):
+    """Remove a section's assignments from a block of timeslots."""
     timeslot_ids = [timeslot.id for timeslot in block]
 
     Schedule.query.filter(
         Schedule.section_id == section.id,
         Schedule.time_slot_id.in_(timeslot_ids),
-    ).delete(synchronize_session='fetch')
+    ).delete(synchronize_session="fetch")
 
     db.session.commit()

@@ -24,16 +24,19 @@ KEYS_NEEDED_FOR_INSTANCE_ENTRY = [KEY_COURSE_ID_JSON, KEY_ID_ENTRY]
 
 
 def get_all_course_instances():
+    """Return all course instances."""
     course_instances = CourseInstance.query.all()
     return course_instances
 
 
 def get_course_instance(course_instance_id):
+    """Return a course instance by its ID."""
     course_instance = CourseInstance.query.get(course_instance_id)
     return course_instance
 
 
 def get_course_instance_by_parameters(year, semester):
+    """Return all course instances for a given year and semester."""
     course_instances = CourseInstance.query.filter_by(
         year=year, semester=semester
     ).all()
@@ -42,6 +45,7 @@ def get_course_instance_by_parameters(year, semester):
 
 
 def create_course_instance(data):
+    """Create a new course instance with the given data."""
     instance_id = data.get("instance_id")
     new_course_instance = CourseInstance(
         year=data.get("year"),
@@ -58,6 +62,7 @@ def create_course_instance(data):
 
 
 def update_course_instance(course_instance, data):
+    """Update an existing course instance with new data."""
     if not course_instance:
         return None
 
@@ -69,6 +74,7 @@ def update_course_instance(course_instance, data):
 
 
 def delete_course_instance(course_instance):
+    """Delete a course instance from the database."""
     if not course_instance:
         return False
 
@@ -78,6 +84,7 @@ def delete_course_instance(course_instance):
 
 
 def create_course_instances_from_json(data):
+    """Validate and create course instances from JSON data."""
     # Due to a circular import and the fact that the JSON has 3 main keys,
     # the general purpose function can't be called, so the individual one
     # has to be called 3 times.
@@ -95,7 +102,7 @@ def create_course_instances_from_json(data):
     semester = data.get(KEY_SEMESTER_JSON)
     instances = data.get(KEY_INSTANCE_JSON, [])
 
-    # First cicle, checks validations ------------------------------------------
+    # Validate each instance entry
     for instance in instances:
         if not validate_entry_has_required_keys(
             instance, KEYS_NEEDED_FOR_INSTANCE_ENTRY
@@ -112,15 +119,13 @@ def create_course_instances_from_json(data):
         if not is_instance_valid:
             return None
 
-    for instance in instances:
-        # After validation
-        instance_id = instance.get("id")
-
-    # Second cicle, after validation of every entry creates --------------------
+    # Create instance after validation
     for instance in instances:
         instance_id = instance.get("id")
-        instance_data = transform_json_entry_into_processable_course_instance_format(
-            year, semester, instance
+        instance_data = (
+            transform_json_entry_into_processable_course_instance_format(
+                year, semester, instance
+            )
         )
 
         if check_if_course_instance_with_id_exists(instance_id):
@@ -132,6 +137,7 @@ def create_course_instances_from_json(data):
 def transform_json_entry_into_processable_course_instance_format(
     year, semester, instance
 ):
+    """Convert JSON entry into internal course instance data format."""
     data = {
         "year": year,
         "semester": semester,
@@ -142,6 +148,7 @@ def transform_json_entry_into_processable_course_instance_format(
 
 
 def check_if_course_instance_with_id_exists(id):
+    """Return True if a course instance with the given ID exists."""
     course_instance = CourseInstance.query.filter_by(id=id).first()
     if course_instance:
         return True
@@ -150,6 +157,7 @@ def check_if_course_instance_with_id_exists(id):
 
 
 def handle_course_instance_with_existing_id(id):
+    """Assign a new ID to a course instance if the ID already exists."""
     course_instance = CourseInstance.query.filter_by(id=id).first()
     max_id = db.session.query(func.max(CourseInstance.id)).scalar() or 0
     new_id = max_id + 1

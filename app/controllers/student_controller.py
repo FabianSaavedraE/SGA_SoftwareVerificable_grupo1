@@ -34,16 +34,19 @@ KEYS_NEEDED_FOR_STUDENT_JSON = [
 
 
 def get_all_students():
+    """Return all students from the database."""
     students = Student.query.all()
     return students
 
 
 def get_student(student_id):
+    """Return a student by their ID."""
     student = Student.query.get(student_id)
     return student
 
 
 def create_student(data):
+    """Create and save a new student."""
     new_student = Student(
         first_name=data.get("first_name"),
         last_name=data.get("last_name"),
@@ -58,6 +61,7 @@ def create_student(data):
 
 
 def update_student(student, data):
+    """Update a student's info if student exists."""
     if not student:
         return None
 
@@ -71,6 +75,7 @@ def update_student(student, data):
 
 
 def delete_student(student):
+    """Delete a student if they exist."""
     if not student:
         return False
 
@@ -80,6 +85,7 @@ def delete_student(student):
 
 
 def are_students_available_for_timeslot(section, block):
+    """Check if students are free in given timeslot."""
     timeslot_ids = [timeslot.id for timeslot in block]
     students = section["section"].students
 
@@ -89,12 +95,15 @@ def are_students_available_for_timeslot(section, block):
     student_ids = [student.id for student in students]
     current_section_id = section["section"].id
 
-    conflicts = get_conflicting_schedules(timeslot_ids, student_ids, current_section_id)
+    conflicts = get_conflicting_schedules(
+        timeslot_ids, student_ids, current_section_id
+    )
 
     return len(conflicts) == 0
 
 
 def get_conflicting_schedules(timeslots_id, students_id, current_section_id):
+    """Return schedules conflicting with given timeslots and students."""
     return (
         Schedule.query.join(CourseSection)
         .join(CourseSection.student_courses)
@@ -108,14 +117,17 @@ def get_conflicting_schedules(timeslots_id, students_id, current_section_id):
 
 
 def create_students_from_json(data):
+    """Create students after validating the input JSON data."""
     if not validate_json_has_required_key(data, STUDENT_JSON_KEY):
         return None
 
     students = data.get("alumnos", [])
 
-    # Validation cicle  (Will break if an entry it's not valid ----------------
+    # Validate each student entry
     for student in students:
-        if not validate_entry_has_required_keys(student, KEYS_NEEDED_FOR_STUDENT_JSON):
+        if not validate_entry_has_required_keys(
+            student, KEYS_NEEDED_FOR_STUDENT_JSON
+        ):
             return None
 
         if not validate_entry_can_be_loaded(
@@ -124,10 +136,11 @@ def create_students_from_json(data):
         ):
             return None
 
-    # Creation cicle (Will only execute if ALL validations pass) -----------
-    # (Thus, two for cicles are needed) ------------------------------------
+    # Create students if all validations pass
     for student in students:
-        student_data = transform_json_entry_into_processable_student_format(student)
+        student_data = transform_json_entry_into_processable_student_format(
+            student
+        )
         if student_data:
             create_student(student_data)
         else:
@@ -135,6 +148,7 @@ def create_students_from_json(data):
 
 
 def transform_json_entry_into_processable_student_format(student):
+    """Convert JSON entry to student data dict."""
     name = student.get("nombre", "")
     data = {
         "first_name": name.split()[0] if isinstance(name, str) else name,
@@ -150,6 +164,7 @@ def transform_json_entry_into_processable_student_format(student):
 
 
 def export_student_report_to_excel(student):
+    """Generate an Excel report for a student."""
     records = generate_closed_course_records(student)
     excel_buffer = convert_records_to_excel(records)
 
@@ -161,6 +176,7 @@ def export_student_report_to_excel(student):
 
 
 def generate_closed_course_records(student):
+    """Get records of student's closed courses."""
     closed_courses = []
 
     for enrollment in student.student_courses:
@@ -187,6 +203,7 @@ def generate_closed_course_records(student):
 
 
 def convert_records_to_excel(records):
+    """Convert list of records to Excel in memory."""
     if not records:
         return None
 

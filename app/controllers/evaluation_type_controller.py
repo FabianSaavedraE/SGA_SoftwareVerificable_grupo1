@@ -5,16 +5,21 @@ from app.models import CourseSection, EvaluationType
 
 
 def get_evaluation_types_by_course(course_id):
-    evaluation_types = EvaluationType.query.filter_by(course_id=course_id).all()
+    """Get all evaluation types for a course."""
+    evaluation_types = EvaluationType.query.filter_by(
+        course_id=course_id
+    ).all()
     return evaluation_types
 
 
 def get_evaluation_type(evaluation_type_id):
+    """Get one evaluation type by ID."""
     evaluation_type = EvaluationType.query.get(evaluation_type_id)
     return evaluation_type
 
 
 def create_evaluation_type(data):
+    """Create a new evaluation type."""
     section_id = data.get("course_section_id")
     evaluation_type_ponderation = float(data.get("overall_ponderation"))
 
@@ -29,7 +34,9 @@ def create_evaluation_type(data):
             .scalar()
         )
 
-        current_total_ponderation_value = round(current_total_ponderation_value or 0, 2)
+        current_total_ponderation_value = round(
+            current_total_ponderation_value or 0, 2
+        )
 
         if current_total_ponderation_value + evaluation_type_ponderation > 100:
             return None, round(current_total_ponderation_value, 2)
@@ -53,6 +60,7 @@ def create_evaluation_type(data):
 
 
 def update_evaluation_type(evaluation_type, data):
+    """Update an evaluation type."""
     if not evaluation_type:
         return None
 
@@ -89,6 +97,7 @@ def update_evaluation_type(evaluation_type, data):
 
 
 def delete_evaluation_type(evaluation_type):
+    """Delete an evaluation type."""
     if not evaluation_type:
         return False
 

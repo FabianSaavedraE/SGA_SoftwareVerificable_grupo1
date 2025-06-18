@@ -9,10 +9,11 @@ from app.controllers.timeslot_controller import (
 from app.models import Schedule
 from app.validators.schedule_validator import is_schedule_feasible
 
-SCHEDULE_PATH = 'app/static/horario.xlsx'
+SCHEDULE_PATH = "app/static/horario.xlsx"
 
 
 def generate_schedule(year, semester, export_path=SCHEDULE_PATH):
+    """Generate a schedule for the given year and semester."""
     clear_previous_schedule()
 
     ranked_sections, error_message = get_sections_ranking(year, semester)
@@ -31,16 +32,18 @@ def generate_schedule(year, semester, export_path=SCHEDULE_PATH):
 
     if assign_sections(ranked_sections, timeslots):
         export_schedule_to_excel(export_path)
-        message = 'Horario generado exitosamente.'
+        message = "Horario generado exitosamente."
         return True, message
 
-    return False, 'No se pudo generar un horario.'
+    return False, "No se pudo generar un horario."
 
 
 def clear_previous_schedule():
+    """Delete all existing schedules from the database."""
     Schedule.query.delete()
     db.session.commit()
 
 
 def get_all_schedules():
+    """Return all existing schedules."""
     return Schedule.query.all()

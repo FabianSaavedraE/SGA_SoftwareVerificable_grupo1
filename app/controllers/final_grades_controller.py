@@ -3,11 +3,12 @@ from app.controllers.student_course_controller import (
     get_student_course,
 )
 
-PERCENTAGE = 'Porcentaje'
+PERCENTAGE = "Porcentaje"
 MINIMUM_GRADE = 1.0
 
 
 def calculate_final_grades(course_section):
+    """Calculate final grades for all students in a course section."""
     if course_section is None:
         return
 
@@ -22,6 +23,7 @@ def calculate_final_grades(course_section):
 
 
 def compute_student_final_grade(student, course_section, is_percentage):
+    """Calculate the final grade of a student in a course section."""
     total_weighted_scores = 0
     total_weights = 0
 
@@ -41,6 +43,7 @@ def compute_student_final_grade(student, course_section, is_percentage):
 
 
 def compute_type_average(student, evaluation_type):
+    """Calculate the average grade of a student for a given evaluation type."""
     total_weighted_scores = 0
     total_weights = 0
 
@@ -67,6 +70,7 @@ def compute_type_average(student, evaluation_type):
 
 
 def get_student_grade(evaluation, student):
+    """Get a student's grade for a specific evaluation."""
     for student_eval in evaluation.student_evaluations:
         if student_eval.student_id == student.id:
             return student_eval.grade
@@ -75,6 +79,7 @@ def get_student_grade(evaluation, student):
 
 
 def update_student_final_grade(student_id, course_section_id, final_grade):
+    """Update the final grade of a student in the course section."""
     student_course = get_student_course(student_id, course_section_id)
     if student_course:
         apply_final_grade(student_course, final_grade)
