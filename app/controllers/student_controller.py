@@ -1,4 +1,5 @@
 from io import BytesIO
+from sqlalchemy import func
 
 import pandas as pd
 
@@ -44,12 +45,17 @@ def get_student(student_id):
 
 
 def create_student(data):
+    student_id = data.get('student_id')
+    
     new_student = Student(
         first_name=data.get("first_name"),
         last_name=data.get("last_name"),
         email=data.get("email"),
         entry_year=data.get("entry_year"),
     )
+    
+    if student_id is not None:
+        new_student.id = student_id
 
     db.session.add(new_student)
     db.session.commit()
@@ -127,7 +133,12 @@ def create_students_from_json(data):
     # Creation cicle (Will only execute if ALL validations pass) -----------
     # (Thus, two for cicles are needed) ------------------------------------
     for student in students:
+        id = student.get('id')
         student_data = transform_json_entry_into_processable_student_format(student)
+        
+        if check_if_student_with_id_exists(id):
+            handle_student_with_existing_id(id)
+        
         if student_data:
             create_student(student_data)
         else:
@@ -145,8 +156,26 @@ def transform_json_entry_into_processable_student_format(student):
         ),
         "email": student.get("correo"),
         "entry_year": int(student.get("anio_ingreso")),
+        "student_id":student.get("id")
     }
     return data
+
+
+def check_if_student_with_id_exists(id):
+    student = Student.query.filter_by(id=id).first()
+    if student:
+        return True
+    else:
+        return False
+
+
+def handle_student_with_existing_id(id):
+    student = Student.query.filter_by(id=id).first()
+    max_id = db.session.query(func.max(Student.id)).scalar() or 0
+    new_id = max_id + 1
+
+    student.id = new_id
+    db.session.commit()
 
 
 def export_student_report_to_excel(student):
