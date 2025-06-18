@@ -4,10 +4,12 @@ from app import db
 
 
 class CourseInstance(db.Model):
-    __tablename__ = 'course_instances'
+    """Course instance for a specific year and semester."""
+
+    __tablename__ = "course_instances"
     __table_args__ = (
         UniqueConstraint(
-            'course_id', 'year', 'semester', name='uq_course_year_semester'
+            "course_id", "year", "semester", name="uq_course_year_semester"
         ),
     )
 
@@ -17,16 +19,17 @@ class CourseInstance(db.Model):
 
     course_id = db.Column(
         db.Integer,
-        db.ForeignKey('courses.id', ondelete='CASCADE', onupdate='CASCADE'),
+        db.ForeignKey("courses.id", ondelete="CASCADE", onupdate="CASCADE"),
         nullable=False,
     )
     sections = db.relationship(
-        'CourseSection',
-        backref='course_instance',
+        "CourseSection",
+        backref="course_instance",
         lazy=True,
-        cascade='all, delete-orphan',
+        cascade="all, delete-orphan",
         passive_deletes=True,
     )
 
     def __repr__(self):
-        return f'<Course Instance {self.id}>'
+        """Return a string representation of the instance."""
+        return f"<Course Instance {self.id}>"

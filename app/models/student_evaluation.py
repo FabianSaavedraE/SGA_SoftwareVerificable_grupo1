@@ -2,6 +2,8 @@ from app import db
 
 
 class StudentEvaluations(db.Model):
+    """Links students with evaluations and their grades."""
+
     __tablename__ = "student_evaluations"
 
     student_id = db.Column(

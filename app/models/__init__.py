@@ -1,3 +1,5 @@
+"""Models package: imports all database models for easy access."""
+
 from .classroom import Classroom as Classroom
 from .course import Course as Course
 from .course_instance import CourseInstance as CourseInstance
@@ -13,17 +15,17 @@ from .teacher import Teacher as Teacher
 from .timeslot import TimeSlot as TimeSlot
 
 __all__ = [
-    'Classroom',
-    'Course',
-    'CourseInstance',
-    'CoursePrerequisite',
-    'CourseSection',
-    'Evaluation',
-    'EvaluationType',
-    'Schedule',
-    'Student',
-    'StudentCourses',
-    'StudentEvaluations',
-    'Teacher',
-    'TimeSlot',
+    "Classroom",
+    "Course",
+    "CourseInstance",
+    "CoursePrerequisite",
+    "CourseSection",
+    "Evaluation",
+    "EvaluationType",
+    "Schedule",
+    "Student",
+    "StudentCourses",
+    "StudentEvaluations",
+    "Teacher",
+    "TimeSlot",
 ]
