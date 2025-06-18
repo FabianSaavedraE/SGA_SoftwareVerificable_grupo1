@@ -11,7 +11,9 @@ from app.controllers.student_evaluation_controller import (
 from app.validators.data_load_validators import (
     validate_json_file_and_return_processed_file,
 )
-from app.validators.student_evaluation_validator import validate_student_evaluation_data
+from app.validators.student_evaluation_validator import (
+    validate_student_evaluation_data,
+)
 
 student_evaluation_bp = Blueprint(
     "student_evaluations", __name__, url_prefix="/student_evaluations"
@@ -22,6 +24,7 @@ student_evaluation_bp = Blueprint(
     "/create/<int:evaluation_id>/<int:student_id>", methods=["GET", "POST"]
 )
 def create_student_evaluation_view(student_id, evaluation_id):
+    """Handle creating a new student evaluation."""
     evaluation = get_evaluation(evaluation_id)
     student = get_student(student_id)
     student_evaluation = get_student_evaluation(student_id, evaluation_id)
@@ -49,7 +52,9 @@ def create_student_evaluation_view(student_id, evaluation_id):
 
         create_student_evaluation(data)
         return redirect(
-            url_for("evaluations.show_evaluation_view", evaluation_id=evaluation_id)
+            url_for(
+                "evaluations.show_evaluation_view", evaluation_id=evaluation_id
+            )
         )
 
     return render_template(
@@ -62,7 +67,7 @@ def create_student_evaluation_view(student_id, evaluation_id):
 
 @student_evaluation_bp.route("/upload-json", methods=["POST"])
 def upload_student_evaluation_json():
-    print("Calling student_evaluation route for json creations")
+    """Handle uploading a JSON file to create student evaluations."""
     file = request.files.get("jsonFile")
     if not file:
         return redirect(url_for("course_sections.get_sections_view"))
@@ -80,13 +85,16 @@ def upload_student_evaluation_json():
     methods=["GET", "POST"],
 )
 def update_student_evaluation_view(student_id, evaluation_id):
+    """Handle updating an existing student evaluation."""
     student_evaluation = get_student_evaluation(student_id, evaluation_id)
     evaluation = get_evaluation(evaluation_id)
     student = get_student(student_id)
 
     if not student_evaluation:
         return redirect(
-            url_for("evaluations.show_evaluation_view", evaluation_id=evaluation_id)
+            url_for(
+                "evaluations.show_evaluation_view", evaluation_id=evaluation_id
+            )
         )
 
     errors = None
@@ -115,7 +123,9 @@ def update_student_evaluation_view(student_id, evaluation_id):
 
         update_student_evaluation(student_evaluation, data)
         return redirect(
-            url_for("evaluations.show_evaluation_view", evaluation_id=evaluation_id)
+            url_for(
+                "evaluations.show_evaluation_view", evaluation_id=evaluation_id
+            )
         )
 
     return render_template(
@@ -129,6 +139,7 @@ def update_student_evaluation_view(student_id, evaluation_id):
 def build_student_evaluation_data(
     form_data, evaluation_id, student_id, evaluation_type_id
 ):
+    """Build student evaluation data from form data and IDs."""
     data = form_data.to_dict()
     data["evaluation_id"] = evaluation_id
     data["student_id"] = student_id

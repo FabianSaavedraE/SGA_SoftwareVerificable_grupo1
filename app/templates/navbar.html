@@ -12,67 +12,57 @@
             <img src="{{ url_for('static', filename='calendar.png') }}" alt="Logo" class="calendar-icon">
         </a>
     </div>
-    <div class="user-section">
-        <a href="/schedules">
-            <img src="{{ url_for('static', filename='reportes.png') }}" alt="Logo" class="report-icon">
-        </a>
-    </div>
 </div>
 
 <style>
-.sidebar {
-    width: 50px;
-    background-color: #37424a;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-}
+    .sidebar {
+        width: 50px;
+        background-color: #37424a;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+    }
 
-.logo-container {
-    width: 100%;
-    background-color: #e6001c; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1px 0;
-}
+    .logo-container {
+        width: 100%;
+        background-color: #e6001c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1px 0;
+    }
 
-.logo-container img.logo {
-    width: 70%;
-    margin-left: 12%;
-    margin-top: 20%;
-    margin-bottom: 20%;
-    height: 70%;
-    object-fit: contain;
-    align-items: center;
-}
+    .logo-container img.logo {
+        width: 70%;
+        margin-left: 12%;
+        margin-top: 20%;
+        margin-bottom: 20%;
+        height: 70%;
+        object-fit: contain;
+        align-items: center;
+    }
 
-.user-section {
-    margin-top: 10px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    .user-section {
+        margin-top: 10px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-.user-section img.user-icon {
-    width: 90%;
-    height: 90%;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-.calendar-icon {
-    width: 95%;
-    height: 80%;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-.report-icon {
-    width: 95%;
-    height: 80%;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
+    .user-section img.user-icon {
+        width: 90%;
+        height: 90%;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+    .calendar-icon {
+        width: 95%;
+        height: 80%;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
 </style>

@@ -1,10 +1,11 @@
 def assign_default_ponderations(evaluation_type, evaluations):
-    if not all(data['ponderation'] is None for data in evaluations):
+    """Set default ponderations for evaluations if none are provided."""
+    if not all(data["ponderation"] is None for data in evaluations):
         return None
 
-    if evaluation_type.ponderation_type == 'Peso':
+    if evaluation_type.ponderation_type == "Peso":
         for data in evaluations:
-            data['ponderation'] = 1
+            data["ponderation"] = 1
         return None
 
     existing_percentage_sum = round(
@@ -18,16 +19,16 @@ def assign_default_ponderations(evaluation_type, evaluations):
     amount_of_evaluations_being_created = len(evaluations)
 
     if remaining_percentage <= 0:
-        return 'No queda porcentaje disponible para repartir.'
+        return "No queda porcentaje disponible para repartir."
 
     percentage_each_evaluation = round(
         remaining_percentage / amount_of_evaluations_being_created, 2
     )
     for index, data in enumerate(evaluations):
         if index < amount_of_evaluations_being_created - 1:
-            data['ponderation'] = percentage_each_evaluation
+            data["ponderation"] = percentage_each_evaluation
         else:
-            data['ponderation'] = round(
+            data["ponderation"] = round(
                 remaining_percentage
                 - percentage_each_evaluation
                 * (amount_of_evaluations_being_created - 1),

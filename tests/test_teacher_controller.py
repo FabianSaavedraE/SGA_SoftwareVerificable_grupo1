@@ -2,11 +2,14 @@ from app.controllers import teacher_controller as controller
 
 
 def test_get_teacher_id_from_section():
-    mock_section = {'section': type('Section', (), {'teacher_id': 123})()}
+    """Test getting the teacher ID from a section dictionary."""
+    mock_section = {"section": type("Section", (), {"teacher_id": 123})()}
     assert controller.get_teacher_id_from_section(mock_section) == 123
 
 
 def test_extract_timeslot_ids():
+    """Test extracting IDs from a list of timeslot objects."""
+
     class MockSlot:
         def __init__(self, id):
             self.id = id
@@ -17,14 +20,16 @@ def test_extract_timeslot_ids():
 
 
 def test_validate_teacher_overload_passes():
+    """Test teacher overload validation passes for valid workloads."""
+
     class MockSection:
         def __init__(self, teacher_id):
             self.teacher_id = teacher_id
 
     ranked_sections = [
-        {'section': MockSection(1), 'num_credits': 2},
-        {'section': MockSection(2), 'num_credits': 3},
-        {'section': MockSection(1), 'num_credits': 1},
+        {"section": MockSection(1), "num_credits": 2},
+        {"section": MockSection(2), "num_credits": 3},
+        {"section": MockSection(1), "num_credits": 1},
     ]
 
     class MockTimeslot:
@@ -33,9 +38,9 @@ def test_validate_teacher_overload_passes():
             self.start_time = start_time
 
     timeslots = [
-        MockTimeslot('Monday', 9),
-        MockTimeslot('Tuesday', 9),
-        MockTimeslot('Wednesday', 9),
+        MockTimeslot("Monday", 9),
+        MockTimeslot("Tuesday", 9),
+        MockTimeslot("Wednesday", 9),
     ]
 
     result, message = controller.validate_teacher_overload(
@@ -43,16 +48,18 @@ def test_validate_teacher_overload_passes():
     )
 
     assert result is True
-    assert message == ''
+    assert message == ""
 
 
 def test_validate_teacher_overload_fails():
+    """Test teacher overload validation fails for excessive workload."""
+
     class MockSection:
         def __init__(self, teacher_id):
             self.teacher_id = teacher_id
 
     ranked_sections = [
-        {'section': MockSection(1), 'num_credits': 4},
+        {"section": MockSection(1), "num_credits": 4},
     ]
 
     class MockTimeslot:
@@ -61,9 +68,9 @@ def test_validate_teacher_overload_fails():
             self.start_time = start_time
 
     timeslots = [
-        MockTimeslot('Monday', 9),
-        MockTimeslot('Tuesday', 9),
-        MockTimeslot('Wednesday', 9),
+        MockTimeslot("Monday", 9),
+        MockTimeslot("Tuesday", 9),
+        MockTimeslot("Wednesday", 9),
     ]
 
     result, message = controller.validate_teacher_overload(
@@ -71,4 +78,4 @@ def test_validate_teacher_overload_fails():
     )
 
     assert result is False
-    assert 'profesor con ID 1' in message
+    assert "profesor con ID 1" in message

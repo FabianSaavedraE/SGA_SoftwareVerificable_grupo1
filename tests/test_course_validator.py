@@ -14,6 +14,7 @@ from app.validators.constants import (
 
 @patch("app.validators.course_validator.Course")
 def test_validate_course_data_duplicate_code(mock_course_model):
+    """Tests validation fails if course code already exists."""
     existing_course = MagicMock(id=2)
     mock_course_model.query.filter_by.return_value.first.return_value = (
         existing_course
@@ -36,6 +37,7 @@ def test_validate_course_data_duplicate_code(mock_course_model):
 
 @patch("app.validators.course_validator.Course")
 def test_validate_course_data_valid_input(mock_course_model):
+    """Tests validation passes with valid course data."""
     mock_course_model.query.filter_by.return_value.first.return_value = None
 
     valid_data = {
@@ -58,6 +60,7 @@ def test_validate_course_data_valid_input(mock_course_model):
     ],
 )
 def test_return_text_field_errors(field, value, max_length):
+    """Tests validation of empty or too long text fields."""
     result = validator.return_text_field_errors(field, value)
     assert field in result
 
@@ -67,12 +70,14 @@ def test_return_text_field_errors(field, value, max_length):
     ["abc", "0", "5"],
 )
 def test_return_credits_errors_invalid(input_credits):
+    """Tests credit field validation with invalid inputs."""
     result = validator.return_credits_errors(input_credits)
     assert KEY_CREDITS_ENTRY in result
 
 
 @patch("app.validators.course_validator.Course")
 def test_validate_and_return_prerequisite_if_course_exists(mock_course_model):
+    """Tests returns course if prerequisite exists."""
     course = MagicMock()
     mock_course_model.query.filter_by.return_value.first.return_value = course
 
@@ -86,6 +91,7 @@ def test_validate_and_return_prerequisite_if_course_exists(mock_course_model):
 def test_validate_and_return_prerequisite_if_course_does_not_exist(
     mock_course_model,
 ):
+    """Tests returns False if prerequisite course does not exist."""
     mock_course_model.query.filter_by.return_value.first.return_value = None
 
     result = validator.validate_and_return_prerequisite_if_course_exists(

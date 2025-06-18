@@ -12,7 +12,7 @@ from app.controllers.teacher_controller import (
 )
 from app.models import TimeSlot
 
-DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 VALID_TIME_BLOCKS = [
     (9, 10),
     (10, 11),
@@ -26,6 +26,7 @@ VALID_TIME_BLOCKS = [
 
 
 def create_timeslots(year, semester):
+    """Create timeslots for given year and semester if none exist."""
     if timeslots_exist(year, semester):
         return
 
@@ -33,6 +34,7 @@ def create_timeslots(year, semester):
 
 
 def timeslots_exist(year, semester):
+    """Check if timeslots exist for a given year and semester."""
     return (
         TimeSlot.query.filter_by(year=year, semester=semester).first()
         is not None
@@ -40,6 +42,7 @@ def timeslots_exist(year, semester):
 
 
 def generate_and_save_timeslot(year, semester):
+    """Generate and save all timeslots for year and semester."""
     for day in DAYS_OF_WEEK:
         for start_hour, end_hour in VALID_TIME_BLOCKS:
             slot = TimeSlot(
@@ -55,16 +58,19 @@ def generate_and_save_timeslot(year, semester):
 
 
 def get_all_timeslots():
+    """Return all timeslots from the database."""
     return TimeSlot.query.all()
 
 
 def get_timeslots_by_parameters(year, semester):
+    """Return timeslots filtered by year and semester."""
     return TimeSlot.query.filter_by(year=year, semester=semester).all()
 
 
 def generate_valid_block(section_data, timeslots):
+    """Find valid blocks with available teacher, students, and rooms."""
     valid_options = []
-    num_students = section_data['num_students']
+    num_students = section_data["num_students"]
 
     candidate_blocks = find_consecutive_timeslot_blocks(
         section_data, timeslots
@@ -89,12 +95,14 @@ def generate_valid_block(section_data, timeslots):
 
 
 def find_consecutive_timeslot_blocks(section, timeslots):
-    required_blocks_size = section['num_credits']
+    """Find consecutive timeslot blocks matching section credit size."""
+    required_blocks_size = section["num_credits"]
     timeslots_by_day = group_timeslots_by_day(timeslots)
     return get_consecutive_blocks(timeslots_by_day, required_blocks_size)
 
 
 def get_consecutive_blocks(timeslots_by_day, block_size):
+    """Return consecutive blocks of timeslots per day of given size."""
     consecutive_blocks = []
 
     for day_slots in timeslots_by_day.values():
@@ -106,10 +114,12 @@ def get_consecutive_blocks(timeslots_by_day, block_size):
 
 
 def sort_timeslots_by_start_time(timeslots):
+    """Sort timeslots by their start time."""
     return sorted(timeslots, key=lambda slot: slot.start_time)
 
 
 def extract_valid_blocks(sorted_slots, block_size):
+    """Extract valid consecutive blocks from sorted timeslots."""
     valid_blocks = []
 
     for start_index in range(len(sorted_slots) - block_size + 1):
@@ -121,6 +131,7 @@ def extract_valid_blocks(sorted_slots, block_size):
 
 
 def group_timeslots_by_day(timeslots):
+    """Group timeslots into a dict keyed by day."""
     timeslots_by_day = {}
     for slot in timeslots:
         timeslots_by_day.setdefault(slot.day, []).append(slot)
@@ -129,6 +140,7 @@ def group_timeslots_by_day(timeslots):
 
 
 def are_consecutive_blocks(time_block):
+    """Check if timeslots in block are consecutive without gaps."""
     for index in range(len(time_block) - 1):
         current_end = time_block[index].end_time
         next_start = time_block[index + 1].start_time

@@ -1,12 +1,9 @@
 from app import db
 from app.models import Evaluation, StudentEvaluations
-from app.validators.data_load_validators import validate_json_has_required_key
-
-STUDENT_EVALUATION_JSON_KEY = "notas"
-
 from app.validators.data_load_validators import (
     validate_entry_can_be_loaded,
     validate_entry_has_required_keys,
+    validate_json_has_required_key,
 )
 
 STUDENT_EVALUATION_JSON_KEY = "notas"
@@ -14,11 +11,15 @@ KEYS_IN_JSON = ["alumno_id", "topico_id", "instancia", "nota"]
 
 
 def get_student_evaluation(student_id, evaluation_id):
-    student_evaluation = StudentEvaluations.query.get((student_id, evaluation_id))
+    """Get student evaluation by student and evaluation IDs."""
+    student_evaluation = StudentEvaluations.query.get(
+        (student_id, evaluation_id)
+    )
     return student_evaluation
 
 
 def create_student_evaluation(data):
+    """Create and save a new student evaluation entry."""
     new_student_evaluation = StudentEvaluations(
         student_id=data.get("student_id"),
         evaluation_id=data.get("evaluation_id"),
@@ -31,6 +32,7 @@ def create_student_evaluation(data):
 
 
 def update_student_evaluation(student_evaluation, data):
+    """Update grade of an existing student evaluation."""
     if not student_evaluation:
         return None
 
@@ -41,6 +43,7 @@ def update_student_evaluation(student_evaluation, data):
 
 
 def create_student_evaluation_json(data):
+    """Validate and create student evaluations from JSON data."""
     if not validate_json_has_required_key(data, STUDENT_EVALUATION_JSON_KEY):
         return None
 
@@ -51,7 +54,9 @@ def create_student_evaluation_json(data):
             return None
 
         if not validate_entry_can_be_loaded(
-            transform_json_entry_into_processable_student_evaluation_format(evaluation),
+            transform_json_entry_into_processable_student_evaluation_format(
+                evaluation
+            ),
             "student_evaluation",
         ):
             return None
@@ -60,9 +65,12 @@ def create_student_evaluation_json(data):
 
 
 def create_all_student_evaluation_entries(student_evaluations):
+    """Create all student evaluation entries from the list."""
     for entry in student_evaluations:
         transformed_data = (
-            transform_json_entry_into_processable_student_evaluation_format(entry)
+            transform_json_entry_into_processable_student_evaluation_format(
+                entry
+            )
         )
 
         if transformed_data:
@@ -72,6 +80,7 @@ def create_all_student_evaluation_entries(student_evaluations):
 
 
 def get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance):
+    """Return evaluation ID by topic and instance number."""
     instance = parse_int(instance)
 
     if instance is None or instance < 1:
@@ -93,6 +102,7 @@ def get_evaluation_id_by_topic_and_instance(evaluation_type_id, instance):
 def transform_json_entry_into_processable_student_evaluation_format(
     student_evaluation,
 ):
+    """Transform JSON entry to dict for student evaluation creation."""
     evaluation_type_id = student_evaluation.get("topico_id")
     instance_id = student_evaluation.get("instancia")
     evaluation_id = get_evaluation_id_by_topic_and_instance(
@@ -110,6 +120,7 @@ def transform_json_entry_into_processable_student_evaluation_format(
 
 
 def parse_int(value):
+    """Convert value to int; return None if conversion fails."""
     try:
         return int(value)
     except (ValueError, TypeError):

@@ -14,6 +14,7 @@ from app.validators.constants import (
 
 @pytest.fixture(autouse=True)
 def patch_models():
+    """Patches Course and CourseInstance models for all tests."""
     with (
         patch(
             "app.validators.course_instance_validator.Course"
@@ -26,12 +27,14 @@ def patch_models():
 
 
 def test_get_stripped_field_returns_stripped_string():
+    """Tests if get_stripped_field returns a stripped string."""
     data = {"year": " 2020 "}
     result = validator.get_stripped_field(data, "year")
     assert result == "2020"
 
 
 def test_attribute_errors_invalid_semester(patch_models):
+    """Tests error returned when semester value is invalid."""
     patch_models[0].query.get.return_value = True
     data = {
         KEY_YEAR_ENTRY: "2023",
@@ -43,6 +46,7 @@ def test_attribute_errors_invalid_semester(patch_models):
 
 
 def test_attribute_errors_nonexistent_course(patch_models):
+    """Tests error when the course does not exist."""
     patch_models[0].query.get.return_value = None
     data = {
         KEY_YEAR_ENTRY: "2023",
@@ -54,6 +58,7 @@ def test_attribute_errors_nonexistent_course(patch_models):
 
 
 def test_validate_course_instance_uniqueness_conflict(patch_models):
+    """Tests error when course instance uniqueness is violated."""
     mock_course, mock_instance = patch_models
     mock_course.query.get.return_value = MagicMock(
         __str__=lambda self: "Course X"
@@ -76,6 +81,7 @@ def test_validate_course_instance_uniqueness_conflict(patch_models):
 
 
 def test_validate_course_instance_uniqueness_no_conflict(patch_models):
+    """Tests that no error is returned if instance is unique."""
     mock_course, mock_instance = patch_models
     mock_course.query.get.return_value = MagicMock()
 
@@ -96,6 +102,7 @@ def test_validate_course_instance_uniqueness_no_conflict(patch_models):
 
 
 def test_validate_course_instance_and_return_errors_all_valid(patch_models):
+    """Tests full validation returns no errors for valid data."""
     mock_course, mock_instance = patch_models
     mock_course.query.get.return_value = MagicMock()
 

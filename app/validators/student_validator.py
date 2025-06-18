@@ -19,10 +19,11 @@ from app.validators.constants import (
     OVERFLOWS,
 )
 
+
 def validate_student_data_and_return_errors(data, student_id=None):
+    """Validate student data and returns any found errors."""
     typing_errors = return_student_typing_errors(data)
 
-    # Since typing errors are exclusive to JSON load, should return immediately
     if typing_errors:
         return typing_errors
 
@@ -31,15 +32,18 @@ def validate_student_data_and_return_errors(data, student_id=None):
 
 
 def return_student_typing_errors(data):
+    """Return typing errors found in student data."""
     errors = {}
     first_name = data.get(KEY_FIRST_NAME_ENTRY, "")
     last_name = data.get(KEY_LAST_NAME_ENTRY, "")
     email = data.get(KEY_EMAIL_ENTRY, "")
-    id = data.get(KEY_ID_ENTRY, "")
+    student_id = data.get(KEY_ID_ENTRY, "")
     entry_year = data.get(KEY_ENTRY_YEAR, "")
 
     if not isinstance(first_name, str):
-        errors[KEY_FIRST_NAME_ENTRY] = f"{KEY_FIRST_NAME_ENTRY} {MUST_BE_STRING}"
+        errors[KEY_FIRST_NAME_ENTRY] = (
+            f"{KEY_FIRST_NAME_ENTRY} {MUST_BE_STRING}"
+        )
 
     if not isinstance(last_name, str):
         errors[KEY_LAST_NAME_ENTRY] = f"{KEY_LAST_NAME_ENTRY} {MUST_BE_STRING}"
@@ -47,7 +51,7 @@ def return_student_typing_errors(data):
     if not isinstance(email, str):
         errors[KEY_EMAIL_ENTRY] = f"{KEY_EMAIL_ENTRY} {MUST_BE_STRING}"
 
-    if not (isinstance(id, int) or (id == "")):
+    if not (isinstance(student_id, int) or (student_id == "")):
         errors[KEY_ID_ENTRY] = f"{KEY_ID_ENTRY} {MUST_BE_INT}"
 
     if not (isinstance(entry_year, int) or isinstance(entry_year, str)):
@@ -57,6 +61,7 @@ def return_student_typing_errors(data):
 
 
 def return_student_attribute_errors(data, student_id):
+    """Return attribute errors in student data."""
     errors = {}
 
     first_name = get_stripped_field(data, KEY_FIRST_NAME_ENTRY)
@@ -64,11 +69,13 @@ def return_student_attribute_errors(data, student_id):
     email = get_stripped_field(data, KEY_EMAIL_ENTRY)
     entry_year = data.get(KEY_ENTRY_YEAR, "")
 
-    first_name_errors = return_student_name_errors(KEY_FIRST_NAME_ENTRY,
-                                                   first_name)
+    first_name_errors = return_student_name_errors(
+        KEY_FIRST_NAME_ENTRY, first_name
+    )
 
-    last_name_errors = return_student_name_errors(KEY_LAST_NAME_ENTRY,
-                                                  last_name)
+    last_name_errors = return_student_name_errors(
+        KEY_LAST_NAME_ENTRY, last_name
+    )
 
     email_errors = return_student_email_errors(email, student_id)
     entry_year_errors = return_entry_year_errors(entry_year)
@@ -81,19 +88,22 @@ def return_student_attribute_errors(data, student_id):
 
 
 def return_student_name_errors(key, name):
+    """Validate a student's name and returns any errors."""
     errors = {}
 
     if not name or name == "" or name == "":
         errors[key] = f"{key} {MUST_BE}"
 
     elif len(name) > MAX_LENGTH_USERS_NAME:
-        errors[key] = f"{key} {OVERFLOWS} 0 - "
-        f"{MAX_LENGTH_USERS_NAME} {CHARACTERS}."
+        errors[key] = (
+            f"{key} {OVERFLOWS} 0 - {MAX_LENGTH_USERS_NAME} {CHARACTERS}."
+        )
 
     return errors
 
 
 def return_student_email_errors(email, student_id):
+    """Validate student email and returns related errors."""
     errors = {}
 
     if not email:
@@ -119,6 +129,7 @@ def return_student_email_errors(email, student_id):
 
 
 def return_entry_year_errors(entry_year):
+    """Validate entry year and returns any errors."""
     errors = {}
 
     if not entry_year:
@@ -139,5 +150,7 @@ def return_entry_year_errors(entry_year):
 
     return errors
 
+
 def get_stripped_field(data, field_name):
+    """Return a stripped string value from given data."""
     return (str(data.get(field_name) or "")).strip()

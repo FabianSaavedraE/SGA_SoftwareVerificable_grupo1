@@ -2,7 +2,9 @@ import json
 
 from flask import flash
 
-from app.validators.classroom_validator import validate_classroom_data_and_return_errors
+from app.validators.classroom_validator import (
+    validate_classroom_data_and_return_errors,
+)
 from app.validators.course_instance_validator import (
     validate_course_instance_and_return_errors,
 )
@@ -10,13 +12,21 @@ from app.validators.course_section_json_validator import (
     validate_evaluations_entry_from_json_and_return_errors,
     validate_section_entry_from_json_and_return_errors,
 )
-from app.validators.course_validator import validate_course_data_and_return_errors
+from app.validators.course_validator import (
+    validate_course_data_and_return_errors,
+)
 from app.validators.student_course_validator import (
     validate_student_course_and_return_errors,
 )
-from app.validators.student_evaluation_validator import validate_student_evaluation_data
-from app.validators.student_validator import validate_student_data_and_return_errors
-from app.validators.teacher_validator import validate_teacher_data_and_return_errors
+from app.validators.student_evaluation_validator import (
+    validate_student_evaluation_data,
+)
+from app.validators.student_validator import (
+    validate_student_data_and_return_errors,
+)
+from app.validators.teacher_validator import (
+    validate_teacher_data_and_return_errors,
+)
 
 VALIDATORS = {
     "student": validate_student_data_and_return_errors,
@@ -30,10 +40,9 @@ VALIDATORS = {
     "evaluations": validate_evaluations_entry_from_json_and_return_errors,
 }
 
-# Functions that validate the data loading process ----------------------------
-
 
 def validate_json_file_and_return_processed_file(file):
+    """Validate a JSON file and returns its parsed content."""
     try:
         data = json.load(file)
         return data
@@ -46,6 +55,7 @@ def validate_json_file_and_return_processed_file(file):
 
 
 def validate_json_has_required_key(json_data, key):
+    """Ensure a JSON dictionary contains the specified key."""
     if key in json_data:
         return True
     else:
@@ -55,9 +65,12 @@ def validate_json_has_required_key(json_data, key):
 
 def validate_entry_has_required_keys(entry, keys: list):  # Keys list should be
     # aggregated when one calls the function like this: [arg1, arg2, arg3...]
+    """Verify an entry contains all specified required keys."""
     has_all_keys = True
     for key in keys:
-        has_all_keys = has_all_keys and validate_json_has_required_key(entry, key)
+        has_all_keys = has_all_keys and validate_json_has_required_key(
+            entry, key
+        )
     if not has_all_keys:
         flash(
             "ERROR al crear JSON, faltan argumentos para inicializar "
@@ -71,6 +84,7 @@ def validate_entry_has_required_keys(entry, keys: list):  # Keys list should be
 
 
 def validate_entry_can_be_loaded(entry, type: str):
+    """Validate a data entry using its corresponding type validator."""
     validator = VALIDATORS.get(type)
     if validator:
         errors = validator(entry)
@@ -81,10 +95,9 @@ def validate_entry_can_be_loaded(entry, type: str):
                     "error",
                 )
             return False
-
-    print("\n\n")
     return True
 
 
 def flash_custom_error(error):
-    flash(f"ERROR {error}", "error")
+    """Flashes a custom error message."""
+    flash(f"ERROR {error}", error)

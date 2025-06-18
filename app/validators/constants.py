@@ -48,7 +48,7 @@ KEY_COURSE_ID_JSON = "curso_id"
 KEY_INSTANCE_COURSE_ID_ENTRY = "course_id"
 KEY_INSTANCE_COURSE_ID_JSON = "curso_id"
 
-# Section constants ------------------------------------------------------------
+# Section constants -----------------------------------------------------------
 
 KEY_COURSE_INSTANCE_JSON = "instancia_curso"
 KEY_TEACHER_ID_JSON = "profesor_id"

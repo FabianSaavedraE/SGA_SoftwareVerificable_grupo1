@@ -20,6 +20,7 @@ from app.validators.constants import (
 
 
 def make_valid_data():
+    """Return a dict with valid student evaluation data."""
     return {
         KEY_STUDENT_ID_JSON: "1",
         KEY_TOPIC_ID_JSON: "2",
@@ -29,15 +30,18 @@ def make_valid_data():
 
 
 def test_validate_grade_out_of_bounds():
+    """Test grade validation fails for out-of-bounds grades."""
     assert validator.validate_grade(0.5) is not None
     assert validator.validate_grade(8.0) is not None
 
 
 def test_validate_grade_in_bounds():
+    """Test grade validation passes for grades within bounds."""
     assert validator.validate_grade(5.5) is None
 
 
 def test_validate_student_evaluation_data_invalid_grade_type():
+    """Test validation fails when grade type is invalid."""
     data = make_valid_data()
     data[KEY_GRADE_JSON] = "not_a_number"
     errors = validator.validate_student_evaluation_data(data)
@@ -47,6 +51,7 @@ def test_validate_student_evaluation_data_invalid_grade_type():
 
 
 def test_validate_student_evaluation_data_invalid_ids():
+    """Test validation fails when IDs are invalid types."""
     data = {
         KEY_STUDENT_ID_JSON: "abc",
         KEY_TOPIC_ID_JSON: "xyz",
@@ -64,6 +69,7 @@ def test_validate_student_evaluation_data_invalid_ids():
 
 @patch("app.validators.student_evaluation_validator.get_entity_by_id")
 def test_validate_attributes_entities_not_found(mock_get_entity):
+    """Test errors returned when referenced entities do not exist."""
     mock_get_entity.return_value = None
     data = make_valid_data()
     errors = validator.validate_student_evaluation_data(data)
@@ -75,6 +81,7 @@ def test_validate_attributes_entities_not_found(mock_get_entity):
 
 @patch("app.validators.student_evaluation_validator.get_entity_by_id")
 def test_validate_grade_too_high(mock_get_entity):
+    """Test validation fails when grade is above maximum allowed."""
     mock_get_entity.side_effect = lambda model, id: MagicMock()
     data = make_valid_data()
     data[KEY_GRADE_JSON] = "10.0"
@@ -87,6 +94,7 @@ def test_validate_grade_too_high(mock_get_entity):
 
 @patch("app.validators.student_evaluation_validator.get_entity_by_id")
 def test_student_not_enrolled_in_section(mock_get_entity):
+    """Test error when student is not enrolled in the evaluated section."""
     student = MagicMock()
     student.id = 1
     student.first_name = "Carlos"

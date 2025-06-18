@@ -6,11 +6,15 @@ from app.controllers.final_grades_controller import (
 
 
 class MockStudent:
+    """Mock student with an ID."""
+
     def __init__(self, id):
         self.id = id
 
 
 class MockEvaluation:
+    """Mock evaluation with ponderation, optional flag, and grades."""
+
     def __init__(self, ponderation, optional=False, student_evaluations=None):
         self.ponderation = ponderation
         self.optional = optional
@@ -18,12 +22,16 @@ class MockEvaluation:
 
 
 class MockStudentEvaluation:
+    """Mock grade entry for a student."""
+
     def __init__(self, student_id, grade):
         self.student_id = student_id
         self.grade = grade
 
 
 class MockEvaluationType:
+    """Mock grade entry for a student."""
+
     def __init__(
         self, overall_ponderation, ponderation_type, evaluations=None
     ):
@@ -33,12 +41,15 @@ class MockEvaluationType:
 
 
 class MockCourseSection:
+    """Mock course section with evaluation types and weight type."""
+
     def __init__(self, evaluation_types, overall_ponderation_type):
         self.evaluation_types = evaluation_types
         self.overall_ponderation_type = overall_ponderation_type
 
 
 def test_get_student_grade_returns_correct_grade():
+    """Returns the student's grade if found."""
     student = MockStudent(1)
     evaluations = [
         MockStudentEvaluation(1, 6.0),
@@ -53,6 +64,7 @@ def test_get_student_grade_returns_correct_grade():
 
 
 def test_get_student_grade_returns_none_if_not_found():
+    """Returns None if student grade is not found."""
     student = MockStudent(3)
     evaluations = [
         MockStudentEvaluation(1, 6.0),
@@ -67,6 +79,7 @@ def test_get_student_grade_returns_none_if_not_found():
 
 
 def test_compute_type_average_with_percentages():
+    """Calculates average with weighted percentages."""
     student = MockStudent(1)
     evaluations = [
         MockEvaluation(
@@ -78,7 +91,7 @@ def test_compute_type_average_with_percentages():
     ]
     evaluation_type = MockEvaluationType(
         overall_ponderation=100,
-        ponderation_type='Porcentaje',
+        ponderation_type="Porcentaje",
         evaluations=evaluations,
     )
 
@@ -87,13 +100,14 @@ def test_compute_type_average_with_percentages():
 
 
 def test_compute_type_average_skips_optional_with_no_grade():
+    """Skips optional evaluations with no grades."""
     student = MockStudent(1)
     evaluations = [
         MockEvaluation(ponderation=100, optional=True, student_evaluations=[])
     ]
     evaluation_type = MockEvaluationType(
         overall_ponderation=100,
-        ponderation_type='Porcentaje',
+        ponderation_type="Porcentaje",
         evaluations=evaluations,
     )
 
@@ -102,13 +116,14 @@ def test_compute_type_average_skips_optional_with_no_grade():
 
 
 def test_compute_type_average_uses_min_grade_when_required_missing():
+    """Uses grade 1.0 when required evaluation is missing."""
     student = MockStudent(1)
     evaluations = [
         MockEvaluation(ponderation=100, optional=False, student_evaluations=[])
     ]
     evaluation_type = MockEvaluationType(
         overall_ponderation=100,
-        ponderation_type='Porcentaje',
+        ponderation_type="Porcentaje",
         evaluations=evaluations,
     )
 
@@ -117,10 +132,11 @@ def test_compute_type_average_uses_min_grade_when_required_missing():
 
 
 def test_compute_student_final_grade_with_percentages():
+    """Calculates final grade using percentage weights."""
     student = MockStudent(1)
     evaluation_type_1 = MockEvaluationType(
         overall_ponderation=40,
-        ponderation_type='Porcentaje',
+        ponderation_type="Porcentaje",
         evaluations=[
             MockEvaluation(
                 ponderation=100,
@@ -131,7 +147,7 @@ def test_compute_student_final_grade_with_percentages():
 
     evaluation_type_2 = MockEvaluationType(
         overall_ponderation=60,
-        ponderation_type='Porcentaje',
+        ponderation_type="Porcentaje",
         evaluations=[
             MockEvaluation(
                 ponderation=100,
@@ -142,7 +158,7 @@ def test_compute_student_final_grade_with_percentages():
 
     course_section = MockCourseSection(
         evaluation_types=[evaluation_type_1, evaluation_type_2],
-        overall_ponderation_type='Porcentaje',
+        overall_ponderation_type="Porcentaje",
     )
 
     result = compute_student_final_grade(
@@ -153,10 +169,11 @@ def test_compute_student_final_grade_with_percentages():
 
 
 def test_compute_student_final_grade_without_percentages():
+    """Calculates final grade using weight-based evaluation."""
     student = MockStudent(1)
     evaluation_type_1 = MockEvaluationType(
         overall_ponderation=2,
-        ponderation_type='Peso',
+        ponderation_type="Peso",
         evaluations=[
             MockEvaluation(
                 ponderation=1,
@@ -167,7 +184,7 @@ def test_compute_student_final_grade_without_percentages():
 
     evaluation_type_2 = MockEvaluationType(
         overall_ponderation=1,
-        ponderation_type='Peso',
+        ponderation_type="Peso",
         evaluations=[
             MockEvaluation(
                 ponderation=1,
@@ -178,7 +195,7 @@ def test_compute_student_final_grade_without_percentages():
 
     course_section = MockCourseSection(
         evaluation_types=[evaluation_type_1, evaluation_type_2],
-        overall_ponderation_type='Peso',
+        overall_ponderation_type="Peso",
     )
 
     result = compute_student_final_grade(

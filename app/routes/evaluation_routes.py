@@ -19,24 +19,25 @@ from app.controllers.evaluation_controller import (
 from app.controllers.evaluation_type_controller import get_evaluation_type
 from app.validators.evaluation_validator import assign_default_ponderations
 
-evaluation_bp = Blueprint('evaluations', __name__, url_prefix='/evaluations')
+evaluation_bp = Blueprint("evaluations", __name__, url_prefix="/evaluations")
 
 
 @evaluation_bp.route(
-    '/create/<int:evaluation_type_id>', methods=['GET', 'POST']
+    "/create/<int:evaluation_type_id>", methods=["GET", "POST"]
 )
 def create_evaluation_view(evaluation_type_id):
+    """Create an evaluation for a given evaluation type."""
     evaluation_type = get_evaluation_type(evaluation_type_id)
     if not evaluation_type:
         return redirect(
             url_for(
-                'course_sections.show_section_view',
+                "course_sections.show_section_view",
                 course_section_id=evaluation_type.course_section_id,
             )
         )
 
     error = None
-    if request.method == 'POST':
+    if request.method == "POST":
         evaluations = build_evaluation_data(request.form, evaluation_type_id)
 
         error = assign_default_ponderations(evaluation_type, evaluations)
@@ -46,57 +47,58 @@ def create_evaluation_view(evaluation_type_id):
                 evaluation, current_sum = create_evaluation(data)
                 if evaluation is None:
                     error = (
-                        f'Suma actual de ponderaciones: {current_sum}%. '
-                        f'No puede exceder 100% al agregar esta evaluación.'
+                        f"Suma actual de ponderaciones: {current_sum}%. "
+                        f"No puede exceder 100% al agregar esta evaluación."
                     )
                     break
 
         if error:
             return render_template(
-                'evaluations/create.html',
+                "evaluations/create.html",
                 evaluation_type=evaluation_type,
                 error=error,
             )
 
         return redirect(
             url_for(
-                'course_sections.show_section_view',
+                "course_sections.show_section_view",
                 course_section_id=evaluation_type.course_section_id,
             )
         )
 
     return render_template(
-        'evaluations/create.html', evaluation_type=evaluation_type, error=error
+        "evaluations/create.html", evaluation_type=evaluation_type, error=error
     )
 
 
-@evaluation_bp.route('/<int:evaluation_id>', methods=['GET', 'POST'])
+@evaluation_bp.route("/<int:evaluation_id>", methods=["GET", "POST"])
 def update_evaluation_view(evaluation_id):
+    """Update an evaluation by its ID."""
     error = None
     evaluation = get_evaluation(evaluation_id)
     if not evaluation:
         return redirect(
             url_for(
-                'course_sections.show_section_view',
+                "course_sections.show_section_view",
                 course_section_id=evaluation.evaluation_type.course_section_id,
             )
         )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         data = request.form.to_dict()
-        data['optional'] = 'optional' in request.form
+        data["optional"] = "optional" in request.form
 
         updated_evaluation, current_sum = update_evaluation(evaluation, data)
 
         if updated_evaluation is None:
             error = (
-                f'Suma actual sin esta evaluación: {current_sum}%. '
-                f'No puede exceder 100% al actualizar.'
+                f"Suma actual sin esta evaluación: {current_sum}%. "
+                f"No puede exceder 100% al actualizar."
             )
         else:
             return redirect(
                 url_for(
-                    'course_sections.show_section_view',
+                    "course_sections.show_section_view",
                     course_section_id=(
                         evaluation.evaluation_type.course_section_id
                     ),
@@ -104,15 +106,16 @@ def update_evaluation_view(evaluation_id):
             )
 
     return render_template(
-        'evaluations/edit.html', evaluation=evaluation, error=error
+        "evaluations/edit.html", evaluation=evaluation, error=error
     )
 
 
-@evaluation_bp.route('/<int:evaluation_id>/show', methods=['GET'])
+@evaluation_bp.route("/<int:evaluation_id>/show", methods=["GET"])
 def show_evaluation_view(evaluation_id):
+    """Show details of a single evaluation."""
     evaluation = get_evaluation(evaluation_id)
     if not evaluation:
-        return redirect(url_for('home'))
+        return redirect(url_for("home"))
 
     evaluation_type = get_evaluation_type(evaluation.evaluation_type_id)
     course_section = get_section(evaluation_type.course_section_id)
@@ -121,7 +124,7 @@ def show_evaluation_view(evaluation_id):
     grades = build_grades_dict(evaluation)
 
     return render_template(
-        'evaluations/show.html',
+        "evaluations/show.html",
         evaluation=evaluation,
         evaluation_type=evaluation_type,
         course_section=course_section,
@@ -131,28 +134,30 @@ def show_evaluation_view(evaluation_id):
 
 
 @evaluation_bp.route(
-    '/delete/<int:evaluation_id>/<int:course_section_id>', methods=['POST']
+    "/delete/<int:evaluation_id>/<int:course_section_id>", methods=["POST"]
 )
 def delete_evaluation_view(evaluation_id, course_section_id):
+    """Delete an evaluation and redirect to its course section."""
     evaluation = get_evaluation(evaluation_id)
     if evaluation:
         delete_evaluation(evaluation)
         return redirect(
             url_for(
-                'course_sections.show_section_view',
+                "course_sections.show_section_view",
                 course_section_id=course_section_id,
             )
         )
 
     return redirect(
         url_for(
-            'course_sections.show_section_view',
+            "course_sections.show_section_view",
             course_section_id=course_section_id,
         )
     )
 
 
 def build_grades_dict(evaluation):
+    """Build a dictionary of student grades from an evaluation object."""
     return {
         student_evaluation.student_id: student_evaluation.grade
         for student_evaluation in evaluation.student_evaluations
@@ -160,20 +165,21 @@ def build_grades_dict(evaluation):
 
 
 def build_evaluation_data(form_data, evaluation_type_id):
+    """Build a list of evaluation data from form data."""
     evaluations = []
 
     for key in form_data:
-        if key.startswith('name_'):
-            index = key.split('_')[1]
-            name = form_data.get(f'name_{index}')
-            ponderation = form_data.get(f'ponderation_{index}')
-            optional = form_data.get(f'optional_{index}') == 'on'
+        if key.startswith("name_"):
+            index = key.split("_")[1]
+            name = form_data.get(f"name_{index}")
+            ponderation = form_data.get(f"ponderation_{index}")
+            optional = form_data.get(f"optional_{index}") == "on"
 
             data = {
-                'name': name,
-                'ponderation': ponderation if ponderation else None,
-                'optional': optional,
-                'evaluation_type_id': evaluation_type_id,
+                "name": name,
+                "ponderation": ponderation if ponderation else None,
+                "optional": optional,
+                "evaluation_type_id": evaluation_type_id,
             }
 
             evaluations.append(data)
@@ -181,17 +187,17 @@ def build_evaluation_data(form_data, evaluation_type_id):
     return evaluations
 
 
-@evaluation_bp.route('/<int:evaluation_id>/report', methods=['GET'])
+@evaluation_bp.route("/<int:evaluation_id>/report", methods=["GET"])
 def download_evaluation_report(evaluation_id):
+    """Download an Excel report for a specific evaluation."""
     evaluation = get_evaluation(evaluation_id)
     result = export_evaluation_report_to_excel(evaluation)
 
     if result is None:
-        flash('No se puede generar reporte para esta evaluación', 'error')
-        print('SECTION ID:', evaluation.evaluation_type.course_section_id)
+        flash("No se puede generar reporte para esta evaluación", "error")
         return redirect(
             url_for(
-                'course_sections.show_section_view',
+                "course_sections.show_section_view",
                 course_section_id=evaluation.evaluation_type.course_section_id,
             )
         )

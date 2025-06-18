@@ -19,6 +19,7 @@ from app.validators.constants import (
 
 @pytest.fixture(autouse=True)
 def patch_classroom_query():
+    """Mock the Classroom model's query for all tests."""
     with patch(
         "app.validators.classroom_validator.Classroom"
     ) as mock_classroom:
@@ -27,12 +28,14 @@ def patch_classroom_query():
 
 
 def test_typing_error_invalid_id_type():
+    """Tests error when ID is not an integer."""
     data = {KEY_NAME_ENTRY: "Reloj 101", KEY_CAPACITY_ENTRY: "10", "id": "abc"}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert "id" in errors
 
 
 def test_typing_error_invalid_name_type():
+    """Tests error when name is not a string."""
     data = {KEY_NAME_ENTRY: 123, KEY_CAPACITY_ENTRY: "10"}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert KEY_NAME_ENTRY in errors
@@ -40,6 +43,7 @@ def test_typing_error_invalid_name_type():
 
 
 def test_typing_error_invalid_capacity_type():
+    """Tests error when capacity is neither string nor int."""
     data = {KEY_NAME_ENTRY: "Reloj 101", KEY_CAPACITY_ENTRY: {"value": 10}}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert KEY_CAPACITY_ENTRY in errors
@@ -47,6 +51,7 @@ def test_typing_error_invalid_capacity_type():
 
 
 def test_name_required():
+    """Tests error when classroom name is empty."""
     data = {KEY_NAME_ENTRY: "", KEY_CAPACITY_ENTRY: "10"}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert KEY_NAME_ENTRY in errors
@@ -54,6 +59,7 @@ def test_name_required():
 
 
 def test_name_too_long():
+    """Tests error when classroom name exceeds max length."""
     data = {
         KEY_NAME_ENTRY: "A" * (MAX_NAME_LENGTH + 1),
         KEY_CAPACITY_ENTRY: "10",
@@ -64,6 +70,7 @@ def test_name_too_long():
 
 
 def test_name_already_exists_other_id(patch_classroom_query):
+    """Tests error when classroom name already exists with other ID."""
     existing = MagicMock()
     existing.id = 2
     patch_classroom_query.query.filter_by.return_value.first.return_value = (
@@ -80,6 +87,7 @@ def test_name_already_exists_other_id(patch_classroom_query):
 
 
 def test_name_exists_same_id(patch_classroom_query):
+    """Tests no error when classroom name exists with same ID."""
     existing = MagicMock()
     existing.id = 1
     patch_classroom_query.query.filter_by.return_value.first.return_value = (
@@ -95,6 +103,7 @@ def test_name_exists_same_id(patch_classroom_query):
 
 
 def test_capacity_required():
+    """Tests error when capacity is empty."""
     data = {KEY_NAME_ENTRY: "Reloj 101", KEY_CAPACITY_ENTRY: ""}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert KEY_CAPACITY_ENTRY in errors
@@ -102,6 +111,7 @@ def test_capacity_required():
 
 
 def test_capacity_not_integer():
+    """Tests error when capacity is not an integer."""
     data = {KEY_NAME_ENTRY: "Reloj 101", KEY_CAPACITY_ENTRY: "abc"}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert KEY_CAPACITY_ENTRY in errors
@@ -109,6 +119,7 @@ def test_capacity_not_integer():
 
 
 def test_capacity_out_of_range_low():
+    """Tests error when capacity is below minimum."""
     data = {KEY_NAME_ENTRY: "Reloj 101", KEY_CAPACITY_ENTRY: "0"}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert KEY_CAPACITY_ENTRY in errors
@@ -116,6 +127,7 @@ def test_capacity_out_of_range_low():
 
 
 def test_capacity_out_of_range_high():
+    """Tests error when capacity exceeds maximum."""
     data = {
         KEY_NAME_ENTRY: "Reloj 101",
         KEY_CAPACITY_ENTRY: str(MAX_CAPACITY + 100),
@@ -126,6 +138,7 @@ def test_capacity_out_of_range_high():
 
 
 def test_valid_classroom_data():
+    """Tests no errors for valid classroom data."""
     data = {KEY_NAME_ENTRY: "Reloj 101", KEY_CAPACITY_ENTRY: "100"}
     errors = validator.validate_classroom_data_and_return_errors(data)
     assert errors == {}
