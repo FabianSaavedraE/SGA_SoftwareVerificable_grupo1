@@ -5,6 +5,7 @@ from app.validators import teacher_validator as validator
 
 @patch("app.validators.teacher_validator.Teacher")
 def test_validate_teacher_data_all_valid(mock_teacher):
+    """Test validation passes when all teacher data is valid."""
     mock_teacher.query.filter_by.return_value.first.return_value = None
     data = {
         "first_name": "John",
@@ -18,6 +19,7 @@ def test_validate_teacher_data_all_valid(mock_teacher):
 
 @patch("app.validators.teacher_validator.Teacher")
 def test_validate_teacher_data_missing_fields(mock_teacher):
+    """Test validation returns errors for missing required fields."""
     data = {"first_name": "", "last_name": "", "email": ""}
     errors = validator.validate_teacher_data_and_return_errors(data)
 
@@ -28,6 +30,7 @@ def test_validate_teacher_data_missing_fields(mock_teacher):
 
 @patch("app.validators.teacher_validator.Teacher")
 def test_validate_teacher_data_length_errors(mock_teacher):
+    """Test validation returns errors for fields exceeding length limits."""
     data = {"first_name": "a" * 51, "last_name": "b" * 51, "email": "c" * 51}
     mock_teacher.query.filter_by.return_value.first.return_value = None
     errors = validator.validate_teacher_data_and_return_errors(data)
